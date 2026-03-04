@@ -1,0 +1,7 @@
+node_modules/
+.next/
+.expo/
+dist/
+cdk.out/
+.env*.local
+.DS_Store
