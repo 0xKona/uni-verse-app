@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
-import { BackendStack } from '../lib/backend-stack';
+import { AuthStack } from '../lib/stacks/auth-stack';
+import { ApiStack } from '../lib/stacks/api-stack';
+import { DataStack } from '../lib/stacks/data-stack';
+import { ModerationStack } from '../lib/stacks/moderation-stack';
 
 const app = new cdk.App();
-new BackendStack(app, 'BackendStack', {
+new AuthStack(app, 'BackendStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -18,3 +21,9 @@ new BackendStack(app, 'BackendStack', {
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
+
+new ApiStack(app, 'Uni-Verse-ApiStack', {});
+
+new DataStack(app, 'Uni-Verse-DataStack', {});
+
+new ModerationStack(app, 'Uni-Verse-ModerationStack', {});
