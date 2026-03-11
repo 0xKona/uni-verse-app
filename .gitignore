@@ -1,7 +1,6 @@
-node_modules/
-.next/
-.expo/
-dist/
-cdk.out/
-.env*.local
+node_modules
+dist
+build
 .DS_Store
+.env*.local
+cdk.out
