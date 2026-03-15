@@ -25,5 +25,21 @@ export class AuthStack extends cdk.Stack {
         },
       },
     });
+
+    const userPoolClient = new aws_cognito.UserPoolClient(this, "UniVerseUserPoolClient", {
+      userPool,
+      authFlows: {
+        userSrp: true,
+      },
+      generateSecret: false,
+    });
+
+    /*
+      Frontend will communicate directly with cognito to authenticate the frontend user.
+      They will then be able to interact with the AppSync API. 
+    */
+
+    new cdk.CfnOutput(this, "UserPoolId", { value: userPool.userPoolId });
+    new cdk.CfnOutput(this, "UserPoolClientId", { value: userPoolClient.userPoolClientId });
   }
 }
