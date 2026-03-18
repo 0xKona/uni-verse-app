@@ -7,7 +7,7 @@ export class AuthStack extends cdk.Stack {
     super(scope, id, props);
 
     // UserPool - Stores User Data
-    const userPool = new aws_cognito.UserPool(this, "Uni-Verse-Cognito-Pool", {
+    const userPool = new aws_cognito.UserPool(this, "UniVerseCognitoPool", {
       userPoolName: "UniVerseUserPool",
       selfSignUpEnabled: true,
       autoVerify: {
@@ -31,6 +31,7 @@ export class AuthStack extends cdk.Stack {
       authFlows: {
         userSrp: true,
       },
+      // Secret not generated as cognito communciated directly from public web and mobile apps
       generateSecret: false,
     });
 
