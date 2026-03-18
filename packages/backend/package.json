@@ -10,7 +10,10 @@
     "build": "tsc",
     "watch": "tsc -w",
     "test": "jest",
-    "cdk": "cdk"
+    "cdk": "cdk",
+    "deploy": "cdk deploy --all",
+    "deploy:dev": "cdk deploy --all --context environment=dev --require-approval never",
+    "deploy:prod": "cdk deploy --all --context environment=prod --require-approval=broadest"
   },
   "devDependencies": {
     "@types/jest": "^30",
