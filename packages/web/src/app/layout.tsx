@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import AmplifyProvider from "@/components/AmplifyProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -27,7 +28,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <AmplifyProvider>{children}</AmplifyProvider>
       </body>
     </html>
   );
