@@ -1,16 +1,25 @@
 import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import { Bucket } from 'aws-cdk-lib/aws-s3';
+import { UniVerseTable } from '../constructs/data/UniVerseTable';
+import { MediaBucket } from '../constructs/data/MediaBucket';
 
 export class DataStack extends cdk.Stack {
+  public readonly table: Table;
+  public readonly mediaBucket: Bucket;
+
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const { table } = new UniVerseTable(this, 'UniVerseTable');
+    const { bucket } = new MediaBucket(this, 'MediaBucket');
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'BackendQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    this.table = table;
+    this.mediaBucket = bucket;
+
+    new cdk.CfnOutput(this, 'TableName', { value: table.tableName });
+    new cdk.CfnOutput(this, 'TableStreamArn', { value: table.tableStreamArn! });
+    new cdk.CfnOutput(this, 'MediaBucketName', { value: bucket.bucketName });
   }
 }
