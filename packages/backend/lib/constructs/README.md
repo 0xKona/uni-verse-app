@@ -1,1 +1,0 @@
-*** This directory will hold all constructs, should be kept as folders per stack unless reusuable. ***

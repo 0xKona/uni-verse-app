@@ -4,9 +4,11 @@ import { AuthStack } from '../lib/stacks/auth-stack';
 import { ApiStack } from '../lib/stacks/api-stack';
 import { DataStack } from '../lib/stacks/data-stack';
 import { ModerationStack } from '../lib/stacks/moderation-stack';
+import nameResource from '../lib/utils/name-resource';
+import { TranslationStack } from '../lib/stacks/translation-stack';
 
 const app = new cdk.App();
-new AuthStack(app, 'BackendStack', {
+new AuthStack(app, nameResource('auth-stack'), {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -22,8 +24,10 @@ new AuthStack(app, 'BackendStack', {
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
 
-new ApiStack(app, 'Uni-Verse-ApiStack', {});
+new ApiStack(app, nameResource('api-stack'), {});
 
-new DataStack(app, 'Uni-Verse-DataStack', {});
+new DataStack(app, nameResource('data-stack'), {});
 
-new ModerationStack(app, 'Uni-Verse-ModerationStack', {});
+new ModerationStack(app, nameResource('moderation-stack'), {});
+
+new TranslationStack(app, nameResource('translation-stack'), {});
