@@ -13,7 +13,10 @@
     "cdk": "cdk",
     "deploy": "cdk deploy --all",
     "deploy:dev": "cdk deploy --all --context environment=dev --require-approval never",
-    "deploy:prod": "cdk deploy --all --context environment=prod --require-approval=broadest"
+    "deploy:prod": "cdk deploy --all --context environment=prod --require-approval=broadest",
+    "destroy": "cdk destroy --all",
+    "destroy:dev": "cdk destroy --all --context environment=dev --force",
+    "destroy:prod": "cdk destroy --all --context environment=prod"
   },
   "devDependencies": {
     "@types/jest": "^30",

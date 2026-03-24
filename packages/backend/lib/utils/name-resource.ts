@@ -3,6 +3,10 @@ import { CONSTANTS } from "./constants";
 
 export default function nameResource(resourceName: string): string {
     const { NAMING_PREFIX: prefix } = CONSTANTS;
-    const name = `${prefix}-${resourceName}-${Aws.ACCOUNT_ID}`;
-    return name;
+    return `${prefix}-${resourceName}-${Aws.ACCOUNT_ID}`;
+}
+
+export function nameStackResource(resourceName: string): string {
+    const { NAMING_PREFIX: prefix } = CONSTANTS;
+    return `${prefix}-${resourceName}`;
 }

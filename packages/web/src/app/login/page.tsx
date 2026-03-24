@@ -2,52 +2,79 @@
 import { useState } from "react";
 import { login } from "@/lib/auth";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
     try {
       await login(email, password);
       router.push("/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-zinc-50 dark:bg-zinc-900">
-      <form onSubmit={handleSubmit} className="bg-white dark:bg-zinc-800 p-8 rounded-xl shadow-md w-full max-w-sm flex flex-col gap-4">
-        <h1 className="text-2xl font-semibold text-zinc-800 dark:text-white">Login</h1>
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="border border-zinc-300 dark:border-zinc-600 rounded-lg px-4 py-2 bg-transparent text-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-400"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="border border-zinc-300 dark:border-zinc-600 rounded-lg px-4 py-2 bg-transparent text-zinc-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-zinc-400"
-        />
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button type="submit" className="bg-zinc-800 dark:bg-white text-white dark:text-zinc-800 rounded-lg py-2 font-medium hover:opacity-90 transition-opacity">
-          Sign In
-        </button>
-        <a href="/signup" className="text-sm text-center text-zinc-500 hover:text-zinc-800 dark:hover:text-white">
-          No account? Sign up
-        </a>
-      </form>
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <Card className="w-full max-w-sm">
+        <CardHeader>
+          <CardTitle className="text-2xl">Sign In</CardTitle>
+          <CardDescription>Enter your credentials to access your account</CardDescription>
+        </CardHeader>
+        <form onSubmit={handleSubmit}>
+          <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="you@university.edu"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+          </CardContent>
+          <CardFooter className="flex flex-col gap-3">
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? "Signing in…" : "Sign In"}
+            </Button>
+            <p className="text-sm text-muted-foreground text-center">
+              No account?{" "}
+              <Link href="/signup" className="text-foreground underline-offset-4 hover:underline">
+                Sign up
+              </Link>
+            </p>
+          </CardFooter>
+        </form>
+      </Card>
     </div>
   );
 }
