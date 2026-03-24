@@ -1,7 +1,7 @@
-import { Amplify } from "aws-amplify";
+import { createServerRunner } from "@aws-amplify/adapter-nextjs";
 
-Amplify.configure(
-  {
+export const { runWithAmplifyServerContext } = createServerRunner({
+  config: {
     Auth: {
       Cognito: {
         userPoolId: process.env.NEXT_PUBLIC_COGNITO_USER_POOL_ID!,
@@ -9,5 +9,4 @@ Amplify.configure(
       },
     },
   },
-  { ssr: true }
-);
+});
