@@ -1,14 +1,15 @@
 import { aws_cognito } from 'aws-cdk-lib';
 import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
+import nameResource from '../utils/name-resource';
 
 export class AuthStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
     // UserPool - Stores User Data
-    const userPool = new aws_cognito.UserPool(this, "UniVerseCognitoPool", {
-      userPoolName: "UniVerseUserPool",
+    const userPool = new aws_cognito.UserPool(this, nameResource('cognito-pool'), {
+      userPoolName: nameResource('user-pool'),
       selfSignUpEnabled: true,
       autoVerify: {
         email: true, // Ask Users to Confirm sign up via email
@@ -26,7 +27,7 @@ export class AuthStack extends cdk.Stack {
       },
     });
 
-    const userPoolClient = new aws_cognito.UserPoolClient(this, "UniVerseUserPoolClient", {
+    const userPoolClient = new aws_cognito.UserPoolClient(this, nameResource('user-pool-client'), {
       userPool,
       authFlows: {
         userSrp: true,
@@ -40,7 +41,7 @@ export class AuthStack extends cdk.Stack {
       They will then be able to interact with the AppSync API. 
     */
 
-    new cdk.CfnOutput(this, "UserPoolId", { value: userPool.userPoolId });
-    new cdk.CfnOutput(this, "UserPoolClientId", { value: userPoolClient.userPoolClientId });
+    new cdk.CfnOutput(this, nameResource('user-pool-id'), { value: userPool.userPoolId });
+    new cdk.CfnOutput(this, nameResource('user-pool-client-id'), { value: userPoolClient.userPoolClientId });
   }
 }
