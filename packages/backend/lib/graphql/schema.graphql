@@ -48,4 +48,7 @@ type Mutation {
 
   # Cancel an outgoing friend request sent by the calling user
   cancelFriendRequest(recipientId: ID!): Boolean!
+
+  # Remove an existing friend (deletes both sides of the relationship)
+  removeFriend(friendId: ID!): Boolean!
 }

@@ -8,6 +8,7 @@ import nameResource, { nameStackResource } from '../utils/name-resource';
 import { FriendsResolvers } from '../constructs/api/friends-resolvers';
 import { SearchUsers } from '../constructs/api/search-users';
 import { RespondToFriendRequest } from '../constructs/api/respond-to-friend-request';
+import { RemoveFriend } from '../constructs/api/remove-friend';
 
 interface ApiStackProps extends cdk.StackProps {
   table: Table;
@@ -39,6 +40,7 @@ export class ApiStack extends cdk.Stack {
     new FriendsResolvers(this, nameStackResource('friends-resolvers'), { tableDs });
     new SearchUsers(this, nameStackResource('search-users'), { api, userPool });
     new RespondToFriendRequest(this, nameStackResource('respond-to-friend-request'), { api, table });
+    new RemoveFriend(this, nameStackResource('remove-friend'), { api, table });
 
     new cdk.CfnOutput(this, nameStackResource('graphql-url'), { value: api.graphqlUrl });
     new cdk.CfnOutput(this, nameStackResource('graphql-api-id'), { value: api.apiId });
