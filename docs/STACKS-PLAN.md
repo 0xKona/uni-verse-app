@@ -8,6 +8,7 @@ This document outlines how the application backend is split up into CDK stacks a
 - API Stack: GraphQL setup and Translation Mutations
 - Data Stack: Contains DynamoDB Tables and S3 Buckets
 - Moderation Stack: Moderation queue.
+- Translation Stack: Real-time translations.
 
 ## Constructs List
 
@@ -29,5 +30,9 @@ This document outlines how the application backend is split up into CDK stacks a
     - Moderation Lambda Construct
     - Comprehend Construct
     - Rekognition Construct
+
+- Translation Stack:
+    - Translation Lambda
+    - Amazon Translate
 
     
