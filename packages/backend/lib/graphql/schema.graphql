@@ -1,0 +1,51 @@
+# ── Base Types ───────────────────────────────────────────────────────────────
+
+type User {
+  id: ID!
+  username: String!
+  email: String
+}
+
+# ── Friends ───────────────────────────────────────────────────────────────────
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+type FriendRequest {
+  senderId: ID!
+  recipientId: ID!
+  status: FriendRequestStatus!
+  createdAt: String!
+}
+
+# ── Queries ───────────────────────────────────────────────────────────────────
+
+type Query {
+  # Search Cognito users by username or email prefix
+  searchUsers(query: String!): [User!]!
+
+  # Get all accepted friends for the calling user
+  getFriends: [FriendRequest!]!
+
+  # Get all incoming pending friend requests for the calling user
+  getPendingRequests: [FriendRequest!]!
+
+  # Get all outgoing pending friend requests sent by the calling user
+  getSentRequests: [FriendRequest!]!
+}
+
+# ── Mutations ─────────────────────────────────────────────────────────────────
+
+type Mutation {
+  # Send a friend request to another user
+  sendFriendRequest(recipientId: ID!): FriendRequest!
+
+  # Accept or decline an incoming friend request
+  respondToFriendRequest(senderId: ID!, accept: Boolean!): FriendRequest!
+
+  # Cancel an outgoing friend request sent by the calling user
+  cancelFriendRequest(recipientId: ID!): Boolean!
+}

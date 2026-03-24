@@ -1,16 +1,46 @@
 import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as appsync from 'aws-cdk-lib/aws-appsync';
+import { Table } from 'aws-cdk-lib/aws-dynamodb';
+import { UserPool } from 'aws-cdk-lib/aws-cognito';
+import * as path from 'path';
+import nameResource, { nameStackResource } from '../utils/name-resource';
+import { FriendsResolvers } from '../constructs/api/friends-resolvers';
+import { SearchUsers } from '../constructs/api/search-users';
+import { RespondToFriendRequest } from '../constructs/api/respond-to-friend-request';
+
+interface ApiStackProps extends cdk.StackProps {
+  table: Table;
+  userPool: UserPool;
+}
 
 export class ApiStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    const { table, userPool } = props;
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'BackendQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    // AppSync GraphQL API — authenticated via Cognito User Pool
+    const api = new appsync.GraphqlApi(this, nameStackResource('graphql-api'), {
+      name: nameResource('graphql-api'),
+      definition: appsync.Definition.fromFile(
+        path.join(__dirname, '../graphql/schema.graphql')
+      ),
+      authorizationConfig: {
+        defaultAuthorization: {
+          authorizationType: appsync.AuthorizationType.USER_POOL,
+          userPoolConfig: { userPool },
+        },
+      },
+    });
+
+    const tableDs = api.addDynamoDbDataSource(nameStackResource('table-ds'), table);
+
+    new FriendsResolvers(this, nameStackResource('friends-resolvers'), { tableDs });
+    new SearchUsers(this, nameStackResource('search-users'), { api, userPool });
+    new RespondToFriendRequest(this, nameStackResource('respond-to-friend-request'), { api, table });
+
+    new cdk.CfnOutput(this, nameStackResource('graphql-url'), { value: api.graphqlUrl });
+    new cdk.CfnOutput(this, nameStackResource('graphql-api-id'), { value: api.apiId });
   }
 }
