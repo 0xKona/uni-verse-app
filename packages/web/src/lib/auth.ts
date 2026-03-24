@@ -7,8 +7,8 @@ import {
   fetchAuthSession,
 } from "aws-amplify/auth";
 
-export const register = (email: string, password: string) =>
-  signUp({ username: email, password, options: { userAttributes: { email } } });
+export const register = (email: string, password: string, username: string) =>
+  signUp({ username: email, password, options: { userAttributes: { email, preferred_username: username } } });
 
 export const confirm = (email: string, code: string) =>
   confirmSignUp({ username: email, confirmationCode: code });
