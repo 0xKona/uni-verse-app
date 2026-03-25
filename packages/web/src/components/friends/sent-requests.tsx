@@ -4,18 +4,19 @@ import { useState } from "react";
 import { UserRow } from "@/components/ui/user-row";
 import { EmptyState } from "@/components/ui/empty-state";
 import { FriendRequestModal } from "./friend-request-modal";
-import { useRequestList } from "@/hooks/useRequestList";
-import { getSentRequestsQuery } from "@/lib/api";
+import { useSentRequests } from "@/hooks/useFriendsQuery";
 import type { FriendRequest } from "@/types/friends";
 
+/**
+ * Displays friend requests sent by the current user
+ * Automatically refetches when cache is invalidated by mutations/subscriptions
+ */
 export function SentRequests() {
-    const { requests, loading, remove } = useRequestList(
-        getSentRequestsQuery,
-        "getSentRequests",
-    );
+    const { data: requests = [], isLoading, error } = useSentRequests();
     const [selected, setSelected] = useState<FriendRequest | null>(null);
 
-    if (loading) return <EmptyState message="Loading…" />;
+    if (isLoading) return <EmptyState message="Loading…" />;
+    if (error) return <EmptyState message="Failed to load requests" />;
     if (!requests.length) return <EmptyState message="No sent requests." />;
 
     return (
@@ -34,7 +35,6 @@ export function SentRequests() {
                 request={selected}
                 mode="sent"
                 onClose={() => setSelected(null)}
-                onAction={(id) => remove(id, "recipientId")}
             />
         </>
     );

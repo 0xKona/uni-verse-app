@@ -4,18 +4,19 @@ import { useState } from "react";
 import { UserRow } from "@/components/ui/user-row";
 import { EmptyState } from "@/components/ui/empty-state";
 import { FriendRequestModal } from "./friend-request-modal";
-import { useRequestList } from "@/hooks/useRequestList";
-import { getPendingRequestsQuery } from "@/lib/api";
+import { usePendingRequests } from "@/hooks/useFriendsQuery";
 import type { FriendRequest } from "@/types/friends";
 
+/**
+ * Displays pending friend requests received by the current user
+ * Automatically refetches when cache is invalidated by mutations/subscriptions
+ */
 export function PendingRequests() {
-    const { requests, loading, remove } = useRequestList(
-        getPendingRequestsQuery,
-        "getPendingRequests",
-    );
+    const { data: requests = [], isLoading, error } = usePendingRequests();
     const [selected, setSelected] = useState<FriendRequest | null>(null);
 
-    if (loading) return <EmptyState message="Loading…" />;
+    if (isLoading) return <EmptyState message="Loading…" />;
+    if (error) return <EmptyState message="Failed to load requests" />;
     if (!requests.length) return <EmptyState message="No pending requests." />;
 
     return (
@@ -34,7 +35,6 @@ export function PendingRequests() {
                 request={selected}
                 mode="received"
                 onClose={() => setSelected(null)}
-                onAction={(id) => remove(id, "senderId")}
             />
         </>
     );

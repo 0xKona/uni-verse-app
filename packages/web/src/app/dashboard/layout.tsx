@@ -9,6 +9,7 @@ import {
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useSubscribeFriendsRealtime } from "@/hooks/useFriendsSubscription";
 import { cn } from "@/lib/utils";
 
 const tabs = [
@@ -21,6 +22,9 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+
+    // Enable real-time updates for friends data
+    useSubscribeFriendsRealtime();
 
     return (
         <div className="flex h-screen bg-background">

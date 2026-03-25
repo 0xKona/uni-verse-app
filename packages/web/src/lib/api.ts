@@ -1,8 +1,11 @@
 import { generateClient } from 'aws-amplify/api';
+import type { FriendRequest } from '@/types/friends';
 
 export const apiClient = generateClient();
 
-// ── Queries ──────────────────────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════════
+// QUERIES - Read-only operations for fetching data
+// ══════════════════════════════════════════════════════════════════════════════
 
 export const searchUsersQuery = /* GraphQL */ `
   query SearchUsers($query: String!) {
@@ -47,7 +50,9 @@ export const getSentRequestsQuery = /* GraphQL */ `
   }
 `;
 
-
+// ══════════════════════════════════════════════════════════════════════════════
+// MUTATIONS - Write operations that modify data
+// ══════════════════════════════════════════════════════════════════════════════
 
 export const sendFriendRequestMutation = /* GraphQL */ `
   mutation SendFriendRequest($recipientId: ID!) {
@@ -78,5 +83,55 @@ export const respondToFriendRequestMutation = /* GraphQL */ `
 export const removeFriendMutation = /* GraphQL */ `
   mutation RemoveFriend($friendId: ID!) {
     removeFriend(friendId: $friendId)
+  }
+`;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// SUBSCRIPTIONS - Real-time updates via WebSocket
+// Triggered when data changes on the server (other users' actions)
+// ══════════════════════════════════════════════════════════════════════════════
+
+/**
+ * Subscription: Triggered when a friend request is sent to the current user
+ * Used to update pending requests list in real-time
+ */
+export const onFriendRequestReceived = /* GraphQL */ `
+  subscription OnFriendRequestReceived {
+    onFriendRequestReceived {
+      senderId
+      recipientId
+      status
+      createdAt
+    }
+  }
+`;
+
+/**
+ * Subscription: Triggered when a friend request status changes (accepted/declined)
+ * Used to update active request lists and friends list in real-time
+ */
+export const onFriendRequestUpdated = /* GraphQL */ `
+  subscription OnFriendRequestUpdated {
+    onFriendRequestUpdated {
+      senderId
+      recipientId
+      status
+      createdAt
+    }
+  }
+`;
+
+/**
+ * Subscription: Triggered when a user is added/removed as a friend
+ * Used to update the main friends list in real-time
+ */
+export const onFriendListUpdated = /* GraphQL */ `
+  subscription OnFriendListUpdated {
+    onFriendListUpdated {
+      senderId
+      recipientId
+      status
+      createdAt
+    }
   }
 `;
