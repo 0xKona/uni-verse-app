@@ -6,6 +6,7 @@ import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import * as path from 'path';
 import nameResource, { nameStackResource } from '../utils/name-resource';
 import { FriendsResolvers } from '../constructs/api/friends-resolvers';
+import { FriendsSubscriptions } from '../constructs/api/friends-subscriptions';
 import { SearchUsers } from '../constructs/api/search-users';
 import { RespondToFriendRequest } from '../constructs/api/respond-to-friend-request';
 import { RemoveFriend } from '../constructs/api/remove-friend';
@@ -36,8 +37,10 @@ export class ApiStack extends cdk.Stack {
     });
 
     const tableDs = api.addDynamoDbDataSource(nameStackResource('table-ds'), table);
+    const noneDs = api.addNoneDataSource(nameStackResource('none-ds'));
 
     new FriendsResolvers(this, nameStackResource('friends-resolvers'), { tableDs });
+    new FriendsSubscriptions(this, nameStackResource('friends-subscriptions'), { noneDs });
     new SearchUsers(this, nameStackResource('search-users'), { api, userPool });
     new RespondToFriendRequest(this, nameStackResource('respond-to-friend-request'), { api, table });
     new RemoveFriend(this, nameStackResource('remove-friend'), { api, table });

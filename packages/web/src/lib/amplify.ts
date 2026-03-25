@@ -8,6 +8,13 @@ Amplify.configure(
         userPoolClientId: process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID!,
       },
     },
+    API: {
+      GraphQL: {
+        endpoint: process.env.NEXT_PUBLIC_APPSYNC_URL!,
+        region: process.env.NEXT_PUBLIC_AWS_REGION || "eu-west-2",
+        defaultAuthMode: "userPool",
+      },
+    },
   },
   { ssr: true }
 );

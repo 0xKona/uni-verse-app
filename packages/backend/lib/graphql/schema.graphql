@@ -26,15 +26,19 @@ type FriendRequest {
 type Query {
   # Search Cognito users by username or email prefix
   searchUsers(query: String!): [User!]!
+    @aws_cognito_user_pools
 
   # Get all accepted friends for the calling user
   getFriends: [FriendRequest!]!
+    @aws_cognito_user_pools
 
   # Get all incoming pending friend requests for the calling user
   getPendingRequests: [FriendRequest!]!
+    @aws_cognito_user_pools
 
   # Get all outgoing pending friend requests sent by the calling user
   getSentRequests: [FriendRequest!]!
+    @aws_cognito_user_pools
 }
 
 # ── Mutations ─────────────────────────────────────────────────────────────────
@@ -42,13 +46,36 @@ type Query {
 type Mutation {
   # Send a friend request to another user
   sendFriendRequest(recipientId: ID!): FriendRequest!
+    @aws_cognito_user_pools
 
   # Accept or decline an incoming friend request
   respondToFriendRequest(senderId: ID!, accept: Boolean!): FriendRequest!
+    @aws_cognito_user_pools
 
   # Cancel an outgoing friend request sent by the calling user
   cancelFriendRequest(recipientId: ID!): Boolean!
+    @aws_cognito_user_pools
 
   # Remove an existing friend (deletes both sides of the relationship)
-  removeFriend(friendId: ID!): Boolean!
+  removeFriend(friendId: ID!): FriendRequest!
+    @aws_cognito_user_pools
+}
+
+# ── Subscriptions ─────────────────────────────────────────────────────────────
+
+type Subscription {
+  # Triggered when a friend request is sent to the current user
+  onFriendRequestReceived(recipientId: ID!): FriendRequest!
+    @aws_subscribe(mutations: ["sendFriendRequest"])
+    @aws_cognito_user_pools
+
+  # Triggered when a friend request status changes (accepted/declined)
+  onFriendRequestUpdated(userId: ID!): FriendRequest!
+    @aws_subscribe(mutations: ["respondToFriendRequest"])
+    @aws_cognito_user_pools
+
+  # Triggered when friends list is updated (friend added or removed)
+  onFriendListUpdated(userId: ID!): FriendRequest!
+    @aws_subscribe(mutations: ["respondToFriendRequest", "removeFriend"])
+    @aws_cognito_user_pools
 }

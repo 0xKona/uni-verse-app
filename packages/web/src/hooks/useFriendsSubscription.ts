@@ -1,7 +1,8 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { getCurrentUser } from 'aws-amplify/auth';
 import {
   apiClient,
   onFriendRequestReceived,
@@ -11,163 +12,203 @@ import {
 import { FRIENDS_QUERY_KEYS } from './useFriendsQuery';
 import type { FriendRequest } from '@/types/friends';
 
-/**
- * Feature flag for subscriptions. Set to true when you've implemented
- * the subscription resolvers in your AppSync backend.
- * Until then, subscriptions will fail silently.
- */
-const SUBSCRIPTIONS_ENABLED = false;
-
 // ══════════════════════════════════════════════════════════════════════════════
 // SUBSCRIPTION HOOKS - Real-time updates via WebSocket
 // Automatically update cache when data changes on server
-// Note: Requires resolver implementation in AppSync backend
 // ══════════════════════════════════════════════════════════════════════════════
 
 /**
  * Subscribe to incoming friend requests
  * Automatically updates pending requests cache when new request arrives
- * Disabled until backend resolvers are implemented
  */
-export function useSubscribeFriendRequestReceived() {
+export function useSubscribeFriendRequestReceived(userId: string | null) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!SUBSCRIPTIONS_ENABLED) return;
+    if (!userId) return;
 
+    console.log('[Subscription] Setting up onFriendRequestReceived for user:', userId);
     let unsubscribe: (() => void) | null = null;
 
     try {
       const subscription = apiClient.graphql({
         query: onFriendRequestReceived,
+        variables: { recipientId: userId },
       });
 
       (subscription as any).subscribe({
         next: (data: any) => {
+          console.log('[Subscription] Friend request received:', data);
           // New request received - add to pending requests cache
           const newRequest = data.data?.onFriendRequestReceived;
           if (newRequest) {
-            queryClient.setQueryData(FRIENDS_QUERY_KEYS.pending(), (old: FriendRequest[] | undefined) => [
-              ...(old || []),
-              newRequest,
-            ]);
+            console.log('[Subscription] Adding new request to cache:', newRequest);
+            queryClient.setQueryData(FRIENDS_QUERY_KEYS.pending(), (old: FriendRequest[] | undefined) => {
+              const exists = old?.some(r => r.senderId === newRequest.senderId);
+              return exists ? old : [...(old || []), newRequest];
+            });
           }
         },
         error: (error: any) => {
-          console.warn('Friend request subscription error:', error.message);
+          console.error('[Subscription] Friend request subscription error:', error);
+          console.error('[Subscription] Error details:', JSON.stringify(error, null, 2));
         },
       });
 
       unsubscribe = () => {
+        console.log('[Subscription] Unsubscribing from onFriendRequestReceived');
         (subscription as any).unsubscribe?.();
       };
     } catch (error) {
-      console.warn('Failed to subscribe to friend requests:', error);
+      console.error('[Subscription] Failed to subscribe to friend requests:', error);
     }
 
     return () => {
       unsubscribe?.();
     };
-  }, [queryClient]);
+  }, [queryClient, userId]);
 }
 
 /**
  * Subscribe to friend request status updates
  * Updates pending/sent requests when requests are accepted/declined
- * Refetches friends list on acceptance
- * Disabled until backend resolvers are implemented
+ * Updates friends list on acceptance
  */
-export function useSubscribeFriendRequestUpdated() {
+export function useSubscribeFriendRequestUpdated(userId: string | null) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!SUBSCRIPTIONS_ENABLED) return;
+    if (!userId) return;
 
+    console.log('[Subscription] Setting up onFriendRequestUpdated for user:', userId);
     let unsubscribe: (() => void) | null = null;
 
     try {
       const subscription = apiClient.graphql({
         query: onFriendRequestUpdated,
+        variables: { userId },
       });
 
       (subscription as any).subscribe({
         next: (data: any) => {
+          console.log('[Subscription] Friend request updated:', data);
           const updatedRequest = data.data?.onFriendRequestUpdated;
           if (updatedRequest) {
-            // Remove from pending/sent requests since status changed
-            queryClient.setQueryData(FRIENDS_QUERY_KEYS.pending(), (old: FriendRequest[] | undefined) =>
-              old?.filter((r) => r.senderId !== updatedRequest.senderId) || [],
-            );
-            queryClient.setQueryData(FRIENDS_QUERY_KEYS.sent(), (old: FriendRequest[] | undefined) =>
-              old?.filter((r) => r.recipientId !== updatedRequest.recipientId) || [],
-            );
-
-            // If accepted (status = 'ACCEPTED'), refetch friends list to include new friend
+            console.log('[Subscription] Processing update:', updatedRequest);
+            // If accepted, add to friends list
             if (updatedRequest.status === 'ACCEPTED') {
-              queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.list() });
+              console.log('[Subscription] Adding to friends list');
+              queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) => {
+                const exists = old?.some(
+                  f => (f.senderId === updatedRequest.senderId && f.recipientId === updatedRequest.recipientId) ||
+                       (f.senderId === updatedRequest.recipientId && f.recipientId === updatedRequest.senderId)
+                );
+                return exists ? old : [...(old || []), updatedRequest];
+              });
+            }
+
+            // Remove from pending requests if current user is the recipient
+            if (updatedRequest.recipientId === userId) {
+              console.log('[Subscription] Removing from pending requests');
+              queryClient.setQueryData(FRIENDS_QUERY_KEYS.pending(), (old: FriendRequest[] | undefined) =>
+                old?.filter((r) => r.senderId !== updatedRequest.senderId) || [],
+              );
+            }
+
+            // Remove from sent requests if current user is the sender
+            if (updatedRequest.senderId === userId) {
+              console.log('[Subscription] Removing from sent requests');
+              queryClient.setQueryData(FRIENDS_QUERY_KEYS.sent(), (old: FriendRequest[] | undefined) =>
+                old?.filter((r) => r.recipientId !== updatedRequest.recipientId) || [],
+              );
             }
           }
         },
         error: (error: any) => {
-          console.warn('Friend request update subscription error:', error.message);
+          console.error('[Subscription] Friend request update subscription error:', error);
+          console.error('[Subscription] Error details:', JSON.stringify(error, null, 2));
         },
       });
 
       unsubscribe = () => {
+        console.log('[Subscription] Unsubscribing from onFriendRequestUpdated');
         (subscription as any).unsubscribe?.();
       };
     } catch (error) {
-      console.warn('Failed to subscribe to friend request updates:', error);
+      console.error('[Subscription] Failed to subscribe to friend request updates:', error);
     }
 
     return () => {
       unsubscribe?.();
     };
-  }, [queryClient]);
+  }, [queryClient, userId]);
 }
 
 /**
  * Subscribe to friends list changes (additions/removals)
- * Keeps friends list in sync when other users add/remove this user
- * Disabled until backend resolvers are implemented
+ * Keeps friends list in sync when friends are added or removed
  */
-export function useSubscribeFriendListUpdated() {
+export function useSubscribeFriendListUpdated(userId: string | null) {
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if (!SUBSCRIPTIONS_ENABLED) return;
+    if (!userId) return;
 
+    console.log('[Subscription] Setting up onFriendListUpdated for user:', userId);
     let unsubscribe: (() => void) | null = null;
 
     try {
       const subscription = apiClient.graphql({
         query: onFriendListUpdated,
+        variables: { userId },
       });
 
       (subscription as any).subscribe({
         next: (data: any) => {
-          const updatedFriend = data.data?.onFriendListUpdated;
-          if (updatedFriend) {
-            // Refetch entire friends list to stay in sync
-            queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.list() });
+          console.log('[Subscription] Friend list updated:', data);
+          const update = data.data?.onFriendListUpdated;
+          if (update) {
+            console.log('[Subscription] Processing friend list update:', update);
+            if (update.status === 'ACCEPTED') {
+              // Friend added - add to friends list
+              console.log('[Subscription] Adding friend to list');
+              queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) => {
+                const exists = old?.some(
+                  f => (f.senderId === update.senderId && f.recipientId === update.recipientId) ||
+                       (f.senderId === update.recipientId && f.recipientId === update.senderId)
+                );
+                return exists ? old : [...(old || []), update];
+              });
+            } else {
+              // Friend removed - remove from friends list
+              console.log('[Subscription] Removing friend from list');
+              queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) =>
+                old?.filter(
+                  f => !((f.senderId === update.senderId && f.recipientId === update.recipientId) ||
+                         (f.senderId === update.recipientId && f.recipientId === update.senderId))
+                ) || [],
+              );
+            }
           }
         },
         error: (error: any) => {
-          console.warn('Friend list subscription error:', error.message);
+          console.error('[Subscription] Friend list subscription error:', error);
+          console.error('[Subscription] Error details:', JSON.stringify(error, null, 2));
         },
       });
 
       unsubscribe = () => {
+        console.log('[Subscription] Unsubscribing from onFriendListUpdated');
         (subscription as any).unsubscribe?.();
       };
     } catch (error) {
-      console.warn('Failed to subscribe to friend list updates:', error);
+      console.error('[Subscription] Failed to subscribe to friend list updates:', error);
     }
 
     return () => {
       unsubscribe?.();
     };
-  }, [queryClient]);
+  }, [queryClient, userId]);
 }
 
 /**
@@ -176,7 +217,23 @@ export function useSubscribeFriendListUpdated() {
  * Example: useSubscribeFriendsRealtime() in root dashboard
  */
 export function useSubscribeFriendsRealtime() {
-  useSubscribeFriendRequestReceived();
-  useSubscribeFriendRequestUpdated();
-  useSubscribeFriendListUpdated();
+  const [userId, setUserId] = useState<string | null>(null);
+
+  // Get current user ID
+  useEffect(() => {
+    const loadUser = async () => {
+      try {
+        const user = await getCurrentUser();
+        setUserId(user.username);
+      } catch (error) {
+        console.error('Failed to get current user for subscriptions:', error);
+      }
+    };
+    loadUser();
+  }, []);
+
+  // Enable all subscriptions with the user ID
+  useSubscribeFriendRequestReceived(userId);
+  useSubscribeFriendRequestUpdated(userId);
+  useSubscribeFriendListUpdated(userId);
 }

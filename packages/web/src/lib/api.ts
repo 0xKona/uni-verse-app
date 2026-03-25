@@ -60,6 +60,7 @@ export const sendFriendRequestMutation = /* GraphQL */ `
       senderId
       recipientId
       status
+      createdAt
     }
   }
 `;
@@ -76,13 +77,19 @@ export const respondToFriendRequestMutation = /* GraphQL */ `
       senderId
       recipientId
       status
+      createdAt
     }
   }
 `;
 
 export const removeFriendMutation = /* GraphQL */ `
   mutation RemoveFriend($friendId: ID!) {
-    removeFriend(friendId: $friendId)
+    removeFriend(friendId: $friendId) {
+      senderId
+      recipientId
+      status
+      createdAt
+    }
   }
 `;
 
@@ -96,8 +103,8 @@ export const removeFriendMutation = /* GraphQL */ `
  * Used to update pending requests list in real-time
  */
 export const onFriendRequestReceived = /* GraphQL */ `
-  subscription OnFriendRequestReceived {
-    onFriendRequestReceived {
+  subscription OnFriendRequestReceived($recipientId: ID!) {
+    onFriendRequestReceived(recipientId: $recipientId) {
       senderId
       recipientId
       status
@@ -111,8 +118,8 @@ export const onFriendRequestReceived = /* GraphQL */ `
  * Used to update active request lists and friends list in real-time
  */
 export const onFriendRequestUpdated = /* GraphQL */ `
-  subscription OnFriendRequestUpdated {
-    onFriendRequestUpdated {
+  subscription OnFriendRequestUpdated($userId: ID!) {
+    onFriendRequestUpdated(userId: $userId) {
       senderId
       recipientId
       status
@@ -126,8 +133,8 @@ export const onFriendRequestUpdated = /* GraphQL */ `
  * Used to update the main friends list in real-time
  */
 export const onFriendListUpdated = /* GraphQL */ `
-  subscription OnFriendListUpdated {
-    onFriendListUpdated {
+  subscription OnFriendListUpdated($userId: ID!) {
+    onFriendListUpdated(userId: $userId) {
       senderId
       recipientId
       status
