@@ -3,8 +3,7 @@ import * as cdk from 'aws-cdk-lib/core';
 import { AuthStack } from '../lib/stacks/auth-stack';
 import { ApiStack } from '../lib/stacks/api-stack';
 import { DataStack } from '../lib/stacks/data-stack';
-import { ModerationStack } from '../lib/stacks/moderation-stack';
-import nameResource, { nameStackResource } from '../lib/utils/name-resource';
+import { nameStackResource } from '../lib/utils/name-resource';
 import { TranslationStack } from '../lib/stacks/translation-stack';
 
 const app = new cdk.App();
@@ -18,7 +17,5 @@ new ApiStack(app, nameStackResource('api-stack'), {
   table: dataStack.table,
   userPool: authStack.userPool,
 });
-
-new ModerationStack(app, nameStackResource('moderation-stack'), {});
 
 new TranslationStack(app, nameStackResource('translation-stack'), {});
