@@ -2,6 +2,7 @@ import { RemovalPolicy } from 'aws-cdk-lib';
 import { AttributeType, BillingMode, ProjectionType, StreamViewType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Construct } from 'constructs';
 import nameResource, { nameStackResource } from '../../utils/name-resource';
+import { isProd } from '../../utils/constants';
 
 export class UniVerseTable extends Construct {
   public readonly table: Table;
@@ -16,7 +17,7 @@ export class UniVerseTable extends Construct {
       billingMode: BillingMode.PAY_PER_REQUEST,
       stream: StreamViewType.NEW_IMAGE,
       pointInTimeRecoverySpecification: { pointInTimeRecoveryEnabled: true },
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: isProd ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
     });
 
     /*

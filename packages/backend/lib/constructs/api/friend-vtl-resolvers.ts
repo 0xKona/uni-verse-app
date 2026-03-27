@@ -2,20 +2,27 @@ import * as appsync from 'aws-cdk-lib/aws-appsync';
 import { Construct } from 'constructs';
 import { nameStackResource } from '../../utils/name-resource';
 
-interface FriendsResolversProps {
+interface FriendVtlResolversProps {
   tableDs: appsync.DynamoDbDataSource;
 }
 
-export class FriendsResolvers extends Construct {
-  constructor(scope: Construct, id: string, { tableDs }: FriendsResolversProps) {
+/**
+ * VTL (DynamoDB direct) resolvers for simple friend operations.
+ * These don't require Lambda because they're single DynamoDB operations.
+ */
+export class FriendVtlResolvers extends Construct {
+  constructor(scope: Construct, id: string, { tableDs }: FriendVtlResolversProps) {
     super(scope, id);
 
-    /*
-     * sendFriendRequest — writes a new item with:
-     *   PK=USER#<senderId>, SK=FRIEND#<recipientId>
-     *   recipientPK/recipientSK — keys for the recipient-index GSI
-     *   status=PENDING
-     */
+    this.createSendFriendRequest(tableDs);
+    this.createGetFriends(tableDs);
+    this.createGetPendingRequests(tableDs);
+    this.createGetSentRequests(tableDs);
+    this.createCancelFriendRequest(tableDs);
+  }
+
+  /** Creates a PENDING friend request. Fails if already ACCEPTED. */
+  private createSendFriendRequest(tableDs: appsync.DynamoDbDataSource) {
     tableDs.createResolver(nameStackResource('resolver-send-friend-request'), {
       typeName: 'Mutation',
       fieldName: 'sendFriendRequest',
@@ -40,20 +47,16 @@ export class FriendsResolvers extends Construct {
           "condition": {
             "expression": "attribute_not_exists(PK) OR #status <> :accepted",
             "expressionNames": { "#status": "status" },
-            "expressionValues": {
-              ":accepted": $util.dynamodb.toDynamoDBJson("ACCEPTED")
-            }
+            "expressionValues": { ":accepted": $util.dynamodb.toDynamoDBJson("ACCEPTED") }
           }
         }
       `),
       responseMappingTemplate: appsync.MappingTemplate.dynamoDbResultItem(),
     });
+  }
 
-    /*
-     * getFriends — queries status-index for all ACCEPTED items where PK=USER#<callerId>.
-     * Because accept writes a mirrored item under the recipient's PK, both users
-     * will find each other with this same query.
-     */
+  /** Returns all ACCEPTED friends via status-index GSI. */
+  private createGetFriends(tableDs: appsync.DynamoDbDataSource) {
     tableDs.createResolver(nameStackResource('resolver-get-friends'), {
       typeName: 'Query',
       fieldName: 'getFriends',
@@ -74,11 +77,10 @@ export class FriendsResolvers extends Construct {
       `),
       responseMappingTemplate: appsync.MappingTemplate.dynamoDbResultList(),
     });
+  }
 
-    /*
-     * getPendingRequests — queries recipient-index for PENDING items where
-     * recipientPK=USER#<callerId>. Returns all requests sent *to* the calling user.
-     */
+  /** Returns PENDING requests sent TO the caller via recipient-index GSI. */
+  private createGetPendingRequests(tableDs: appsync.DynamoDbDataSource) {
     tableDs.createResolver(nameStackResource('resolver-get-pending-requests'), {
       typeName: 'Query',
       fieldName: 'getPendingRequests',
@@ -97,19 +99,16 @@ export class FriendsResolvers extends Construct {
           "filter": {
             "expression": "#status = :status",
             "expressionNames": { "#status": "status" },
-            "expressionValues": {
-              ":status": $util.dynamodb.toDynamoDBJson("PENDING")
-            }
+            "expressionValues": { ":status": $util.dynamodb.toDynamoDBJson("PENDING") }
           }
         }
       `),
       responseMappingTemplate: appsync.MappingTemplate.dynamoDbResultList(),
     });
+  }
 
-    /*
-     * getSentRequests — queries the main table by PK=USER#<callerId>,
-     * SK begins_with FRIEND#, filtered to PENDING. Returns outgoing requests.
-     */
+  /** Returns PENDING requests sent BY the caller. */
+  private createGetSentRequests(tableDs: appsync.DynamoDbDataSource) {
     tableDs.createResolver(nameStackResource('resolver-get-sent-requests'), {
       typeName: 'Query',
       fieldName: 'getSentRequests',
@@ -127,19 +126,16 @@ export class FriendsResolvers extends Construct {
           "filter": {
             "expression": "#status = :status",
             "expressionNames": { "#status": "status" },
-            "expressionValues": {
-              ":status": $util.dynamodb.toDynamoDBJson("PENDING")
-            }
+            "expressionValues": { ":status": $util.dynamodb.toDynamoDBJson("PENDING") }
           }
         }
       `),
       responseMappingTemplate: appsync.MappingTemplate.dynamoDbResultList(),
     });
+  }
 
-    /*
-     * cancelFriendRequest — deletes the sender's item. Only callable by the sender
-     * since PK is scoped to the calling user's identity.
-     */
+  /** Deletes a PENDING request sent by the caller. */
+  private createCancelFriendRequest(tableDs: appsync.DynamoDbDataSource) {
     tableDs.createResolver(nameStackResource('resolver-cancel-friend-request'), {
       typeName: 'Mutation',
       fieldName: 'cancelFriendRequest',
@@ -153,7 +149,7 @@ export class FriendsResolvers extends Construct {
           }
         }
       `),
-      responseMappingTemplate: appsync.MappingTemplate.fromString(`true`),
+      responseMappingTemplate: appsync.MappingTemplate.fromString('true'),
     });
   }
 }

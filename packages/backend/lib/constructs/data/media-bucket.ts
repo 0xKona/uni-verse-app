@@ -2,6 +2,7 @@ import { RemovalPolicy } from 'aws-cdk-lib';
 import { BlockPublicAccess, Bucket, CorsRule, HttpMethods } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import nameResource, { nameStackResource } from '../../utils/name-resource';
+import { isProd } from '../../utils/constants';
 
 export class MediaBucket extends Construct {
   public readonly bucket: Bucket;
@@ -19,7 +20,8 @@ export class MediaBucket extends Construct {
       bucketName: nameResource('media-bucket'),
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       cors: [corsRule],
-      removalPolicy: RemovalPolicy.RETAIN,
+      removalPolicy: isProd ? RemovalPolicy.RETAIN : RemovalPolicy.DESTROY,
+      autoDeleteObjects: !isProd, // Only auto-delete in non-prod (required for DESTROY)
     });
   }
 }

@@ -5,25 +5,32 @@ import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import * as path from 'path';
 import nameResource, { nameStackResource } from '../utils/name-resource';
-import { FriendsResolvers } from '../constructs/api/friends-resolvers';
-import { FriendsSubscriptions } from '../constructs/api/friends-subscriptions';
-import { SearchUsers } from '../constructs/api/search-users';
-import { RespondToFriendRequest } from '../constructs/api/respond-to-friend-request';
-import { RemoveFriend } from '../constructs/api/remove-friend';
+import { FriendVtlResolvers, FriendLambdaResolvers } from '../constructs/api';
 
 interface ApiStackProps extends cdk.StackProps {
   table: Table;
   userPool: UserPool;
 }
 
+/**
+ * AppSync GraphQL API stack.
+ *
+ * Resolver strategy:
+ * - VTL resolvers: Simple single-table operations (direct DynamoDB)
+ * - Lambda resolvers: Complex logic, transactions, or external services (Cognito)
+ *
+ * Subscriptions: Handled by @aws_subscribe directive in schema (no resolvers needed)
+ */
 export class ApiStack extends cdk.Stack {
+  public readonly api: appsync.GraphqlApi;
+
   constructor(scope: Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
     const { table, userPool } = props;
 
-    // AppSync GraphQL API — authenticated via Cognito User Pool
-    const api = new appsync.GraphqlApi(this, nameStackResource('graphql-api'), {
+    // GraphQL API with Cognito auth
+    this.api = new appsync.GraphqlApi(this, nameStackResource('graphql-api'), {
       name: nameResource('graphql-api'),
       definition: appsync.Definition.fromFile(
         path.join(__dirname, '../graphql/schema.graphql')
@@ -36,15 +43,19 @@ export class ApiStack extends cdk.Stack {
       },
     });
 
-    const tableDs = api.addDynamoDbDataSource(nameStackResource('table-ds'), table);
+    // DynamoDB datasource for VTL resolvers
+    const tableDs = this.api.addDynamoDbDataSource(nameStackResource('table-ds'), table);
 
-    new FriendsResolvers(this, nameStackResource('friends-resolvers'), { tableDs });
-    new FriendsSubscriptions(this, nameStackResource('friends-subscriptions'));
-    new SearchUsers(this, nameStackResource('search-users'), { api, userPool });
-    new RespondToFriendRequest(this, nameStackResource('respond-to-friend-request'), { api, table });
-    new RemoveFriend(this, nameStackResource('remove-friend'), { api, table });
+    // Resolvers
+    new FriendVtlResolvers(this, nameStackResource('friend-vtl-resolvers'), { tableDs });
+    new FriendLambdaResolvers(this, nameStackResource('friend-lambda-resolvers'), {
+      api: this.api,
+      table,
+      userPool,
+    });
 
-    new cdk.CfnOutput(this, nameStackResource('graphql-url'), { value: api.graphqlUrl });
-    new cdk.CfnOutput(this, nameStackResource('graphql-api-id'), { value: api.apiId });
+    // Outputs
+    new cdk.CfnOutput(this, nameStackResource('graphql-url'), { value: this.api.graphqlUrl });
+    new cdk.CfnOutput(this, nameStackResource('graphql-api-id'), { value: this.api.apiId });
   }
 }
