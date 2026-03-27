@@ -86,42 +86,42 @@ export function useSubscribeFriendRequestUpdated(userId: string | null) {
     try {
       const subscription = apiClient.graphql({
         query: onFriendRequestUpdated,
-        variables: { userId },
       });
 
       (subscription as any).subscribe({
         next: (data: any) => {
           console.log('[Subscription] Friend request updated:', data);
           const updatedRequest = data.data?.onFriendRequestUpdated;
-          if (updatedRequest) {
-            console.log('[Subscription] Processing update:', updatedRequest);
-            // If accepted, add to friends list
-            if (updatedRequest.status === 'ACCEPTED') {
-              console.log('[Subscription] Adding to friends list');
-              queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) => {
-                const exists = old?.some(
-                  f => (f.senderId === updatedRequest.senderId && f.recipientId === updatedRequest.recipientId) ||
-                       (f.senderId === updatedRequest.recipientId && f.recipientId === updatedRequest.senderId)
-                );
-                return exists ? old : [...(old || []), updatedRequest];
-              });
-            }
+          if (!updatedRequest) return;
+          // Client-side filter: only process events relevant to this user
+          if (updatedRequest.senderId !== userId && updatedRequest.recipientId !== userId) return;
 
-            // Remove from pending requests if current user is the recipient
-            if (updatedRequest.recipientId === userId) {
-              console.log('[Subscription] Removing from pending requests');
-              queryClient.setQueryData(FRIENDS_QUERY_KEYS.pending(), (old: FriendRequest[] | undefined) =>
-                old?.filter((r) => r.senderId !== updatedRequest.senderId) || [],
+          // If accepted, add to friends list
+          if (updatedRequest.status === 'ACCEPTED') {
+            console.log('[Subscription] Adding to friends list');
+            queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) => {
+              const exists = old?.some(
+                f => (f.senderId === updatedRequest.senderId && f.recipientId === updatedRequest.recipientId) ||
+                     (f.senderId === updatedRequest.recipientId && f.recipientId === updatedRequest.senderId)
               );
-            }
+              return exists ? old : [...(old || []), updatedRequest];
+            });
+          }
 
-            // Remove from sent requests if current user is the sender
-            if (updatedRequest.senderId === userId) {
-              console.log('[Subscription] Removing from sent requests');
-              queryClient.setQueryData(FRIENDS_QUERY_KEYS.sent(), (old: FriendRequest[] | undefined) =>
-                old?.filter((r) => r.recipientId !== updatedRequest.recipientId) || [],
-              );
-            }
+          // Remove from pending requests if current user is the recipient
+          if (updatedRequest.recipientId === userId) {
+            console.log('[Subscription] Removing from pending requests');
+            queryClient.setQueryData(FRIENDS_QUERY_KEYS.pending(), (old: FriendRequest[] | undefined) =>
+              old?.filter((r) => r.senderId !== updatedRequest.senderId) || [],
+            );
+          }
+
+          // Remove from sent requests if current user is the sender
+          if (updatedRequest.senderId === userId) {
+            console.log('[Subscription] Removing from sent requests');
+            queryClient.setQueryData(FRIENDS_QUERY_KEYS.sent(), (old: FriendRequest[] | undefined) =>
+              old?.filter((r) => r.recipientId !== updatedRequest.recipientId) || [],
+            );
           }
         },
         error: (error: any) => {
@@ -160,35 +160,33 @@ export function useSubscribeFriendListUpdated(userId: string | null) {
     try {
       const subscription = apiClient.graphql({
         query: onFriendListUpdated,
-        variables: { userId },
       });
 
       (subscription as any).subscribe({
         next: (data: any) => {
           console.log('[Subscription] Friend list updated:', data);
           const update = data.data?.onFriendListUpdated;
-          if (update) {
-            console.log('[Subscription] Processing friend list update:', update);
-            if (update.status === 'ACCEPTED') {
-              // Friend added - add to friends list
-              console.log('[Subscription] Adding friend to list');
-              queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) => {
-                const exists = old?.some(
-                  f => (f.senderId === update.senderId && f.recipientId === update.recipientId) ||
-                       (f.senderId === update.recipientId && f.recipientId === update.senderId)
-                );
-                return exists ? old : [...(old || []), update];
-              });
-            } else {
-              // Friend removed - remove from friends list
-              console.log('[Subscription] Removing friend from list');
-              queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) =>
-                old?.filter(
-                  f => !((f.senderId === update.senderId && f.recipientId === update.recipientId) ||
-                         (f.senderId === update.recipientId && f.recipientId === update.senderId))
-                ) || [],
+          if (!update) return;
+          // Client-side filter: only process events relevant to this user
+          if (update.senderId !== userId && update.recipientId !== userId) return;
+
+          if (update.status === 'ACCEPTED') {
+            console.log('[Subscription] Adding friend to list');
+            queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) => {
+              const exists = old?.some(
+                f => (f.senderId === update.senderId && f.recipientId === update.recipientId) ||
+                     (f.senderId === update.recipientId && f.recipientId === update.senderId)
               );
-            }
+              return exists ? old : [...(old || []), update];
+            });
+          } else {
+            console.log('[Subscription] Removing friend from list');
+            queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) =>
+              old?.filter(
+                f => !((f.senderId === update.senderId && f.recipientId === update.recipientId) ||
+                       (f.senderId === update.recipientId && f.recipientId === update.senderId))
+              ) || [],
+            );
           }
         },
         error: (error: any) => {

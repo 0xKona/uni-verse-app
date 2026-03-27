@@ -38,7 +38,11 @@ export class FriendsResolvers extends Construct {
             "createdAt": $util.dynamodb.toDynamoDBJson("$util.time.nowISO8601()")
           },
           "condition": {
-            "expression": "attribute_not_exists(PK)"
+            "expression": "attribute_not_exists(PK) OR #status <> :accepted",
+            "expressionNames": { "#status": "status" },
+            "expressionValues": {
+              ":accepted": $util.dynamodb.toDynamoDBJson("ACCEPTED")
+            }
           }
         }
       `),

@@ -37,10 +37,9 @@ export class ApiStack extends cdk.Stack {
     });
 
     const tableDs = api.addDynamoDbDataSource(nameStackResource('table-ds'), table);
-    const noneDs = api.addNoneDataSource(nameStackResource('none-ds'));
 
     new FriendsResolvers(this, nameStackResource('friends-resolvers'), { tableDs });
-    new FriendsSubscriptions(this, nameStackResource('friends-subscriptions'), { noneDs });
+    new FriendsSubscriptions(this, nameStackResource('friends-subscriptions'));
     new SearchUsers(this, nameStackResource('search-users'), { api, userPool });
     new RespondToFriendRequest(this, nameStackResource('respond-to-friend-request'), { api, table });
     new RemoveFriend(this, nameStackResource('remove-friend'), { api, table });

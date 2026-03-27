@@ -22,8 +22,8 @@ export class RemoveFriend extends Construct {
       environment: { TABLE_NAME: table.tableName },
     });
 
-    // Needs write access to delete both sides of the friendship
-    table.grantWriteData(fn);
+    // Needs read+write: reads the item before deleting both sides
+    table.grantReadWriteData(fn);
 
     const ds = api.addLambdaDataSource(nameStackResource('remove-friend-ds'), fn);
 

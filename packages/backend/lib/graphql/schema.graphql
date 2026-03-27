@@ -1,4 +1,9 @@
-# ── Base Types ───────────────────────────────────────────────────────────────
+# ══════════════════════════════════════════════════════════════════════════════
+# UniVerse GraphQL Schema
+# Auth: Cognito User Pools (default, no directive needed)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Base Types ────────────────────────────────────────────────────────────────
 
 type User {
   id: ID!
@@ -24,58 +29,36 @@ type FriendRequest {
 # ── Queries ───────────────────────────────────────────────────────────────────
 
 type Query {
-  # Search Cognito users by username or email prefix
   searchUsers(query: String!): [User!]!
-    @aws_cognito_user_pools
-
-  # Get all accepted friends for the calling user
   getFriends: [FriendRequest!]!
-    @aws_cognito_user_pools
-
-  # Get all incoming pending friend requests for the calling user
   getPendingRequests: [FriendRequest!]!
-    @aws_cognito_user_pools
-
-  # Get all outgoing pending friend requests sent by the calling user
   getSentRequests: [FriendRequest!]!
-    @aws_cognito_user_pools
 }
 
 # ── Mutations ─────────────────────────────────────────────────────────────────
 
 type Mutation {
-  # Send a friend request to another user
   sendFriendRequest(recipientId: ID!): FriendRequest!
-    @aws_cognito_user_pools
-
-  # Accept or decline an incoming friend request
   respondToFriendRequest(senderId: ID!, accept: Boolean!): FriendRequest!
-    @aws_cognito_user_pools
-
-  # Cancel an outgoing friend request sent by the calling user
   cancelFriendRequest(recipientId: ID!): Boolean!
-    @aws_cognito_user_pools
-
-  # Remove an existing friend (deletes both sides of the relationship)
   removeFriend(friendId: ID!): FriendRequest!
-    @aws_cognito_user_pools
 }
 
 # ── Subscriptions ─────────────────────────────────────────────────────────────
+# @aws_subscribe auto-wires subscriptions to mutations. No resolvers needed.
+# Filtering: subscription arg name must match a field in mutation return type.
 
 type Subscription {
-  # Triggered when a friend request is sent to the current user
-  onFriendRequestReceived(recipientId: ID!): FriendRequest!
+  # Notifies recipient when they receive a friend request
+  # Filtered: only fires when mutation result's recipientId matches the arg
+  onFriendRequestReceived(recipientId: ID!): FriendRequest
     @aws_subscribe(mutations: ["sendFriendRequest"])
-    @aws_cognito_user_pools
 
-  # Triggered when a friend request status changes (accepted/declined)
-  onFriendRequestUpdated(userId: ID!): FriendRequest!
+  # Notifies when a request is accepted/declined (no server filter, client filters)
+  onFriendRequestUpdated: FriendRequest
     @aws_subscribe(mutations: ["respondToFriendRequest"])
-    @aws_cognito_user_pools
 
-  # Triggered when friends list is updated (friend added or removed)
-  onFriendListUpdated(userId: ID!): FriendRequest!
+  # Notifies when friends list changes (no server filter, client filters)
+  onFriendListUpdated: FriendRequest
     @aws_subscribe(mutations: ["respondToFriendRequest", "removeFriend"])
-    @aws_cognito_user_pools
 }

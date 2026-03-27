@@ -118,8 +118,8 @@ export const onFriendRequestReceived = /* GraphQL */ `
  * Used to update active request lists and friends list in real-time
  */
 export const onFriendRequestUpdated = /* GraphQL */ `
-  subscription OnFriendRequestUpdated($userId: ID!) {
-    onFriendRequestUpdated(userId: $userId) {
+  subscription OnFriendRequestUpdated {
+    onFriendRequestUpdated {
       senderId
       recipientId
       status
@@ -133,8 +133,8 @@ export const onFriendRequestUpdated = /* GraphQL */ `
  * Used to update the main friends list in real-time
  */
 export const onFriendListUpdated = /* GraphQL */ `
-  subscription OnFriendListUpdated($userId: ID!) {
-    onFriendListUpdated(userId: $userId) {
+  subscription OnFriendListUpdated {
+    onFriendListUpdated {
       senderId
       recipientId
       status
