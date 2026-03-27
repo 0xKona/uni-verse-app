@@ -1,41 +1,42 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { UserRow } from "@/components/ui/user-row";
-import { EmptyState } from "@/components/ui/empty-state";
-import { FriendRequestModal } from "./friend-request-modal";
-import { usePendingRequests } from "@/hooks/useFriendsQuery";
-import type { FriendRequest } from "@/types/friends";
+import { useState, useMemo } from 'react';
+import { UserCard } from '@/components/ui/user-card';
+import { EmptyState } from '@/components/ui/empty-state';
+import { RequestModal } from './request-modal';
+import { usePendingRequests } from '@/hooks/useFriendsQuery';
+import { useUsers } from '@/hooks/useUserQuery';
+import type { FriendRequest } from '@/types/friends';
 
-/**
- * Displays pending friend requests received by the current user
- * Automatically refetches when cache is invalidated by mutations/subscriptions
- */
 export function PendingRequests() {
-    const { data: requests = [], isLoading, error } = usePendingRequests();
-    const [selected, setSelected] = useState<FriendRequest | null>(null);
+  const { data: requests = [], isLoading, error } = usePendingRequests();
+  const [selected, setSelected] = useState<FriendRequest | null>(null);
 
-    if (isLoading) return <EmptyState message="Loading…" />;
-    if (error) return <EmptyState message="Failed to load requests" />;
-    if (!requests.length) return <EmptyState message="No pending requests." />;
+  // Fetch full user details for senders
+  const senderIds = useMemo(() => requests.map(r => r.senderId), [requests]);
+  const { data: users = [] } = useUsers(senderIds);
+  const userMap = useMemo(() => new Map(users.map(u => [u.id, u])), [users]);
 
-    return (
-        <>
-            <ul className="flex flex-col gap-1">
-                {requests.map((r) => (
-                    <UserRow
-                        key={r.senderId}
-                        username={r.senderId}
-                        subtitle="Wants to add you"
-                        onClick={() => setSelected(r)}
-                    />
-                ))}
-            </ul>
-            <FriendRequestModal
-                request={selected}
-                mode="received"
-                onClose={() => setSelected(null)}
+  if (isLoading) return <EmptyState message="Loading…" />;
+  if (error) return <EmptyState message="Failed to load requests" />;
+  if (!requests.length) return <EmptyState message="No pending requests." />;
+
+  return (
+    <>
+      <ul className="flex flex-col gap-1">
+        {requests.map((r) => {
+          const user = userMap.get(r.senderId) ?? { id: r.senderId, username: r.senderId };
+          return (
+            <UserCard
+              key={r.senderId}
+              user={user}
+              subtitle="Wants to add you"
+              onClick={() => setSelected(r)}
             />
-        </>
-    );
+          );
+        })}
+      </ul>
+      <RequestModal request={selected} mode="received" onClose={() => setSelected(null)} />
+    </>
+  );
 }

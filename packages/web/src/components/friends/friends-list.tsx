@@ -1,133 +1,103 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { getCurrentUser } from "aws-amplify/auth";
-import { UserRow } from "@/components/ui/user-row";
-import { EmptyState } from "@/components/ui/empty-state";
-import {
-    ContextMenu,
-    ContextMenuContent,
-    ContextMenuItem,
-    ContextMenuTrigger,
-} from "@/components/ui/context-menu";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { useFriends } from "@/hooks/useFriendsQuery";
-import { useRemoveFriend } from "@/hooks/useFriendsMutation";
-import type { FriendRequest } from "@/types/friends";
-import { useEffect } from "react";
+import { useState, useEffect, useMemo } from 'react';
+import { getCurrentUser } from 'aws-amplify/auth';
+import { UserCard } from '@/components/ui/user-card';
+import { EmptyState } from '@/components/ui/empty-state';
+import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useFriends } from '@/hooks/useFriendsQuery';
+import { useUsers } from '@/hooks/useUserQuery';
+import { useRemoveFriend } from '@/hooks/useFriendsMutation';
+import type { User } from '@/types/friends';
 
-/**
- * Displays the current user's friends list
- * Automatically syncs via mutations and subscriptions
- * Context menu for unfriending
- */
 export function FriendsList() {
-    const { data: friends = [], isLoading, error } = useFriends();
-    const removeFriendMutation = useRemoveFriend();
-    const [currentUserId, setCurrentUserId] = useState("");
-    const [confirmUnfriend, setConfirmUnfriend] = useState<string | null>(null);
+  const { data: friends = [], isLoading, error } = useFriends();
+  const removeFriend = useRemoveFriend();
+  const [currentUserId, setCurrentUserId] = useState('');
+  const [confirmUnfriend, setConfirmUnfriend] = useState<User | null>(null);
 
-    // Get current user's ID to determine peer IDs in friendships
-    useEffect(() => {
-        const loadUser = async () => {
-            try {
-                const user = await getCurrentUser();
-                setCurrentUserId(user.username);
-            } catch (error) {
-                console.error("Failed to get current user:", error);
-            }
-        };
-        loadUser();
-    }, []);
+  useEffect(() => {
+    getCurrentUser().then((u) => setCurrentUserId(u.username)).catch(console.error);
+  }, []);
 
-    const handleUnfriend = async () => {
-        if (!confirmUnfriend) return;
-        try {
-            await removeFriendMutation.mutateAsync(confirmUnfriend);
-            setConfirmUnfriend(null);
-        } catch (error) {
-            console.error("Failed to unfriend:", error);
-        }
-    };
+  // Extract peer IDs from friend requests
+  const peerIds = useMemo(() => {
+    if (!currentUserId) return [];
+    return friends.map(f => f.senderId === currentUserId ? f.recipientId : f.senderId);
+  }, [friends, currentUserId]);
 
-    const isRemoving = removeFriendMutation.isPending;
+  // Fetch full user details for all peers
+  const { data: users = [] } = useUsers(peerIds);
 
-    if (isLoading) return <EmptyState message="Loading…" />;
-    if (error) return <EmptyState message="Failed to load friends" />;
-    if (!friends.length) return <EmptyState message="No friends yet." />;
+  // Map user IDs to User objects
+  const userMap = useMemo(() => {
+    const map = new Map<string, User>();
+    users.forEach(u => map.set(u.id, u));
+    return map;
+  }, [users]);
 
-    return (
-        <>
-            <ul className="flex flex-col gap-1">
-                {friends.map((f) => {
-                    // Determine the peer's ID (friend is either sender or recipient)
-                    const peerId =
-                        f.senderId === currentUserId
-                            ? f.recipientId
-                            : f.senderId;
-                    return (
-                        <ContextMenu key={peerId}>
-                            <ContextMenuTrigger>
-                                <UserRow username={peerId} />
-                            </ContextMenuTrigger>
-                            <ContextMenuContent>
-                                <ContextMenuItem
-                                    className="text-destructive focus:text-destructive"
-                                    onClick={() => setConfirmUnfriend(peerId)}
-                                >
-                                    Unfriend
-                                </ContextMenuItem>
-                            </ContextMenuContent>
-                        </ContextMenu>
-                    );
-                })}
-            </ul>
+  if (isLoading) return <EmptyState message="Loading…" />;
+  if (error) return <EmptyState message="Failed to load friends" />;
+  if (!friends.length) return <EmptyState message="No friends yet." />;
 
-            {/* Unfriend confirmation */}
-            <AlertDialog
-                open={!!confirmUnfriend}
-                onOpenChange={(open) => !open && setConfirmUnfriend(null)}
+  const handleUnfriend = async () => {
+    if (!confirmUnfriend) return;
+    try {
+      await removeFriend.mutateAsync(confirmUnfriend.id);
+      setConfirmUnfriend(null);
+    } catch (err) {
+      console.error('Failed to unfriend:', err);
+    }
+  };
+
+  return (
+    <>
+      <ul className="flex flex-col gap-1">
+        {peerIds.map((peerId) => {
+          const user = userMap.get(peerId) ?? { id: peerId, username: peerId };
+          return (
+            <ContextMenu key={peerId}>
+              <ContextMenuTrigger>
+                <UserCard user={user} />
+              </ContextMenuTrigger>
+              <ContextMenuContent>
+                <ContextMenuItem
+                  className="text-destructive focus:text-destructive"
+                  onClick={() => setConfirmUnfriend(user)}
+                >
+                  Unfriend
+                </ContextMenuItem>
+              </ContextMenuContent>
+            </ContextMenu>
+          );
+        })}
+      </ul>
+
+      <AlertDialog open={!!confirmUnfriend} onOpenChange={(open) => !open && setConfirmUnfriend(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Unfriend {confirmUnfriend?.username}?</AlertDialogTitle>
+            <AlertDialogDescription>
+              They will be removed from your friends list. You can send a new request later.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={removeFriend.isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleUnfriend}
+              disabled={removeFriend.isPending}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Unfriend {confirmUnfriend}?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                            They will be removed from your friends list. You can
-                            send a new request later.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel disabled={isRemoving}>
-                            Cancel
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                            onClick={handleUnfriend}
-                            disabled={isRemoving}
-                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                        >
-                            {isRemoving ? "Removing..." : "Unfriend"}
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+              {removeFriend.isPending ? 'Removing...' : 'Unfriend'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
-            {/* Error feedback */}
-            {removeFriendMutation.isError && (
-                <p className="text-sm text-destructive">
-                    Failed to remove friend. Please try again.
-                </p>
-            )}
-        </>
-    );
+      {removeFriend.isError && (
+        <p className="text-sm text-destructive">Failed to remove friend. Please try again.</p>
+      )}
+    </>
+  );
 }

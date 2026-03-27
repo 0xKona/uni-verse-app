@@ -5,7 +5,7 @@ import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import * as path from 'path';
 import nameResource, { nameStackResource } from '../utils/name-resource';
-import { FriendVtlResolvers, FriendLambdaResolvers } from '../constructs/api';
+import { FriendVtlResolvers, LambdaResolvers } from '../constructs/api';
 
 interface ApiStackProps extends cdk.StackProps {
   table: Table;
@@ -48,7 +48,7 @@ export class ApiStack extends cdk.Stack {
 
     // Resolvers
     new FriendVtlResolvers(this, nameStackResource('friend-vtl-resolvers'), { tableDs });
-    new FriendLambdaResolvers(this, nameStackResource('friend-lambda-resolvers'), {
+    new LambdaResolvers(this, nameStackResource('friend-lambda-resolvers'), {
       api: this.api,
       table,
       userPool,

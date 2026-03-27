@@ -21,12 +21,12 @@ interface LambdaResolverConfig {
   grantFn: (fn: lambda.IFunction) => void;
 }
 
-/** Creates a Lambda-backed AppSync resolver with standard configuration */
 function createLambdaResolver(
   scope: Construct,
   api: appsync.GraphqlApi,
   config: LambdaResolverConfig
 ) {
+  // Don't specify logGroup — let Lambda auto-create it to avoid conflicts
   const fn = new lambdaNodejs.NodejsFunction(scope, nameStackResource(`${config.name}-fn`), {
     functionName: nameResource(`${config.name}-fn`),
     entry: config.entry,
@@ -44,45 +44,56 @@ function createLambdaResolver(
     responseMappingTemplate: appsync.MappingTemplate.lambdaResult(),
   });
 
-  return fn;
+  return { fn, ds };
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// Friend Lambda Resolvers
+// Lambda Resolvers
 // ══════════════════════════════════════════════════════════════════════════════
 
-interface FriendLambdaResolversProps {
+interface LambdaResolversProps {
   api: appsync.GraphqlApi;
   table: Table;
   userPool: UserPool;
 }
 
 /**
- * Lambda-backed resolvers for friend operations that require complex logic.
- * - searchUsers: Queries Cognito (not DynamoDB)
- * - respondToFriendRequest: Transactional write (update + put)
- * - removeFriend: Transactional delete (both sides)
+ * Lambda-backed resolvers for operations requiring complex logic:
+ * - User queries: Cognito lookups (getUser, getUsers, searchUsers)
+ * - Friend mutations: Transactional DynamoDB operations
  */
-export class FriendLambdaResolvers extends Construct {
-  constructor(scope: Construct, id: string, { api, table, userPool }: FriendLambdaResolversProps) {
+export class LambdaResolvers extends Construct {
+  constructor(scope: Construct, id: string, { api, table, userPool }: LambdaResolversProps) {
     super(scope, id);
 
     const lambdaDir = path.join(__dirname, '../../lambda');
 
-    // searchUsers — queries Cognito User Pool for users by username/email
-    const searchFn = createLambdaResolver(this, api, {
-      name: 'search-users',
-      entry: path.join(lambdaDir, 'searchUsers/index.ts'),
-      typeName: 'Query',
-      fieldName: 'searchUsers',
+    // User queries — single Lambda handles getUser, getUsers, searchUsers
+    const usersLambda = new lambdaNodejs.NodejsFunction(this, nameStackResource('users-fn'), {
+      functionName: nameResource('users-fn'),
+      entry: path.join(lambdaDir, 'users/index.ts'),
+      runtime: lambda.Runtime.NODEJS_22_X,
       environment: { USER_POOL_ID: userPool.userPoolId },
-      grantFn: (fn) => fn.addToRolePolicy(new iam.PolicyStatement({
-        actions: ['cognito-idp:ListUsers'],
-        resources: [userPool.userPoolArn],
-      })),
     });
 
-    // respondToFriendRequest — accept/decline with transactional writes
+    usersLambda.addToRolePolicy(new iam.PolicyStatement({
+      actions: ['cognito-idp:ListUsers', 'cognito-idp:AdminGetUser'],
+      resources: [userPool.userPoolArn],
+    }));
+
+    const usersDs = api.addLambdaDataSource(nameStackResource('users-ds'), usersLambda);
+
+    // Attach resolvers for all user queries
+    ['getUser', 'getUsers', 'searchUsers'].forEach(fieldName => {
+      usersDs.createResolver(nameStackResource(`resolver-${fieldName}`), {
+        typeName: 'Query',
+        fieldName,
+        requestMappingTemplate: appsync.MappingTemplate.lambdaRequest(),
+        responseMappingTemplate: appsync.MappingTemplate.lambdaResult(),
+      });
+    });
+
+    // respondToFriendRequest — transactional accept/decline
     createLambdaResolver(this, api, {
       name: 'respond-friend-request',
       entry: path.join(lambdaDir, 'respondToFriendRequest/index.ts'),
@@ -92,14 +103,14 @@ export class FriendLambdaResolvers extends Construct {
       grantFn: (fn) => table.grantWriteData(fn),
     });
 
-    // removeFriend — delete both sides of friendship atomically
+    // removeFriend — transactional delete both sides
     createLambdaResolver(this, api, {
       name: 'remove-friend',
       entry: path.join(lambdaDir, 'removeFriend/index.ts'),
       typeName: 'Mutation',
       fieldName: 'removeFriend',
       environment: { TABLE_NAME: table.tableName },
-      grantFn: (fn) => table.grantReadWriteData(fn), // needs read for subscription payload
+      grantFn: (fn) => table.grantReadWriteData(fn),
     });
   }
 }

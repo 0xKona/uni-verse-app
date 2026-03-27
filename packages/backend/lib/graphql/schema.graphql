@@ -29,6 +29,8 @@ type FriendRequest {
 # ── Queries ───────────────────────────────────────────────────────────────────
 
 type Query {
+  getUser(id: ID!): User
+  getUsers(ids: [ID!]!): [User!]!
   searchUsers(query: String!): [User!]!
   getFriends: [FriendRequest!]!
   getPendingRequests: [FriendRequest!]!

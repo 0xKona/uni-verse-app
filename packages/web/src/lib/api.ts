@@ -7,6 +7,26 @@ export const apiClient = generateClient();
 // QUERIES - Read-only operations for fetching data
 // ══════════════════════════════════════════════════════════════════════════════
 
+export const getUserQuery = /* GraphQL */ `
+  query GetUser($id: ID!) {
+    getUser(id: $id) {
+      id
+      username
+      email
+    }
+  }
+`;
+
+export const getUsersQuery = /* GraphQL */ `
+  query GetUsers($ids: [ID!]!) {
+    getUsers(ids: $ids) {
+      id
+      username
+      email
+    }
+  }
+`;
+
 export const searchUsersQuery = /* GraphQL */ `
   query SearchUsers($query: String!) {
     searchUsers(query: $query) {
