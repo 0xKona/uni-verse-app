@@ -12,27 +12,18 @@ This document outlines how the application backend is split up into CDK stacks a
 
 ## Constructs List
 
-- Auth Stack:   
-    - Cognito Construct
+- Auth Stack:
+  - Cognito Construct
 
-- API Stack: 
-    - AppSync Construct
-    - Translation Lambda Construct
-    - Translate Construct
+- API Stack:
+  - AppSync Construct
+  - Translation Lambda Construct
+  - Translate Construct
 
-
-- Data Stack: 
-    - DynamoDB Construct (Set up main and backup)
-    - S3 Media Construct
-
-- Moderation Stack: 
-    - Moderation Queue (SQS) Construct
-    - Moderation Lambda Construct
-    - Comprehend Construct
-    - Rekognition Construct
+- Data Stack:
+  - DynamoDB Construct (Set up main and backup)
+  - S3 Media Construct
 
 - Translation Stack:
-    - Translation Lambda
-    - Amazon Translate
-
-    
+  - Translation Lambda
+  - Amazon Translate
