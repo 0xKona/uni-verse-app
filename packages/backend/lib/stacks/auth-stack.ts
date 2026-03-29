@@ -4,6 +4,7 @@ import { Construct } from 'constructs';
 import nameResource, { nameStackResource } from '../utils/name-resource';
 
 export class AuthStack extends cdk.Stack {
+  public readonly userPool: aws_cognito.UserPool;
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -43,5 +44,7 @@ export class AuthStack extends cdk.Stack {
 
     new cdk.CfnOutput(this, nameStackResource('user-pool-id'), { value: userPool.userPoolId });
     new cdk.CfnOutput(this, nameStackResource('user-pool-client-id'), { value: userPoolClient.userPoolClientId });
+
+    this.userPool = userPool;
   }
 }

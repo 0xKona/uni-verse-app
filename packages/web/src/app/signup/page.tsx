@@ -11,6 +11,7 @@ import Link from "next/link";
 export default function SignUpPage() {
   const router = useRouter();
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [step, setStep] = useState<"register" | "confirm">("register");
@@ -22,7 +23,7 @@ export default function SignUpPage() {
     setError("");
     setLoading(true);
     try {
-      await register(email, password);
+      await register(email, password, username);
       setStep("confirm");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Sign up failed");
@@ -90,6 +91,17 @@ export default function SignUpPage() {
         </CardHeader>
         <form onSubmit={handleRegister}>
           <CardContent className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="coolstudent42"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
             <div className="flex flex-col gap-2">
               <Label htmlFor="email">Email</Label>
               <Input

@@ -1,0 +1,66 @@
+# ══════════════════════════════════════════════════════════════════════════════
+# UniVerse GraphQL Schema
+# Auth: Cognito User Pools (default, no directive needed)
+# ══════════════════════════════════════════════════════════════════════════════
+
+# ── Base Types ────────────────────────────────────────────────────────────────
+
+type User {
+  id: ID!
+  username: String!
+  email: String
+}
+
+# ── Friends ───────────────────────────────────────────────────────────────────
+
+enum FriendRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+type FriendRequest {
+  senderId: ID!
+  recipientId: ID!
+  status: FriendRequestStatus!
+  createdAt: String!
+}
+
+# ── Queries ───────────────────────────────────────────────────────────────────
+
+type Query {
+  getUser(id: ID!): User
+  getUsers(ids: [ID!]!): [User!]!
+  searchUsers(query: String!): [User!]!
+  getFriends: [FriendRequest!]!
+  getPendingRequests: [FriendRequest!]!
+  getSentRequests: [FriendRequest!]!
+}
+
+# ── Mutations ─────────────────────────────────────────────────────────────────
+
+type Mutation {
+  sendFriendRequest(recipientId: ID!): FriendRequest!
+  respondToFriendRequest(senderId: ID!, accept: Boolean!): FriendRequest!
+  cancelFriendRequest(recipientId: ID!): Boolean!
+  removeFriend(friendId: ID!): FriendRequest!
+}
+
+# ── Subscriptions ─────────────────────────────────────────────────────────────
+# @aws_subscribe auto-wires subscriptions to mutations. No resolvers needed.
+# Filtering: subscription arg name must match a field in mutation return type.
+
+type Subscription {
+  # Notifies recipient when they receive a friend request
+  # Filtered: only fires when mutation result's recipientId matches the arg
+  onFriendRequestReceived(recipientId: ID!): FriendRequest
+    @aws_subscribe(mutations: ["sendFriendRequest"])
+
+  # Notifies when a request is accepted/declined (no server filter, client filters)
+  onFriendRequestUpdated: FriendRequest
+    @aws_subscribe(mutations: ["respondToFriendRequest"])
+
+  # Notifies when friends list changes (no server filter, client filters)
+  onFriendListUpdated: FriendRequest
+    @aws_subscribe(mutations: ["respondToFriendRequest", "removeFriend"])
+}

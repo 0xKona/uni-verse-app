@@ -17,5 +17,13 @@
     "destroy:backend": "npm run destroy --workspace=uni-verse-backend",
     "destroy:backend:dev": "npm run destroy:dev --workspace=uni-verse-backend",
     "destroy:backend:prod": "npm run destroy:prod --workspace=uni-verse-backend"
+  },
+  "devDependencies": {
+    "@aws-appsync/utils": "^2.1.1",
+    "@aws-sdk/client-cognito-identity-provider": "^3.1016.0",
+    "@aws-sdk/client-dynamodb": "^3.1016.0",
+    "@aws-sdk/util-dynamodb": "^3.996.2",
+    "@types/jest": "^30.0.0",
+    "@types/node": "^25.5.0"
   }
 }

@@ -9,7 +9,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
-  const isProtectedRoute = PROTECTED_ROUTES.includes(pathname);
+  const isProtectedRoute = pathname.startsWith("/dashboard");
 
   if (!isAuthRoute && !isProtectedRoute) return NextResponse.next();
 
@@ -37,5 +37,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/signup", "/dashboard"],
+  matcher: ["/login", "/signup", "/dashboard/:path*"],
 };
