@@ -6,6 +6,7 @@ import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import * as path from 'path';
 import nameResource, { nameStackResource } from '../utils/name-resource';
 import { FriendVtlResolvers, LambdaResolvers } from '../constructs/api';
+import { ChatVtlResolvers } from '../constructs/api/chat-vtl-resolvers';
 
 interface ApiStackProps extends cdk.StackProps {
   table: Table;
@@ -48,6 +49,7 @@ export class ApiStack extends cdk.Stack {
 
     // Resolvers
     new FriendVtlResolvers(this, nameStackResource('friend-vtl-resolvers'), { tableDs });
+    new ChatVtlResolvers(this, nameStackResource('chat-vtl-resolvers'), { tableDs });
     new LambdaResolvers(this, nameStackResource('friend-lambda-resolvers'), {
       api: this.api,
       table,

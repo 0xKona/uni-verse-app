@@ -112,5 +112,34 @@ export class LambdaResolvers extends Construct {
       environment: { TABLE_NAME: table.tableName },
       grantFn: (fn) => table.grantReadWriteData(fn),
     });
+
+    // ── Messaging ──────────────────────────────────────────────────────────
+
+    // userProfile — handles getUserProfile (Query) and setUserProfile (Mutation)
+    const { ds: profileDs } = createLambdaResolver(this, api, {
+      name: 'user-profile',
+      entry: path.join(lambdaDir, 'userProfile/index.ts'),
+      typeName: 'Mutation',
+      fieldName: 'setUserProfile',
+      environment: { TABLE_NAME: table.tableName },
+      grantFn: (fn) => table.grantReadWriteData(fn),
+    });
+
+    profileDs.createResolver(nameStackResource('resolver-get-user-profile'), {
+      typeName: 'Query',
+      fieldName: 'getUserProfile',
+      requestMappingTemplate: appsync.MappingTemplate.lambdaRequest(),
+      responseMappingTemplate: appsync.MappingTemplate.lambdaResult(),
+    });
+
+    // createChat — creates DM chat with membership items for both users
+    createLambdaResolver(this, api, {
+      name: 'create-chat',
+      entry: path.join(lambdaDir, 'createChat/index.ts'),
+      typeName: 'Mutation',
+      fieldName: 'createChat',
+      environment: { TABLE_NAME: table.tableName },
+      grantFn: (fn) => table.grantReadWriteData(fn),
+    });
   }
 }
