@@ -28,7 +28,34 @@ export const handler = async (event: {
   }));
 
   if (Items.length > 0) {
-    return unmarshall(Items[0]);
+    const existing = unmarshall(Items[0]);
+
+    // If archived (unfriended then re-added), unarchive for both users
+    if (existing.archived) {
+      await dynamo.send(new TransactWriteItemsCommand({
+        TransactItems: [
+          {
+            Update: {
+              TableName: TABLE_NAME,
+              Key: marshall({ PK: `USER#${userId}`, SK: `CHAT#${existing.chatId}` }),
+              UpdateExpression: 'SET archived = :f',
+              ExpressionAttributeValues: marshall({ ':f': false }),
+            },
+          },
+          {
+            Update: {
+              TableName: TABLE_NAME,
+              Key: marshall({ PK: `USER#${participantId}`, SK: `CHAT#${existing.chatId}` }),
+              UpdateExpression: 'SET archived = :f',
+              ExpressionAttributeValues: marshall({ ':f': false }),
+            },
+          },
+        ],
+      }));
+      return { ...existing, archived: false };
+    }
+
+    return existing;
   }
 
   // Create new chat
