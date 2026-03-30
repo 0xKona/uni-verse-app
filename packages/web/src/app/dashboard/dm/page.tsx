@@ -40,14 +40,10 @@ export default function DMPage() {
   }, []);
 
   const handleSelectFriend = useCallback(async (friendId: string) => {
-    const existing = chats.find(c => c.participantId === friendId);
-    if (existing) {
-      setActiveChat({ ...existing, lastReadAt: new Date().toISOString() });
-      return;
-    }
+    // Always call createChat — it returns existing (and unarchives if needed) or creates new
     const chat = await createChat.mutateAsync(friendId);
-    setActiveChat(chat);
-  }, [chats, createChat]);
+    setActiveChat({ ...chat, lastReadAt: new Date().toISOString() });
+  }, [createChat]);
 
   // Resolve participant name for header
   const participantIds = activeChat ? [activeChat.participantId] : [];

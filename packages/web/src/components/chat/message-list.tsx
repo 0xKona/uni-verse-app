@@ -172,7 +172,7 @@ function MessageBubble({
             <span className="break-all">{message.content}</span>
           </a>
         ) : (
-          <p className="break-words">{displayContent}</p>
+          <p className="wrap-break-word">{displayContent}</p>
         )}
 
         <div className="flex items-center gap-1 mt-1">
