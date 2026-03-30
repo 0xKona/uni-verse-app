@@ -1,13 +1,16 @@
 import {
   DynamoDBClient,
+  BatchGetItemCommand,
   PutItemCommand,
   QueryCommand,
   UpdateItemCommand,
 } from '@aws-sdk/client-dynamodb';
+import { TranslateClient, TranslateTextCommand } from '@aws-sdk/client-translate';
 import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 import { randomUUID } from 'crypto';
 
 const dynamo = new DynamoDBClient({});
+const translate = new TranslateClient({});
 const TABLE_NAME = process.env.TABLE_NAME!;
 
 interface SendMessageArgs {
@@ -15,6 +18,15 @@ interface SendMessageArgs {
   content: string;
   type: 'TEXT' | 'IMAGE' | 'GIF' | 'FILE';
   attachments?: string[];
+}
+
+async function translateText(text: string, sourceLang: string, targetLang: string): Promise<string> {
+  const { TranslatedText } = await translate.send(new TranslateTextCommand({
+    Text: text,
+    SourceLanguageCode: sourceLang,
+    TargetLanguageCode: targetLang,
+  }));
+  return TranslatedText!;
 }
 
 export const handler = async (event: {
@@ -26,77 +38,97 @@ export const handler = async (event: {
   const messageId = randomUUID();
   const now = new Date().toISOString();
 
-  // Get all members of this chat via chatId-index
-  // Filter to membership items only (PK starts with USER#), excluding message items
-  const { Items: allItems = [] } = await dynamo.send(new QueryCommand({
+  // Get all members of this chat
+  const { Items: members = [] } = await dynamo.send(new QueryCommand({
     TableName: TABLE_NAME,
     IndexName: 'chatId-index',
     KeyConditionExpression: 'chatId = :cid AND begins_with(PK, :userPrefix)',
     ExpressionAttributeValues: marshall({ ':cid': chatId, ':userPrefix': 'USER#' }),
   }));
 
-  const members = allItems;
-
   if (members.length === 0) throw new Error('Chat not found');
 
-  // Check sender is a member and chat is not archived
   const senderMembership = members.find(m => unmarshall(m).PK === `USER#${senderId}`);
   if (!senderMembership) throw new Error('Not a member of this chat');
   if (unmarshall(senderMembership).archived) throw new Error('Chat is archived');
 
-  // For DM, find the recipient
   const recipientMembership = members.find(m => unmarshall(m).PK !== `USER#${senderId}`);
   const recipientId = recipientMembership
     ? unmarshall(recipientMembership).PK.replace('USER#', '')
     : senderId;
 
-  // Write message
-  const message = {
-    PK: `CHAT#${chatId}`,
-    SK: `MSG#${now}#${messageId}`,
-    chatId,
-    messageId,
-    senderId,
-    recipientId,
-    type,
-    content,
-    ...(attachments?.length ? { attachments } : {}),
-    translations: '{}',
-    createdAt: now,
-  };
+  // Fetch profiles for all participants to check translation preferences
+  const memberIds = members.map(m => unmarshall(m).PK.replace('USER#', ''));
+  const profileKeys = memberIds.map(id => marshall({ PK: `USER#${id}`, SK: 'PROFILE' }));
 
+  const translations: Record<string, string> = {};
+
+  if (type === 'TEXT' && profileKeys.length > 0) {
+    const { Responses } = await dynamo.send(new BatchGetItemCommand({
+      RequestItems: { [TABLE_NAME]: { Keys: profileKeys } },
+    }));
+
+    const profiles = (Responses?.[TABLE_NAME] ?? []).map(i => unmarshall(i));
+    const senderProfile = profiles.find(p => p.PK === `USER#${senderId}`);
+    const senderLang = senderProfile?.language ?? 'en';
+
+    // Find unique target languages from participants with translation enabled
+    const targetLangs = new Set<string>();
+    for (const profile of profiles) {
+      if (profile.translationEnabled && profile.language && profile.language !== senderLang) {
+        targetLangs.add(profile.language);
+      }
+    }
+
+    // Translate to each target language
+    await Promise.all([...targetLangs].map(async (lang) => {
+      try {
+        translations[lang] = await translateText(content, senderLang, lang);
+      } catch (err) {
+        console.error(`Translation to ${lang} failed:`, err);
+      }
+    }));
+  }
+
+  const translationsJson = JSON.stringify(translations);
+
+  // Write message
   await dynamo.send(new PutItemCommand({
     TableName: TABLE_NAME,
-    Item: marshall(message, { removeUndefinedValues: true }),
+    Item: marshall({
+      PK: `CHAT#${chatId}`,
+      SK: `MSG#${now}#${messageId}`,
+      chatId,
+      messageId,
+      senderId,
+      recipientId,
+      type,
+      content,
+      ...(attachments?.length ? { attachments } : {}),
+      translations: translationsJson,
+      createdAt: now,
+    }, { removeUndefinedValues: true }),
   }));
 
-  // Update membership items for all members (lastMessage, lastMessageAt)
-  // Also update lastReadAt for the sender (they've read their own message)
+  // Update membership items
   const preview = type === 'TEXT' ? content.slice(0, 100) : `[${type}]`;
   await Promise.all(members.map(m => {
     const parsed = unmarshall(m);
     const isSender = parsed.PK === `USER#${senderId}`;
-    const updateExpr = isSender
-      ? 'SET lastMessage = :msg, lastMessageAt = :ts, lastReadAt = :ts'
-      : 'SET lastMessage = :msg, lastMessageAt = :ts';
     return dynamo.send(new UpdateItemCommand({
       TableName: TABLE_NAME,
       Key: marshall({ PK: parsed.PK, SK: parsed.SK }),
-      UpdateExpression: updateExpr,
+      UpdateExpression: isSender
+        ? 'SET lastMessage = :msg, lastMessageAt = :ts, lastReadAt = :ts'
+        : 'SET lastMessage = :msg, lastMessageAt = :ts',
       ExpressionAttributeValues: marshall({ ':msg': preview, ':ts': now }),
     }));
   }));
 
-  // Return only fields matching the Message GraphQL type
   return {
-    chatId,
-    messageId,
-    senderId,
-    recipientId,
-    type,
-    content,
+    chatId, messageId, senderId, recipientId, type, content,
     attachments: attachments ?? [],
-    translations: '{}',
+    translations,
     createdAt: now,
   };
 };

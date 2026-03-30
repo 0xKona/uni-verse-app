@@ -269,3 +269,19 @@ export const onMessageReceived = /* GraphQL */ `
     }
   }
 `;
+
+export const translateMessageMutation = /* GraphQL */ `
+  mutation TranslateMessage($chatId: ID!, $messageId: ID!, $timestamp: String!) {
+    translateMessage(chatId: $chatId, messageId: $messageId, timestamp: $timestamp) {
+      chatId
+      messageId
+      senderId
+      recipientId
+      type
+      content
+      attachments
+      translations
+      createdAt
+    }
+  }
+`;

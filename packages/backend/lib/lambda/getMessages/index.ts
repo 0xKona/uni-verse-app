@@ -37,7 +37,7 @@ export const handler = async (event: {
       type: raw.type,
       content: raw.content,
       attachments: raw.attachments ?? [],
-      translations: typeof raw.translations === 'string' ? raw.translations : JSON.stringify(raw.translations ?? {}),
+      translations: typeof raw.translations === 'string' ? JSON.parse(raw.translations) : (raw.translations ?? {}),
       createdAt: raw.createdAt,
     };
   });

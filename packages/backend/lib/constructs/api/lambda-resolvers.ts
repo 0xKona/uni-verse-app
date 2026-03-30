@@ -142,14 +142,20 @@ export class LambdaResolvers extends Construct {
       grantFn: (fn) => table.grantReadWriteData(fn),
     });
 
-    // sendMessage — writes message, updates membership previews
+    // sendMessage — writes message, updates membership previews, translates
     createLambdaResolver(this, api, {
       name: 'send-message',
       entry: path.join(lambdaDir, 'sendMessage/index.ts'),
       typeName: 'Mutation',
       fieldName: 'sendMessage',
       environment: { TABLE_NAME: table.tableName },
-      grantFn: (fn) => table.grantReadWriteData(fn),
+      grantFn: (fn) => {
+        table.grantReadWriteData(fn);
+        fn.addToRolePolicy(new iam.PolicyStatement({
+          actions: ['translate:TranslateText', 'comprehend:DetectDominantLanguage'],
+          resources: ['*'],
+        }));
+      },
     });
 
     // getMessages — paginated message history for a chat
@@ -160,6 +166,22 @@ export class LambdaResolvers extends Construct {
       fieldName: 'getMessages',
       environment: { TABLE_NAME: table.tableName },
       grantFn: (fn) => table.grantReadData(fn),
+    });
+
+    // translateMessage — on-demand retrospective translation
+    createLambdaResolver(this, api, {
+      name: 'translate-message',
+      entry: path.join(lambdaDir, 'translateMessage/index.ts'),
+      typeName: 'Mutation',
+      fieldName: 'translateMessage',
+      environment: { TABLE_NAME: table.tableName },
+      grantFn: (fn) => {
+        table.grantReadWriteData(fn);
+        fn.addToRolePolicy(new iam.PolicyStatement({
+          actions: ['translate:TranslateText', 'comprehend:DetectDominantLanguage'],
+          resources: ['*'],
+        }));
+      },
     });
   }
 }

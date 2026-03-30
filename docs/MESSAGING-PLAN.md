@@ -136,17 +136,17 @@ Basic text messaging end-to-end.
 - [x] Real-time subscription — `useMessageSubscription` subscribes on login with own `userId`, invalidates queries on incoming messages
 - [x] Mark as read — calls `markChatRead` when user selects a conversation
 
-### Stage 3 — Translation
+### Stage 3 — Translation ✅
 
 **Backend:**
-- [ ] Populate `TranslationStack` — IAM permissions for Amazon Translate
-- [ ] Extend `sendMessage` Lambda — after write, `BatchGetItem` participant profiles, call Amazon Translate for each unique target language, update message `translations` map
-- [ ] Add `translateMessage(chatId, messageId, timestamp)` mutation — Lambda reads message, calls Translate for the caller's language, patches `translations` map
+- [x] Extend `sendMessage` Lambda — `BatchGetItem` participant profiles, call Amazon Translate for each unique target language, store in `translations` map
+- [x] Add `translateMessage(chatId, messageId, timestamp)` mutation — reads message, calls Translate for caller's language, patches `translations` map, caches result
+- [x] IAM permissions for `translate:TranslateText` on both Lambdas
 
 **Frontend:**
-- [ ] Display translated content — if user's language exists in `translations` map, show it; otherwise show `content`
-- [ ] "View original" button — toggles between `translations[lang]` and `content`
-- [ ] "Translate" button — for messages without the user's language in `translations`, calls `translateMessage`
+- [x] Display translated content — if user's language exists in `translations` map and translation is enabled, show it automatically
+- [x] "View original" / "View translated" toggle button on translated messages
+- [x] "Translate" button — for messages without the user's language in `translations`, calls `translateMessage` on demand
 
 ### Stage 4 — File & image uploads
 
