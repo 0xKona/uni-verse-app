@@ -158,14 +158,14 @@ Basic text messaging end-to-end.
 - [x] File upload button in message input — paperclip button, pending file preview, calls `getUploadUrl`, uploads to S3, then calls `sendMessage` with `type: "IMAGE"` or `"FILE"` and the S3 key in `attachments`
 - [x] Message rendering — images shown inline from pre-signed URL, files shown as download links with filename
 
-### Stage 5 — Tenor GIFs
+### Stage 5 — Tenor GIFs ✅
 
 No backend work.
 
 **Frontend:**
-- [ ] Integrate Tenor Search API (client-side API key, domain-restricted)
-- [ ] GIF picker component in message input — search, select, sends `sendMessage` with `type: "GIF"` and `content` set to the Tenor URL
-- [ ] Render `GIF` messages as embedded images from the URL
+- [x] Integrate GIPHY SDK (`@giphy/react-components` Grid with `@giphy/js-fetch-api`)
+- [x] GIF picker component in message input — search with trending fallback, infinite scroll grid, sends `sendMessage` with `type: "GIF"` and `content` set to the GIF URL
+- [x] Render `GIF` messages as embedded images from the URL
 
 ### Stage 6 — Typing indicators
 

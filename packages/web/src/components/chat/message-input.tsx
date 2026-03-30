@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Send, Paperclip, X } from "lucide-react";
+import { Send, Paperclip, X, SmilePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSendMessage } from "@/hooks/useMessageMutation";
+import { GifPicker } from "@/components/chat/gif-picker";
 import { apiClient, getUploadUrlMutation } from "@/lib/api";
 
 interface MessageInputProps {
@@ -21,6 +23,7 @@ export function MessageInput({
   const [text, setText] = useState("");
   const [uploading, setUploading] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [gifOpen, setGifOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const sendMessage = useSendMessage(currentUserId);
 
@@ -80,6 +83,11 @@ export function MessageInput({
     }
   };
 
+  const handleGifSelect = (url: string) => {
+    sendMessage.mutate({ chatId, content: url, type: "GIF" });
+    setGifOpen(false);
+  };
+
   const busy = disabled || uploading || sendMessage.isPending;
 
   return (
@@ -122,6 +130,14 @@ export function MessageInput({
         >
           <Paperclip size={16} />
         </Button>
+        <Popover open={gifOpen} onOpenChange={setGifOpen}>
+          <PopoverTrigger className="inline-flex items-center justify-center h-8 w-8 rounded-lg hover:bg-muted transition-colors">
+            <SmilePlus size={16} className="text-muted-foreground" />
+          </PopoverTrigger>
+          <PopoverContent side="top" align="start" className="p-0 w-auto">
+            <GifPicker onSelect={handleGifSelect} />
+          </PopoverContent>
+        </Popover>
         <Input
           value={text}
           onChange={(e) => setText(e.target.value)}
