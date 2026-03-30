@@ -141,5 +141,25 @@ export class LambdaResolvers extends Construct {
       environment: { TABLE_NAME: table.tableName },
       grantFn: (fn) => table.grantReadWriteData(fn),
     });
+
+    // sendMessage — writes message, updates membership previews
+    createLambdaResolver(this, api, {
+      name: 'send-message',
+      entry: path.join(lambdaDir, 'sendMessage/index.ts'),
+      typeName: 'Mutation',
+      fieldName: 'sendMessage',
+      environment: { TABLE_NAME: table.tableName },
+      grantFn: (fn) => table.grantReadWriteData(fn),
+    });
+
+    // getMessages — paginated message history for a chat
+    createLambdaResolver(this, api, {
+      name: 'get-messages',
+      entry: path.join(lambdaDir, 'getMessages/index.ts'),
+      typeName: 'Query',
+      fieldName: 'getMessages',
+      environment: { TABLE_NAME: table.tableName },
+      grantFn: (fn) => table.grantReadData(fn),
+    });
   }
 }

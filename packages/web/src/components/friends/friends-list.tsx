@@ -11,7 +11,11 @@ import { useUsers } from '@/hooks/useUserQuery';
 import { useRemoveFriend } from '@/hooks/useFriendsMutation';
 import type { User } from '@/types/friends';
 
-export function FriendsList() {
+interface FriendsListProps {
+  onSelectFriend?: (userId: string) => void;
+}
+
+export function FriendsList({ onSelectFriend }: FriendsListProps = {}) {
   const { data: friends = [], isLoading, error } = useFriends();
   const removeFriend = useRemoveFriend();
   const [currentUserId, setCurrentUserId] = useState('');
@@ -59,7 +63,7 @@ export function FriendsList() {
           return (
             <ContextMenu key={peerId}>
               <ContextMenuTrigger>
-                <UserCard user={user} />
+                <UserCard user={user} onClick={onSelectFriend ? () => onSelectFriend(user.id) : undefined} />
               </ContextMenuTrigger>
               <ContextMenuContent>
                 <ContextMenuItem

@@ -71,15 +71,10 @@ export function UserSettingsCard() {
 
   return (
     <Popover>
-      <PopoverTrigger>
-        <button className="flex items-center gap-2 w-full rounded-md px-2 py-2 hover:bg-background/60 transition-colors cursor-pointer">
-          <Avatar className="h-8 w-8 shrink-0">
-            <AvatarFallback>{initials}</AvatarFallback>
-          </Avatar>
-          <span className="text-xs font-medium truncate hidden">
-            {username}
-          </span>
-        </button>
+      <PopoverTrigger className="flex items-center gap-2 w-full rounded-md px-2 py-2 hover:bg-background/60 transition-colors cursor-pointer">
+        <Avatar className="h-8 w-8 shrink-0">
+          <AvatarFallback>{initials}</AvatarFallback>
+        </Avatar>
       </PopoverTrigger>
       <PopoverContent side="right" align="end" className="w-64 p-0">
         {/* User info */}

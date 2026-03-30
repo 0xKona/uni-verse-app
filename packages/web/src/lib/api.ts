@@ -218,3 +218,54 @@ export const markChatReadMutation = /* GraphQL */ `
     markChatRead(chatId: $chatId)
   }
 `;
+
+export const sendMessageMutation = /* GraphQL */ `
+  mutation SendMessage($chatId: ID!, $content: String!, $type: MessageType!, $attachments: [String]) {
+    sendMessage(chatId: $chatId, content: $content, type: $type, attachments: $attachments) {
+      chatId
+      messageId
+      senderId
+      recipientId
+      type
+      content
+      attachments
+      translations
+      createdAt
+    }
+  }
+`;
+
+export const getMessagesQuery = /* GraphQL */ `
+  query GetMessages($chatId: ID!, $nextToken: String) {
+    getMessages(chatId: $chatId, nextToken: $nextToken) {
+      messages {
+        chatId
+        messageId
+        senderId
+        recipientId
+        type
+        content
+        attachments
+        translations
+        createdAt
+      }
+      nextToken
+    }
+  }
+`;
+
+export const onMessageReceived = /* GraphQL */ `
+  subscription OnMessageReceived($recipientId: ID!) {
+    onMessageReceived(recipientId: $recipientId) {
+      chatId
+      messageId
+      senderId
+      recipientId
+      type
+      content
+      attachments
+      translations
+      createdAt
+    }
+  }
+`;

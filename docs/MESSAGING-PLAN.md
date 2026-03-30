@@ -103,36 +103,38 @@ Projected from chat membership items. Used to look up all members of a chat (nee
 
 ## 3. Implementation Stages
 
-### Stage 1 — Foundation (schema, profiles, chat creation)
+### Stage 1 — Foundation (schema, profiles, chat creation) ✅
 
 Everything needed before a single message can be sent.
 
 **Backend:**
-- [ ] Add `chatId-index` GSI to `UniVerseTable`
-- [ ] Add GraphQL types: `Message`, `MessageConnection`, `Chat`, `UserProfile`, `TypingIndicator`, `MessageType` enum
-- [ ] Add `setUserProfile` / `getUserProfile` — Lambda + VTL resolver to read/write `USER#<id> / PROFILE`
-- [ ] Add `createChat(participantId)` — Lambda that checks for existing DM, generates `chatId` if new, writes membership items for both users in a transaction
-- [ ] Add `getChats` — query `USER#<id> / CHAT#*` to list conversations
+- [x] Add `chatId-index` GSI to `UniVerseTable`
+- [x] Add GraphQL types: `Message`, `MessageConnection`, `Chat`, `UserProfile`, `TypingIndicator`, `MessageType` enum
+- [x] Add `setUserProfile` / `getUserProfile` — Lambda + VTL resolver to read/write `USER#<id> / PROFILE`
+- [x] Add `createChat(participantId)` — Lambda that checks for existing DM, generates `chatId` if new, writes membership items for both users in a transaction
+- [x] Add `getChats` — query `USER#<id> / CHAT#*` to list conversations
+- [x] Add `markChatRead` — VTL resolver to update `lastReadAt`
 
 **Frontend:**
-- [ ] Language settings UI — page or modal to set language and toggle translation
-- [ ] Conversation list sidebar — fetch `getChats`, render with `lastMessage` preview and unread badge
+- [x] Language settings UI — popover with language select and translation toggle in `UserSettingsCard`
+- [ ] Conversation list sidebar — fetch `getChats`, render with `lastMessage` preview and unread badge (built in Stage 2)
 
-### Stage 2 — Core messaging (send, receive, real-time)
+### Stage 2 — Core messaging (send, receive, real-time) ✅
 
 Basic text messaging end-to-end.
 
 **Backend:**
-- [ ] Add `sendMessage` Lambda — validates `archived` flag, writes message item, updates both membership items (`lastMessage`, `lastMessageAt`), returns message with `recipientId`
-- [ ] Add `getMessages(chatId, nextToken)` — paginated query on `CHAT#<chatId>` with `ScanIndexForward: false`, cursor-based pagination
-- [ ] Add `markChatRead(chatId)` — updates `lastReadAt` on the caller's membership item
-- [ ] Add `onMessageReceived(recipientId)` subscription — `@aws_subscribe(mutations: ["sendMessage"])`
+- [x] Add `sendMessage` Lambda — validates `archived` flag, writes message item, updates both membership items (`lastMessage`, `lastMessageAt`), returns message with `recipientId`
+- [x] Add `getMessages(chatId, nextToken)` — paginated query on `CHAT#<chatId>` with `ScanIndexForward: false`, cursor-based pagination
+- [x] Add `markChatRead(chatId)` — updates `lastReadAt` on the caller's membership item (done in Stage 1)
+- [x] Add `onMessageReceived(recipientId)` subscription — `@aws_subscribe(mutations: ["sendMessage"])` (schema done in Stage 1)
 
 **Frontend:**
-- [ ] Chat conversation view — message list with infinite scroll (cursor pagination via `nextToken`)
-- [ ] Message input component — text input, send button
-- [ ] Real-time subscription — subscribe on login with own `userId`, route incoming messages by `chatId` to active view or unread badge
-- [ ] Mark as read — call `markChatRead` when user views a conversation
+- [x] Conversation list sidebar — `ConversationList` component with user avatars, message previews, unread indicators
+- [x] Chat conversation view — `MessageList` with infinite scroll (cursor pagination via `nextToken`)
+- [x] Message input component — `MessageInput` with text input, Enter to send, disabled for archived chats
+- [x] Real-time subscription — `useMessageSubscription` subscribes on login with own `userId`, invalidates queries on incoming messages
+- [x] Mark as read — calls `markChatRead` when user selects a conversation
 
 ### Stage 3 — Translation
 
