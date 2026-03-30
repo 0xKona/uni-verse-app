@@ -48,6 +48,23 @@ export class ApiStack extends cdk.Stack {
     // DynamoDB datasource for VTL resolvers
     const tableDs = this.api.addDynamoDbDataSource(nameStackResource('table-ds'), table);
 
+    // NONE datasource for fire-and-forget mutations (typing indicators)
+    const noneDs = this.api.addNoneDataSource(nameStackResource('none-ds'));
+    noneDs.createResolver(nameStackResource('resolver-send-typing-indicator'), {
+      typeName: 'Mutation',
+      fieldName: 'sendTypingIndicator',
+      requestMappingTemplate: appsync.MappingTemplate.fromString(`
+        {
+          "version": "2017-02-28",
+          "payload": {
+            "chatId": "$ctx.args.chatId",
+            "userId": "$ctx.identity.username"
+          }
+        }
+      `),
+      responseMappingTemplate: appsync.MappingTemplate.fromString('$util.toJson($ctx.result)'),
+    });
+
     // Resolvers
     new FriendVtlResolvers(this, nameStackResource('friend-vtl-resolvers'), { tableDs });
     new ChatVtlResolvers(this, nameStackResource('chat-vtl-resolvers'), { tableDs });

@@ -291,3 +291,21 @@ export const getUploadUrlMutation = /* GraphQL */ `
     getUploadUrl(chatId: $chatId, fileName: $fileName)
   }
 `;
+
+export const sendTypingIndicatorMutation = /* GraphQL */ `
+  mutation SendTypingIndicator($chatId: ID!) {
+    sendTypingIndicator(chatId: $chatId) {
+      chatId
+      userId
+    }
+  }
+`;
+
+export const onTypingIndicator = /* GraphQL */ `
+  subscription OnTypingIndicator($chatId: ID!) {
+    onTypingIndicator(chatId: $chatId) {
+      chatId
+      userId
+    }
+  }
+`;

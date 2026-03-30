@@ -167,16 +167,16 @@ No backend work.
 - [x] GIF picker component in message input — search with trending fallback, infinite scroll grid, sends `sendMessage` with `type: "GIF"` and `content` set to the GIF URL
 - [x] Render `GIF` messages as embedded images from the URL
 
-### Stage 6 — Typing indicators
+### Stage 6 — Typing indicators ✅
 
 **Backend:**
-- [ ] Add `sendTypingIndicator(chatId)` mutation — uses `NONE` data source (no DynamoDB write)
-- [ ] Add `onTypingIndicator(chatId)` subscription — `@aws_subscribe(mutations: ["sendTypingIndicator"])`
+- [x] Add `sendTypingIndicator(chatId)` mutation — uses `NONE` data source (no DynamoDB write)
+- [x] Add `onTypingIndicator(chatId)` subscription — `@aws_subscribe(mutations: ["sendTypingIndicator"])`
 
 **Frontend:**
-- [ ] Send typing events on keypress (debounced, e.g. every 2 seconds)
-- [ ] Subscribe to `onTypingIndicator` for the active chat
-- [ ] Show "user is typing..." indicator, auto-dismiss after timeout
+- [x] Send typing events on keypress (debounced, every 2 seconds via `useSendTyping`)
+- [x] Subscribe to `onTypingIndicator` for the active chat via `useTypingIndicator`
+- [x] Show "user is typing…" indicator with pulse animation, auto-dismiss after 3 seconds
 
 ### Stage 7 — Unfriend archival
 

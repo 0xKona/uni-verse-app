@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useSendMessage } from "@/hooks/useMessageMutation";
+import { useSendTyping } from "@/hooks/useTypingIndicator";
 import { GifPicker } from "@/components/chat/gif-picker";
 import { apiClient, getUploadUrlMutation } from "@/lib/api";
 
@@ -26,6 +27,7 @@ export function MessageInput({
   const [gifOpen, setGifOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const sendMessage = useSendMessage(currentUserId);
+  const sendTyping = useSendTyping(chatId);
 
   const handleSend = async () => {
     if (pendingFile) {
@@ -80,6 +82,8 @@ export function MessageInput({
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
+    } else {
+      sendTyping();
     }
   };
 

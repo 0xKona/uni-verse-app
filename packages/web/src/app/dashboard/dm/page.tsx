@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useCreateChat } from '@/hooks/useChatMutation';
 import { useMessageSubscription } from '@/hooks/useMessageSubscription';
 import { useMarkRead } from '@/hooks/useMarkRead';
+import { useTypingIndicator } from '@/hooks/useTypingIndicator';
 import { useChats } from '@/hooks/useChatQuery';
 import { useUsers } from '@/hooks/useUserQuery';
 import type { Chat } from '@/types/messaging';
@@ -24,6 +25,7 @@ export default function DMPage() {
   const createChat = useCreateChat();
   const { data: chats = [] } = useChats();
   const markActive = useMarkRead(activeChat?.chatId ?? null);
+  const typingUserId = useTypingIndicator(activeChat?.chatId ?? null, currentUserId);
 
   useEffect(() => {
     getCurrentUser().then(u => setCurrentUserId(u.username)).catch(console.error);
@@ -90,6 +92,11 @@ export default function DMPage() {
           </div>
 
           <MessageList chatId={activeChat.chatId} currentUserId={currentUserId} />
+          {typingUserId && (
+            <div className="px-4 py-1 text-xs text-muted-foreground animate-pulse">
+              {participantName} is typing…
+            </div>
+          )}
           <MessageInput chatId={activeChat.chatId} currentUserId={currentUserId} disabled={activeChat.archived ?? false} />
         </main>
       ) : (
