@@ -285,3 +285,9 @@ export const translateMessageMutation = /* GraphQL */ `
     }
   }
 `;
+
+export const getUploadUrlMutation = /* GraphQL */ `
+  mutation GetUploadUrl($chatId: ID!, $fileName: String!) {
+    getUploadUrl(chatId: $chatId, fileName: $fileName)
+  }
+`;

@@ -11,6 +11,7 @@ import { ChatVtlResolvers } from '../constructs/api/chat-vtl-resolvers';
 interface ApiStackProps extends cdk.StackProps {
   table: Table;
   userPool: UserPool;
+  mediaBucketName: string;
 }
 
 /**
@@ -28,7 +29,7 @@ export class ApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
-    const { table, userPool } = props;
+    const { table, userPool, mediaBucketName } = props;
 
     // GraphQL API with Cognito auth
     this.api = new appsync.GraphqlApi(this, nameStackResource('graphql-api'), {
@@ -54,6 +55,7 @@ export class ApiStack extends cdk.Stack {
       api: this.api,
       table,
       userPool,
+      mediaBucketName,
     });
 
     // Outputs

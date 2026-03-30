@@ -16,6 +16,7 @@ const dataStack = new DataStack(app, nameStackResource('data-stack'), {});
 new ApiStack(app, nameStackResource('api-stack'), {
   table: dataStack.table,
   userPool: authStack.userPool,
+  mediaBucketName: dataStack.mediaBucket.bucketName,
 });
 
 new TranslationStack(app, nameStackResource('translation-stack'), {});

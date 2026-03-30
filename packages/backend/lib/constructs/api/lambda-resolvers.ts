@@ -55,6 +55,7 @@ interface LambdaResolversProps {
   api: appsync.GraphqlApi;
   table: Table;
   userPool: UserPool;
+  mediaBucketName: string;
 }
 
 /**
@@ -63,7 +64,7 @@ interface LambdaResolversProps {
  * - Friend mutations: Transactional DynamoDB operations
  */
 export class LambdaResolvers extends Construct {
-  constructor(scope: Construct, id: string, { api, table, userPool }: LambdaResolversProps) {
+  constructor(scope: Construct, id: string, { api, table, userPool, mediaBucketName }: LambdaResolversProps) {
     super(scope, id);
 
     const lambdaDir = path.join(__dirname, '../../lambda');
@@ -164,8 +165,14 @@ export class LambdaResolvers extends Construct {
       entry: path.join(lambdaDir, 'getMessages/index.ts'),
       typeName: 'Query',
       fieldName: 'getMessages',
-      environment: { TABLE_NAME: table.tableName },
-      grantFn: (fn) => table.grantReadData(fn),
+      environment: { TABLE_NAME: table.tableName, BUCKET_NAME: mediaBucketName },
+      grantFn: (fn) => {
+        table.grantReadData(fn);
+        fn.addToRolePolicy(new iam.PolicyStatement({
+          actions: ['s3:GetObject'],
+          resources: [`arn:aws:s3:::${mediaBucketName}/*`],
+        }));
+      },
     });
 
     // translateMessage — on-demand retrospective translation
@@ -180,6 +187,22 @@ export class LambdaResolvers extends Construct {
         fn.addToRolePolicy(new iam.PolicyStatement({
           actions: ['translate:TranslateText', 'comprehend:DetectDominantLanguage'],
           resources: ['*'],
+        }));
+      },
+    });
+
+    // getUploadUrl — pre-signed S3 PUT URL for file uploads
+    createLambdaResolver(this, api, {
+      name: 'get-upload-url',
+      entry: path.join(lambdaDir, 'getUploadUrl/index.ts'),
+      typeName: 'Mutation',
+      fieldName: 'getUploadUrl',
+      environment: { BUCKET_NAME: mediaBucketName, TABLE_NAME: table.tableName },
+      grantFn: (fn) => {
+        table.grantReadData(fn);
+        fn.addToRolePolicy(new iam.PolicyStatement({
+          actions: ['s3:PutObject'],
+          resources: [`arn:aws:s3:::${mediaBucketName}/*`],
         }));
       },
     });

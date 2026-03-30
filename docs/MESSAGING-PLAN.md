@@ -148,15 +148,15 @@ Basic text messaging end-to-end.
 - [x] "View original" / "View translated" toggle button on translated messages
 - [x] "Translate" button — for messages without the user's language in `translations`, calls `translateMessage` on demand
 
-### Stage 4 — File & image uploads
+### Stage 4 — File & image uploads ✅
 
 **Backend:**
-- [ ] Add `getUploadUrl(chatId, fileName)` mutation — Lambda generates `messageId`, builds S3 key `messages/<chatId>/<messageId>/<fileName>`, returns pre-signed PUT URL (5 min expiry, 25MB max)
-- [ ] Extend `getMessages` resolver — for each `attachments` entry, generate a pre-signed GET URL (1 hour expiry)
+- [x] Add `getUploadUrl(chatId, fileName)` mutation — Lambda generates `messageId`, builds S3 key `messages/<chatId>/<messageId>/<fileName>`, returns pre-signed PUT URL (5 min expiry, 25MB max)
+- [x] Extend `getMessages` resolver — for each `attachments` entry, generate a pre-signed GET URL (1 hour expiry)
 
 **Frontend:**
-- [ ] File upload button in message input — calls `getUploadUrl`, uploads to S3, then calls `sendMessage` with `type: "IMAGE"` or `"FILE"` and the S3 key in `attachments`
-- [ ] Message rendering — images shown inline, files shown as download links
+- [x] File upload button in message input — paperclip button, pending file preview, calls `getUploadUrl`, uploads to S3, then calls `sendMessage` with `type: "IMAGE"` or `"FILE"` and the S3 key in `attachments`
+- [x] Message rendering — images shown inline from pre-signed URL, files shown as download links with filename
 
 ### Stage 5 — Tenor GIFs
 

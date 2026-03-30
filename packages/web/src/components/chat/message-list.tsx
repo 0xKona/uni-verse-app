@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useEffect, useState } from "react";
-import { Languages } from "lucide-react";
+import { Languages, Paperclip } from "lucide-react";
 import { useMessages } from "@/hooks/useMessagesQuery";
 import { useUserProfile } from "@/hooks/useProfileQuery";
 import { cn } from "@/lib/utils";
@@ -145,12 +145,32 @@ function MessageBubble({
             alt="GIF"
             className="rounded-lg max-w-full"
           />
-        ) : message.type === "IMAGE" ? (
-          <img
-            src={message.content}
-            alt="Image"
-            className="rounded-lg max-w-full"
-          />
+        ) : message.type === "IMAGE" && message.attachments?.[0] ? (
+          <a
+            href={message.attachments[0]}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <img
+              src={message.attachments[0]}
+              alt={message.content}
+              className="rounded-lg max-w-full max-h-64 cursor-pointer hover:opacity-90 transition-opacity"
+            />
+          </a>
+        ) : message.type === "FILE" && message.attachments?.[0] ? (
+          <a
+            href={message.attachments[0]}
+            download={message.content}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={cn(
+              "flex items-center gap-2 hover:underline",
+              isOwn ? "text-primary-foreground" : "text-foreground",
+            )}
+          >
+            <Paperclip size={14} className="shrink-0" />
+            <span className="break-all">{message.content}</span>
+          </a>
         ) : (
           <p className="break-words">{displayContent}</p>
         )}
