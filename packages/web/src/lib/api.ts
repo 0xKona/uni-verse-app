@@ -162,3 +162,59 @@ export const onFriendListUpdated = /* GraphQL */ `
     }
   }
 `;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MESSAGING - Chat & profile operations
+// ══════════════════════════════════════════════════════════════════════════════
+
+export const getChatsQuery = /* GraphQL */ `
+  query GetChats {
+    getChats {
+      chatId
+      chatType
+      participantId
+      lastMessage
+      lastMessageAt
+      lastReadAt
+      archived
+    }
+  }
+`;
+
+export const getUserProfileQuery = /* GraphQL */ `
+  query GetUserProfile {
+    getUserProfile {
+      language
+      translationEnabled
+    }
+  }
+`;
+
+export const createChatMutation = /* GraphQL */ `
+  mutation CreateChat($participantId: ID!) {
+    createChat(participantId: $participantId) {
+      chatId
+      chatType
+      participantId
+      lastMessage
+      lastMessageAt
+      lastReadAt
+      archived
+    }
+  }
+`;
+
+export const setUserProfileMutation = /* GraphQL */ `
+  mutation SetUserProfile($language: String!, $translationEnabled: Boolean!) {
+    setUserProfile(language: $language, translationEnabled: $translationEnabled) {
+      language
+      translationEnabled
+    }
+  }
+`;
+
+export const markChatReadMutation = /* GraphQL */ `
+  mutation MarkChatRead($chatId: ID!) {
+    markChatRead(chatId: $chatId)
+  }
+`;
