@@ -8,7 +8,7 @@ export const MESSAGE_QUERY_KEYS = {
   messages: (chatId: string) => ['messages', chatId] as const,
 };
 
-interface MessagePage {
+export interface MessagePage {
   messages: Message[];
   nextToken: string | null;
 }
@@ -26,5 +26,8 @@ export function useMessages(chatId: string | null) {
     initialPageParam: null as string | null,
     getNextPageParam: (lastPage) => lastPage.nextToken,
     enabled: !!chatId,
+    // Show cached messages instantly while refetching in background
+    staleTime: 10 * 60 * 1000, // 10 min — subscription handles new messages
+    gcTime: 30 * 60 * 1000,    // 30 min — keep old chats in memory longer
   });
 }
