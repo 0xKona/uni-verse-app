@@ -34,6 +34,7 @@ import { LANGUAGES } from "@/lib/languages";
 import { useUserProfile } from "@/hooks/useProfileQuery";
 import { useSetUserProfile } from "@/hooks/useProfileMutation";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function UserSettingsCard() {
   const [username, setUsername] = useState("");
@@ -71,7 +72,12 @@ export function UserSettingsCard() {
 
   return (
     <Popover>
-      <PopoverTrigger className="flex items-center gap-2 w-full rounded-md px-2 py-2 hover:bg-background/60 transition-colors cursor-pointer">
+      <PopoverTrigger
+        className={cn(
+          "flex items-center justify-center w-12 h-12 bg-background text-muted-foreground transition-all duration-200",
+          "rounded-full hover:rounded-2xl hover:text-primary-foreground cursor-pointer",
+        )}
+      >
         <Avatar className="h-8 w-8 shrink-0">
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
