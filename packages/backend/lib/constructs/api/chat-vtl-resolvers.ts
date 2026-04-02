@@ -4,17 +4,19 @@ import { nameStackResource } from '../../utils/name-resource';
 
 interface ChatVtlResolversProps {
   tableDs: appsync.DynamoDbDataSource;
+  noneDs: appsync.NoneDataSource;
 }
 
 /**
  * VTL (DynamoDB direct) resolvers for simple chat operations.
  */
 export class ChatVtlResolvers extends Construct {
-  constructor(scope: Construct, id: string, { tableDs }: ChatVtlResolversProps) {
+  constructor(scope: Construct, id: string, { tableDs, noneDs }: ChatVtlResolversProps) {
     super(scope, id);
 
     this.createGetChats(tableDs);
     this.createMarkChatRead(tableDs);
+    this.createTypingIndicator(noneDs);
   }
 
   /** Returns all chats for the current user. */
@@ -63,6 +65,23 @@ export class ChatVtlResolvers extends Construct {
       `),
       // If the update succeeds, just return true.
       responseMappingTemplate: appsync.MappingTemplate.fromString('true'),
+    });
+  }
+
+  private createTypingIndicator(noneDs: appsync.NoneDataSource) {
+    noneDs.createResolver(nameStackResource('resolver-send-typing-indicator'), {
+      typeName: 'Mutation',
+      fieldName: 'sendTypingIndicator',
+      requestMappingTemplate: appsync.MappingTemplate.fromString(`
+        {
+          "version": "2017-02-28",
+          "payload": {
+            "chatId": "$ctx.args.chatId",
+            "userId": "$ctx.identity.username"
+          }
+        }
+      `),
+      responseMappingTemplate: appsync.MappingTemplate.fromString('$util.toJson($ctx.result)'),
     });
   }
 }
