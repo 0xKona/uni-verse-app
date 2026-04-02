@@ -6,11 +6,13 @@ const TABLE_NAME = process.env.TABLE_NAME!;
 
 const DEFAULTS = { language: 'en', translationEnabled: false };
 
-export const handler = async (event: {
+interface UserProfileInterface {
   arguments: { language?: string; translationEnabled?: boolean };
   identity: { username: string };
   info: { fieldName: string };
-}) => {
+}
+
+export const handler = async (event: UserProfileInterface) => {
   const userId = event.identity.username;
   const key = marshall({ PK: `USER#${userId}`, SK: 'PROFILE' });
 
