@@ -6,10 +6,12 @@ const dynamo = new DynamoDBClient({});
 const translate = new TranslateClient({});
 const TABLE_NAME = process.env.TABLE_NAME!;
 
-export const handler = async (event: {
+interface TranslateMessageCommand {
   arguments: { chatId: string; messageId: string; timestamp: string };
   identity: { username: string };
-}) => {
+}
+
+export const handler = async (event: TranslateMessageCommand) => {
   const userId = event.identity.username;
   const { chatId, messageId, timestamp } = event.arguments;
 
