@@ -6,7 +6,7 @@ import { useMessages } from "@/hooks/useMessagesQuery";
 import { useUserProfile } from "@/hooks/useProfileQuery";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { translateMessage } from "@/lib/api";
+import { useTranslateMessage } from "@/hooks/useTranslateMessage";
 import type { Message } from "@/types/messaging";
 
 interface MessageListProps {
@@ -83,10 +83,10 @@ function MessageBubble({
   chatId: string;
 }) {
   const [showOriginal, setShowOriginal] = useState(false);
-  const [translating, setTranslating] = useState(false);
   const [localTranslations, setLocalTranslations] = useState<
     Record<string, string>
   >({});
+  const translate = useTranslateMessage();
 
   const translations: Record<string, string> = useMemo(() => {
     try {
@@ -109,16 +109,16 @@ function MessageBubble({
     ? translations[userLang]
     : message.content;
 
-  const handleTranslate = async () => {
-    setTranslating(true);
-    try {
-      const updated = await translateMessage(chatId, message.messageId, message.createdAt);
-      const parsed = JSON.parse(updated.translations ?? '{}');
-      setLocalTranslations(parsed);
-    } catch (err) {
-      console.error("Translation failed:", err);
-    }
-    setTranslating(false);
+  const handleTranslate = () => {
+    translate.mutate(
+      { chatId, messageId: message.messageId, timestamp: message.createdAt },
+      {
+        onSuccess: (updated) => {
+          const parsed = JSON.parse(updated.translations ?? '{}');
+          setLocalTranslations(parsed);
+        },
+      },
+    );
   };
 
   return (
@@ -199,7 +199,7 @@ function MessageBubble({
             ) : (
               <button
                 onClick={handleTranslate}
-                disabled={translating}
+                disabled={translate.isPending}
                 className={cn(
                   "text-[10px] ml-1 hover:underline cursor-pointer inline-flex items-center gap-0.5",
                   isOwn
@@ -208,7 +208,7 @@ function MessageBubble({
                 )}
               >
                 <Languages size={10} />
-                {translating ? "Translating…" : "Translate"}
+                                {translate.isPending ? "Translating…" : "Translate"}
               </button>
             ))}
         </div>
