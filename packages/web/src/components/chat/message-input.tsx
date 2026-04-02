@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useSendMessage } from "@/hooks/useMessageMutation";
 import { useSendTyping } from "@/hooks/useTypingIndicator";
 import { GifPicker } from "@/components/chat/gif-picker";
-import { apiClient, getUploadUrlMutation } from "@/lib/api";
+import { getUploadUrl } from "@/lib/api";
 
 interface MessageInputProps {
   chatId: string;
@@ -45,11 +45,8 @@ export function MessageInput({
     setUploading(true);
     try {
       // Get pre-signed upload URL
-      const res = await apiClient.graphql({
-        query: getUploadUrlMutation,
-        variables: { chatId, fileName: pendingFile.name },
-      });
-      const { url, key } = JSON.parse((res as any).data.getUploadUrl);
+      const raw = await getUploadUrl(chatId, pendingFile.name);
+      const { url, key } = JSON.parse(raw);
 
       // Upload directly to S3
       await fetch(url, { method: "PUT", body: pendingFile });

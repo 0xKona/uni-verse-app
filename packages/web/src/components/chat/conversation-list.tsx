@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useChats } from '@/hooks/useChatQuery';
 import { useUsers } from '@/hooks/useUserQuery';
 import { MESSAGE_QUERY_KEYS } from '@/hooks/useMessagesQuery';
-import { apiClient, getMessagesQuery } from '@/lib/api';
+import { fetchMessages } from '@/lib/api';
 import { useQueryClient } from '@tanstack/react-query';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { EmptyState } from '@/components/ui/empty-state';
@@ -60,13 +60,7 @@ export function ConversationList({ activeChatId, onSelectChat }: ConversationLis
               // Prefetch messages on hover so they're ready when clicked
               qc.prefetchInfiniteQuery({
                 queryKey: MESSAGE_QUERY_KEYS.messages(chat.chatId),
-                queryFn: async () => {
-                  const res = await apiClient.graphql({
-                    query: getMessagesQuery,
-                    variables: { chatId: chat.chatId, nextToken: null },
-                  });
-                  return (res as any).data.getMessages;
-                },
+                queryFn: () => fetchMessages(chat.chatId),
                 initialPageParam: null,
                 staleTime: 10 * 60 * 1000,
               });

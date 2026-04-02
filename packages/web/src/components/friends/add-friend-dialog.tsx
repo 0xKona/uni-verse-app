@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/dialog";
 import { UserCard } from "@/components/ui/user-card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { apiClient, searchUsersQuery } from "@/lib/api";
+import { searchUsers } from "@/lib/api";
 import { useSendFriendRequest } from "@/hooks/useFriendsMutation";
 import type { User } from "@/types/friends";
 
@@ -34,11 +34,8 @@ export function AddFriendDialog() {
     setSearching(true);
     setError("");
     try {
-      const res = await apiClient.graphql({
-        query: searchUsersQuery,
-        variables: { query },
-      });
-      setResults((res as any).data.searchUsers);
+      const users = await searchUsers(query);
+      setResults(users);
     } catch {
       setError("Search failed. Please try again.");
     } finally {

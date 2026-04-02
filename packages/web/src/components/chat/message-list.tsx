@@ -6,7 +6,7 @@ import { useMessages } from "@/hooks/useMessagesQuery";
 import { useUserProfile } from "@/hooks/useProfileQuery";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { apiClient, translateMessageMutation } from "@/lib/api";
+import { translateMessage } from "@/lib/api";
 import type { Message } from "@/types/messaging";
 
 interface MessageListProps {
@@ -112,16 +112,8 @@ function MessageBubble({
   const handleTranslate = async () => {
     setTranslating(true);
     try {
-      const res = await apiClient.graphql({
-        query: translateMessageMutation,
-        variables: {
-          chatId,
-          messageId: message.messageId,
-          timestamp: message.createdAt,
-        },
-      });
-      const updated = (res as any).data.translateMessage;
-      const parsed = JSON.parse(updated.translations);
+      const updated = await translateMessage(chatId, message.messageId, message.createdAt);
+      const parsed = JSON.parse(updated.translations ?? '{}');
       setLocalTranslations(parsed);
     } catch (err) {
       console.error("Translation failed:", err);
