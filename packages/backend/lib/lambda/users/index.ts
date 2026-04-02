@@ -41,7 +41,8 @@ async function getUsers(ids: string[]): Promise<User[]> {
   return results.filter((u): u is User => u !== null);
 }
 
-/** Searches users by username or email prefix */
+/** Searches users by preferred_username or email prefix.
+ *  Runs both filters in parallel, merges results, deduplicates, and excludes the caller. */
 async function searchUsers(query: string, callerId: string): Promise<User[]> {
   const [byUsername, byEmail] = await Promise.all([
     client.send(new ListUsersCommand({
@@ -67,6 +68,15 @@ async function searchUsers(query: string, callerId: string): Promise<User[]> {
     .map(u => mapCognitoUser(u.Username!, u.Attributes));
 }
 
+/**
+ * Single Lambda handling all user-related queries against Cognito:
+ *   - getUser:     fetch one user by Cognito username (AdminGetUser)
+ *   - getUsers:    fetch multiple users in parallel by username
+ *   - searchUsers: prefix search by preferred_username or email (ListUsers)
+ *
+ * Routes to the correct function based on event.info.fieldName, which AppSync
+ * sets to the GraphQL field that triggered the resolver.
+ */
 export const handler = async (event: {
   arguments: { id?: string; ids?: string[]; query?: string };
   identity: { username: string };

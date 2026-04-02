@@ -8,7 +8,6 @@ interface FriendVtlResolversProps {
 
 /**
  * VTL (DynamoDB direct) resolvers for simple friend operations.
- * These don't require Lambda because they're single DynamoDB operations.
  */
 export class FriendVtlResolvers extends Construct {
   constructor(scope: Construct, id: string, { tableDs }: FriendVtlResolversProps) {
@@ -26,6 +25,11 @@ export class FriendVtlResolvers extends Construct {
     tableDs.createResolver(nameStackResource('resolver-send-friend-request'), {
       typeName: 'Mutation',
       fieldName: 'sendFriendRequest',
+      /*
+        item stored under senders partition. keyed by the recipient. 
+        If connor sends a request to alice, the key is PK = "USER#connor",
+        SK = "FRIEND#alice".
+      */
       requestMappingTemplate: appsync.MappingTemplate.fromString(`
         #set($senderId = $ctx.identity.username)
         #set($recipientId = $ctx.args.recipientId)

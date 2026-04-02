@@ -7,7 +7,6 @@ This document outlines how the application backend is split up into CDK stacks a
 - Auth Stack: Contains cognito user pools and setup
 - API Stack: GraphQL setup and Translation Mutations
 - Data Stack: Contains DynamoDB Tables and S3 Buckets
-- Translation Stack: Real-time translations.
 
 ## Constructs List
 
@@ -22,7 +21,3 @@ This document outlines how the application backend is split up into CDK stacks a
 - Data Stack:
   - DynamoDB Construct (Set up main and backup)
   - S3 Media Construct
-
-- Translation Stack:
-  - Translation Lambda
-  - Amazon Translate

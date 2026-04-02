@@ -9,10 +9,20 @@ const s3 = new S3Client({});
 const TABLE_NAME = process.env.TABLE_NAME!;
 const BUCKET_NAME = process.env.BUCKET_NAME!;
 
-export const handler = async (event: {
+interface GetUploadUrlInterface {
   arguments: { chatId: string; fileName: string };
   identity: { username: string };
-}) => {
+}
+
+/**
+ * Generates a pre-signed S3 PUT URL so the client can upload a file directly to S3.
+ *
+ * Flow: verifies the caller belongs to the chat, generates a unique message ID and
+ * S3 key, then returns a short-lived (5 min) pre-signed URL. The client PUTs the
+ * file to that URL, then calls sendMessage with the returned key/messageId to
+ * attach it to a chat message.
+ */
+export const handler = async (event: GetUploadUrlInterface) => {
   const { chatId, fileName } = event.arguments;
   const userId = event.identity.username;
 

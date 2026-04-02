@@ -7,49 +7,7 @@ import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import { Construct } from 'constructs';
 import * as path from 'path';
 import nameResource, { nameStackResource } from '../../utils/name-resource';
-
-// ══════════════════════════════════════════════════════════════════════════════
-// Shared Lambda resolver factory
-// ══════════════════════════════════════════════════════════════════════════════
-
-interface LambdaResolverConfig {
-  name: string;
-  entry: string;
-  typeName: 'Query' | 'Mutation';
-  fieldName: string;
-  environment: Record<string, string>;
-  grantFn: (fn: lambda.IFunction) => void;
-}
-
-function createLambdaResolver(
-  scope: Construct,
-  api: appsync.GraphqlApi,
-  config: LambdaResolverConfig
-) {
-  // Don't specify logGroup — let Lambda auto-create it to avoid conflicts
-  const fn = new lambdaNodejs.NodejsFunction(scope, nameStackResource(`${config.name}-fn`), {
-    functionName: nameResource(`${config.name}-fn`),
-    entry: config.entry,
-    runtime: lambda.Runtime.NODEJS_22_X,
-    environment: config.environment,
-  });
-
-  config.grantFn(fn);
-
-  const ds = api.addLambdaDataSource(nameStackResource(`${config.name}-ds`), fn);
-  ds.createResolver(nameStackResource(`resolver-${config.name}`), {
-    typeName: config.typeName,
-    fieldName: config.fieldName,
-    requestMappingTemplate: appsync.MappingTemplate.lambdaRequest(),
-    responseMappingTemplate: appsync.MappingTemplate.lambdaResult(),
-  });
-
-  return { fn, ds };
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// Lambda Resolvers
-// ══════════════════════════════════════════════════════════════════════════════
+import { createLambdaResolver } from './lambda-resolver-factory';
 
 interface LambdaResolversProps {
   api: appsync.GraphqlApi;
@@ -69,7 +27,9 @@ export class LambdaResolvers extends Construct {
 
     const lambdaDir = path.join(__dirname, '../../lambda');
 
-    // User queries — single Lambda handles getUser, getUsers, searchUsers
+    // ---------------------------------------------------------------------------------------
+    // SETUP USER QUERIES (getUser, getUsers, searchUsers)
+    // ---------------------------------------------------------------------------------------
     const usersLambda = new lambdaNodejs.NodejsFunction(this, nameStackResource('users-fn'), {
       functionName: nameResource('users-fn'),
       entry: path.join(lambdaDir, 'users/index.ts'),
@@ -82,17 +42,21 @@ export class LambdaResolvers extends Construct {
       resources: [userPool.userPoolArn],
     }));
 
-    const usersDs = api.addLambdaDataSource(nameStackResource('users-ds'), usersLambda);
+    const usersDataSrc = api.addLambdaDataSource(nameStackResource('users-ds'), usersLambda);
 
     // Attach resolvers for all user queries
     ['getUser', 'getUsers', 'searchUsers'].forEach(fieldName => {
-      usersDs.createResolver(nameStackResource(`resolver-${fieldName}`), {
+      usersDataSrc.createResolver(nameStackResource(`resolver-${fieldName}`), {
         typeName: 'Query',
         fieldName,
         requestMappingTemplate: appsync.MappingTemplate.lambdaRequest(),
         responseMappingTemplate: appsync.MappingTemplate.lambdaResult(),
       });
     });
+
+    // ---------------------------------------------------------------------------------------
+    // RESOLVER LAMBDA SETUP
+    // ---------------------------------------------------------------------------------------
 
     // respondToFriendRequest — transactional accept/decline
     createLambdaResolver(this, api, {

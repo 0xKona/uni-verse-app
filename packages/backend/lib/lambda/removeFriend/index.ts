@@ -4,10 +4,12 @@ import { marshall, unmarshall } from '@aws-sdk/util-dynamodb';
 const dynamo = new DynamoDBClient({});
 const TABLE_NAME = process.env.TABLE_NAME!;
 
-export const handler = async (event: {
+interface RemoveFriendReqInterface {
   arguments: { friendId: string };
   identity: { username: string };
-}) => {
+}
+
+export const handler = async (event: RemoveFriendReqInterface) => {
   const callerId = event.identity.username;
   const { friendId } = event.arguments;
 

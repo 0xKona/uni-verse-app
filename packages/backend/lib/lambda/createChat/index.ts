@@ -5,10 +5,12 @@ import { randomUUID } from 'crypto';
 const dynamo = new DynamoDBClient({});
 const TABLE_NAME = process.env.TABLE_NAME!;
 
-export const handler = async (event: {
+interface CreateChatInterface {
   arguments: { participantId: string };
   identity: { username: string };
-}) => {
+}
+
+export const handler = async (event: CreateChatInterface) => {
   const userId = event.identity.username;
   const { participantId } = event.arguments;
 
