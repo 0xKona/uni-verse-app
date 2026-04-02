@@ -26,6 +26,52 @@ type FriendRequest {
   createdAt: String!
 }
 
+# ── Messaging ─────────────────────────────────────────────────────────────────
+
+enum MessageType {
+  TEXT
+  IMAGE
+  GIF
+  FILE
+}
+
+type Message {
+  chatId: ID!
+  messageId: ID!
+  senderId: ID!
+  recipientId: ID!
+  type: MessageType!
+  content: String!
+  attachments: [String]
+  translations: AWSJSON
+  createdAt: String!
+}
+
+type MessageConnection {
+  messages: [Message!]!
+  nextToken: String
+}
+
+type Chat {
+  chatId: ID!
+  chatType: String!
+  participantId: ID!
+  lastMessage: String
+  lastMessageAt: String
+  lastReadAt: String
+  archived: Boolean
+}
+
+type UserProfile {
+  language: String!
+  translationEnabled: Boolean!
+}
+
+type TypingIndicator {
+  chatId: ID!
+  userId: ID!
+}
+
 # ── Queries ───────────────────────────────────────────────────────────────────
 
 type Query {
@@ -35,6 +81,9 @@ type Query {
   getFriends: [FriendRequest!]!
   getPendingRequests: [FriendRequest!]!
   getSentRequests: [FriendRequest!]!
+  getMessages(chatId: ID!, nextToken: String): MessageConnection!
+  getChats: [Chat!]!
+  getUserProfile: UserProfile!
 }
 
 # ── Mutations ─────────────────────────────────────────────────────────────────
@@ -44,23 +93,30 @@ type Mutation {
   respondToFriendRequest(senderId: ID!, accept: Boolean!): FriendRequest!
   cancelFriendRequest(recipientId: ID!): Boolean!
   removeFriend(friendId: ID!): FriendRequest!
+  sendMessage(chatId: ID!, content: String!, type: MessageType!, attachments: [String]): Message!
+  createChat(participantId: ID!): Chat!
+  markChatRead(chatId: ID!): Boolean!
+  getUploadUrl(chatId: ID!, fileName: String!): String!
+  setUserProfile(language: String!, translationEnabled: Boolean!): UserProfile!
+  translateMessage(chatId: ID!, messageId: ID!, timestamp: String!): Message!
+  sendTypingIndicator(chatId: ID!): TypingIndicator!
 }
 
 # ── Subscriptions ─────────────────────────────────────────────────────────────
-# @aws_subscribe auto-wires subscriptions to mutations. No resolvers needed.
-# Filtering: subscription arg name must match a field in mutation return type.
 
 type Subscription {
-  # Notifies recipient when they receive a friend request
-  # Filtered: only fires when mutation result's recipientId matches the arg
   onFriendRequestReceived(recipientId: ID!): FriendRequest
     @aws_subscribe(mutations: ["sendFriendRequest"])
 
-  # Notifies when a request is accepted/declined (no server filter, client filters)
   onFriendRequestUpdated: FriendRequest
     @aws_subscribe(mutations: ["respondToFriendRequest"])
 
-  # Notifies when friends list changes (no server filter, client filters)
   onFriendListUpdated: FriendRequest
     @aws_subscribe(mutations: ["respondToFriendRequest", "removeFriend"])
+
+  onMessageReceived(recipientId: ID!): Message
+    @aws_subscribe(mutations: ["sendMessage"])
+
+  onTypingIndicator(chatId: ID!): TypingIndicator
+    @aws_subscribe(mutations: ["sendTypingIndicator"])
 }

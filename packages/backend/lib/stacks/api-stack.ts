@@ -6,10 +6,12 @@ import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import * as path from 'path';
 import nameResource, { nameStackResource } from '../utils/name-resource';
 import { FriendVtlResolvers, LambdaResolvers } from '../constructs/api';
+import { ChatVtlResolvers } from '../constructs/api/chat-vtl-resolvers';
 
 interface ApiStackProps extends cdk.StackProps {
   table: Table;
   userPool: UserPool;
+  mediaBucketName: string;
 }
 
 /**
@@ -27,7 +29,7 @@ export class ApiStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: ApiStackProps) {
     super(scope, id, props);
 
-    const { table, userPool } = props;
+    const { table, userPool, mediaBucketName } = props;
 
     // GraphQL API with Cognito auth
     this.api = new appsync.GraphqlApi(this, nameStackResource('graphql-api'), {
@@ -46,12 +48,31 @@ export class ApiStack extends cdk.Stack {
     // DynamoDB datasource for VTL resolvers
     const tableDs = this.api.addDynamoDbDataSource(nameStackResource('table-ds'), table);
 
+    // NONE datasource for fire-and-forget mutations (typing indicators)
+    const noneDs = this.api.addNoneDataSource(nameStackResource('none-ds'));
+    noneDs.createResolver(nameStackResource('resolver-send-typing-indicator'), {
+      typeName: 'Mutation',
+      fieldName: 'sendTypingIndicator',
+      requestMappingTemplate: appsync.MappingTemplate.fromString(`
+        {
+          "version": "2017-02-28",
+          "payload": {
+            "chatId": "$ctx.args.chatId",
+            "userId": "$ctx.identity.username"
+          }
+        }
+      `),
+      responseMappingTemplate: appsync.MappingTemplate.fromString('$util.toJson($ctx.result)'),
+    });
+
     // Resolvers
     new FriendVtlResolvers(this, nameStackResource('friend-vtl-resolvers'), { tableDs });
+    new ChatVtlResolvers(this, nameStackResource('chat-vtl-resolvers'), { tableDs });
     new LambdaResolvers(this, nameStackResource('friend-lambda-resolvers'), {
       api: this.api,
       table,
       userPool,
+      mediaBucketName,
     });
 
     // Outputs

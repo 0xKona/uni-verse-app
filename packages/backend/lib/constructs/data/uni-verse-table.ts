@@ -52,5 +52,21 @@ export class UniVerseTable extends Construct {
       sortKey: { name: 'status', type: AttributeType.STRING },
       projectionType: ProjectionType.ALL,
     });
+
+    /*
+     * chatId-index — Lookup all members of a chat.
+     *
+     * Chat membership items are stored with PK=USER#<userId>, SK=CHAT#<chatId>.
+     * This index allows querying from the chat side to find all participants,
+     * needed by sendMessage for translation lookups and membership updates.
+     *
+     * Used for: finding all members of a chat
+     */
+    this.table.addGlobalSecondaryIndex({
+      indexName: 'chatId-index',
+      partitionKey: { name: 'chatId', type: AttributeType.STRING },
+      sortKey: { name: 'PK', type: AttributeType.STRING },
+      projectionType: ProjectionType.ALL,
+    });
   }
 }

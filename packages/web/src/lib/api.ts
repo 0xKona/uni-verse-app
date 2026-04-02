@@ -162,3 +162,150 @@ export const onFriendListUpdated = /* GraphQL */ `
     }
   }
 `;
+
+// ══════════════════════════════════════════════════════════════════════════════
+// MESSAGING - Chat & profile operations
+// ══════════════════════════════════════════════════════════════════════════════
+
+export const getChatsQuery = /* GraphQL */ `
+  query GetChats {
+    getChats {
+      chatId
+      chatType
+      participantId
+      lastMessage
+      lastMessageAt
+      lastReadAt
+      archived
+    }
+  }
+`;
+
+export const getUserProfileQuery = /* GraphQL */ `
+  query GetUserProfile {
+    getUserProfile {
+      language
+      translationEnabled
+    }
+  }
+`;
+
+export const createChatMutation = /* GraphQL */ `
+  mutation CreateChat($participantId: ID!) {
+    createChat(participantId: $participantId) {
+      chatId
+      chatType
+      participantId
+      lastMessage
+      lastMessageAt
+      lastReadAt
+      archived
+    }
+  }
+`;
+
+export const setUserProfileMutation = /* GraphQL */ `
+  mutation SetUserProfile($language: String!, $translationEnabled: Boolean!) {
+    setUserProfile(language: $language, translationEnabled: $translationEnabled) {
+      language
+      translationEnabled
+    }
+  }
+`;
+
+export const markChatReadMutation = /* GraphQL */ `
+  mutation MarkChatRead($chatId: ID!) {
+    markChatRead(chatId: $chatId)
+  }
+`;
+
+export const sendMessageMutation = /* GraphQL */ `
+  mutation SendMessage($chatId: ID!, $content: String!, $type: MessageType!, $attachments: [String]) {
+    sendMessage(chatId: $chatId, content: $content, type: $type, attachments: $attachments) {
+      chatId
+      messageId
+      senderId
+      recipientId
+      type
+      content
+      attachments
+      translations
+      createdAt
+    }
+  }
+`;
+
+export const getMessagesQuery = /* GraphQL */ `
+  query GetMessages($chatId: ID!, $nextToken: String) {
+    getMessages(chatId: $chatId, nextToken: $nextToken) {
+      messages {
+        chatId
+        messageId
+        senderId
+        recipientId
+        type
+        content
+        attachments
+        translations
+        createdAt
+      }
+      nextToken
+    }
+  }
+`;
+
+export const onMessageReceived = /* GraphQL */ `
+  subscription OnMessageReceived($recipientId: ID!) {
+    onMessageReceived(recipientId: $recipientId) {
+      chatId
+      messageId
+      senderId
+      recipientId
+      type
+      content
+      attachments
+      translations
+      createdAt
+    }
+  }
+`;
+
+export const translateMessageMutation = /* GraphQL */ `
+  mutation TranslateMessage($chatId: ID!, $messageId: ID!, $timestamp: String!) {
+    translateMessage(chatId: $chatId, messageId: $messageId, timestamp: $timestamp) {
+      chatId
+      messageId
+      senderId
+      recipientId
+      type
+      content
+      attachments
+      translations
+      createdAt
+    }
+  }
+`;
+
+export const getUploadUrlMutation = /* GraphQL */ `
+  mutation GetUploadUrl($chatId: ID!, $fileName: String!) {
+    getUploadUrl(chatId: $chatId, fileName: $fileName)
+  }
+`;
+
+export const sendTypingIndicatorMutation = /* GraphQL */ `
+  mutation SendTypingIndicator($chatId: ID!) {
+    sendTypingIndicator(chatId: $chatId) {
+      chatId
+      userId
+    }
+  }
+`;
+
+export const onTypingIndicator = /* GraphQL */ `
+  subscription OnTypingIndicator($chatId: ID!) {
+    onTypingIndicator(chatId: $chatId) {
+      chatId
+      userId
+    }
+  }
+`;
