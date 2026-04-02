@@ -1,23 +1,10 @@
-# Messaging Implementation Plan
+# Messaging Implementation
 
-## 1. Requirements
-
-- Send and receive instant messages.
-- Users can set a language; incoming messages will be translated on send.
-- Users can click a button to view a message in the original language.
-- Users can retrospectively translate older messages on demand.
-- Users can send files and images via S3 pre-signed URLs.
-- Users can search and send Tenor GIFs (client-side, sent as a URL).
-- Users should see when another user is typing.
-- Chats persist after unfriending (read-only).
-
----
-
-## 2. Data Model
+## 1. Data Model
 
 All items live in the existing single-table (`PK`/`SK`).
 
-### 2.1 Message Item
+### 1.1 Message Item
 
 ```json
 {
@@ -48,7 +35,7 @@ All items live in the existing single-table (`PK`/`SK`).
 | `translations` | ISO 639-1 language codes as keys (`sk`, `fr`, `en`). Populated eagerly on send.                      |
 | `content`      | Always the original language. "View original" displays this field directly.                          |
 
-### 2.2 Chat Membership Item
+### 1.2 Chat Membership Item
 
 One per user per chat. Powers the conversation list and read tracking. Acts like a join table in a relational db.
 
@@ -74,7 +61,7 @@ One per user per chat. Powers the conversation list and read tracking. Acts like
 | `lastReadAt`                    | Messages with `createdAt > lastReadAt` are unread. Replaces per-message read booleans.  |
 | `archived`                      | Set to `true` on unfriend. Frontend renders as read-only; `sendMessage` rejects writes. |
 
-### 2.3 User Profile Item
+### 1.3 User Profile Item
 
 Global user preferences. Used by the translation system.
 
@@ -92,7 +79,7 @@ Global user preferences. Used by the translation system.
 | `language`           | ISO 639-1 code. Defaults to `en` if unset.  |
 | `translationEnabled` | Lets users opt out of translation entirely. |
 
-### 2.4 New GSI
+### 1.4 New GSI
 
 ```
 chatId-index:  PK = chatId,  SK = userId
@@ -102,7 +89,7 @@ Projected from chat membership items. Used to look up all members of a chat (nee
 
 ---
 
-## 3. GraphQL Schema Additions (Reference)
+## 2. GraphQL Schema Additions (Reference)
 
 ```graphql
 # Types
