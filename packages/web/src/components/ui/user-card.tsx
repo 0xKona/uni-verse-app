@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
+import { capitalizeText, cn } from "@/lib/utils";
 import type { User } from "@/types/friends";
 
 interface UserCardProps {
@@ -22,8 +22,9 @@ export function UserCard({
   children,
 }: UserCardProps) {
   console.log({ user });
-  const displaySubtitle = subtitle ?? user.email;
+  const displaySubtitle = subtitle ?? "";
   const initials = user.username[0]?.toUpperCase() ?? "?";
+  const username = capitalizeText(user.username);
 
   return (
     <li
@@ -42,7 +43,7 @@ export function UserCard({
           <AvatarFallback>{initials}</AvatarFallback>
         </Avatar>
         <div className="flex flex-col min-w-0">
-          <span className="text-sm font-medium truncate">{user.username}</span>
+          <span className="text-sm font-medium truncate">{username}</span>
           {displaySubtitle && (
             <span className="text-xs text-muted-foreground truncate">
               {displaySubtitle}
