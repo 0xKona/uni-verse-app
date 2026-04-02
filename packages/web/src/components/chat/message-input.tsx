@@ -4,11 +4,15 @@ import { useState, useRef } from "react";
 import { Send, Paperclip, X, SmilePlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { useSendMessage } from "@/hooks/useMessageMutation";
 import { useSendTyping } from "@/hooks/useTypingIndicator";
+import { useUploadFile } from "@/hooks/useUploadFile";
 import { GifPicker } from "@/components/chat/gif-picker";
-import { getUploadUrl } from "@/lib/api";
 
 interface MessageInputProps {
   chatId: string;
@@ -22,51 +26,37 @@ export function MessageInput({
   disabled,
 }: MessageInputProps) {
   const [text, setText] = useState("");
-  const [uploading, setUploading] = useState(false);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [gifOpen, setGifOpen] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const sendMessage = useSendMessage(currentUserId);
+  const uploadFile = useUploadFile();
   const sendTyping = useSendTyping(chatId);
 
-  const handleSend = async () => {
+  const handleSend = () => {
     if (pendingFile) {
-      await handleSendFile();
+      uploadFile.mutate(
+        { chatId, file: pendingFile },
+        {
+          onSuccess: ({ key, previewUrl, isImage, fileName }) => {
+            sendMessage.mutate({
+              chatId,
+              content: fileName,
+              type: isImage ? "IMAGE" : "FILE",
+              attachments: [key],
+              _previewUrls: [previewUrl],
+            });
+            setPendingFile(null);
+            setText("");
+          },
+        },
+      );
       return;
     }
     const content = text.trim();
     if (!content) return;
     sendMessage.mutate({ chatId, content, type: "TEXT" });
     setText("");
-  };
-
-  const handleSendFile = async () => {
-    if (!pendingFile) return;
-    setUploading(true);
-    try {
-      // Get pre-signed upload URL
-      const raw = await getUploadUrl(chatId, pendingFile.name);
-      const { url, key } = JSON.parse(raw);
-
-      // Upload directly to S3
-      await fetch(url, { method: "PUT", body: pendingFile });
-
-      // Send message with S3 key — optimistic update uses blob URL for instant preview
-      const isImage = pendingFile.type.startsWith("image/");
-      const previewUrl = URL.createObjectURL(pendingFile);
-      sendMessage.mutate({
-        chatId,
-        content: pendingFile.name,
-        type: isImage ? "IMAGE" : "FILE",
-        attachments: [key],
-        _previewUrls: [previewUrl],
-      });
-      setPendingFile(null);
-      setText("");
-    } catch (err) {
-      console.error("Upload failed:", err);
-    }
-    setUploading(false);
   };
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,7 +79,7 @@ export function MessageInput({
     setGifOpen(false);
   };
 
-  const busy = disabled || uploading || sendMessage.isPending;
+  const busy = disabled || uploadFile.isPending || sendMessage.isPending;
 
   return (
     <div className="border-t border-border">
