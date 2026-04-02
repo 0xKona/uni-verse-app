@@ -24,9 +24,9 @@ export function useRespondToFriendRequest() {
   return useMutation({
     mutationFn: ({ senderId, accept }: { senderId: string; accept: boolean }) =>
       respondToFriendRequest(senderId, accept),
-    onSuccess: () => {
+    onSuccess: (_data, { accept }) => {
       queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.pending() });
-      if (true) { // accept case - only refetch friends on acceptance
+      if (accept) {
         queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.list() });
       }
     },
