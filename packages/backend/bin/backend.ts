@@ -1,10 +1,14 @@
-#!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
 import { AuthStack } from '../lib/stacks/auth-stack';
 import { ApiStack } from '../lib/stacks/api-stack';
 import { DataStack } from '../lib/stacks/data-stack';
 import { nameStackResource } from '../lib/utils/name-resource';
 import { TranslationStack } from '../lib/stacks/translation-stack';
+
+/*
+  This is the entry point for the entire backend application. It loads in the various stacks
+  and provides each with any required resources from other stacks
+*/
 
 const app = new cdk.App();
 
