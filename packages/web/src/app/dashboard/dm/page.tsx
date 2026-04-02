@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { getCurrentUser } from 'aws-amplify/auth';
+import { useState, useCallback } from 'react';
+import { useCurrentUserId } from '@/hooks/useCurrentUserId';
 import { Separator } from '@/components/ui/separator';
 import { AddFriendDialog } from '@/components/friends/add-friend-dialog';
 import { FriendsList } from '@/components/friends/friends-list';
@@ -20,16 +20,12 @@ import { useUsers } from '@/hooks/useUserQuery';
 import type { Chat } from '@/types/messaging';
 
 export default function DMPage() {
-  const [currentUserId, setCurrentUserId] = useState('');
+  const currentUserId = useCurrentUserId();
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
   const createChat = useCreateChat();
   const { data: chats = [] } = useChats();
   const markActive = useMarkRead(activeChat?.chatId ?? null);
   const typingUserId = useTypingIndicator(activeChat?.chatId ?? null, currentUserId);
-
-  useEffect(() => {
-    getCurrentUser().then(u => setCurrentUserId(u.username)).catch(console.error);
-  }, []);
 
   // Subscribe to all incoming messages
   useMessageSubscription(currentUserId || null);

@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { getCurrentUser } from 'aws-amplify/auth';
+import { useState, useMemo } from 'react';
+import { useCurrentUserId } from '@/hooks/useCurrentUserId';
 import { UserCard } from '@/components/ui/user-card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from '@/components/ui/context-menu';
@@ -18,12 +18,8 @@ interface FriendsListProps {
 export function FriendsList({ onSelectFriend }: FriendsListProps = {}) {
   const { data: friends = [], isLoading, error } = useFriends();
   const removeFriend = useRemoveFriend();
-  const [currentUserId, setCurrentUserId] = useState('');
+  const currentUserId = useCurrentUserId();
   const [confirmUnfriend, setConfirmUnfriend] = useState<User | null>(null);
-
-  useEffect(() => {
-    getCurrentUser().then((u) => setCurrentUserId(u.username)).catch(console.error);
-  }, []);
 
   // Extract peer IDs from friend requests
   const peerIds = useMemo(() => {

@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { getCurrentUser } from 'aws-amplify/auth';
+import { useCurrentUserId } from './useCurrentUserId';
 import {
   apiClient,
   onFriendRequestReceived,
@@ -215,20 +215,7 @@ export function useSubscribeFriendListUpdated(userId: string | null) {
  * Example: useSubscribeFriendsRealtime() in root dashboard
  */
 export function useSubscribeFriendsRealtime() {
-  const [userId, setUserId] = useState<string | null>(null);
-
-  // Get current user ID
-  useEffect(() => {
-    const loadUser = async () => {
-      try {
-        const user = await getCurrentUser();
-        setUserId(user.username);
-      } catch (error) {
-        console.error('Failed to get current user for subscriptions:', error);
-      }
-    };
-    loadUser();
-  }, []);
+  const userId = useCurrentUserId() || null;
 
   // Enable all subscriptions with the user ID
   useSubscribeFriendRequestReceived(userId);
