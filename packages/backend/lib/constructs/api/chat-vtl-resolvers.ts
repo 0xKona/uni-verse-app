@@ -35,6 +35,7 @@ export class ChatVtlResolvers extends Construct {
           }
         }
       `),
+      // Use built in appSync resolver to return all items. 
       responseMappingTemplate: appsync.MappingTemplate.dynamoDbResultList(),
     });
   }
@@ -60,6 +61,7 @@ export class ChatVtlResolvers extends Construct {
           }
         }
       `),
+      // If the update succeeds, just return true.
       responseMappingTemplate: appsync.MappingTemplate.fromString('true'),
     });
   }
