@@ -5,19 +5,19 @@ import type { User } from '@/types/friends';
 
 export const getUserQuery = /* GraphQL */ `
   query GetUser($id: ID!) {
-    getUser(id: $id) { id username email }
+    getUser(id: $id) { id username email avatarUrl }
   }
 `;
 
 export const getUsersQuery = /* GraphQL */ `
   query GetUsers($ids: [ID!]!) {
-    getUsers(ids: $ids) { id username email }
+    getUsers(ids: $ids) { id username email avatarUrl }
   }
 `;
 
 export const searchUsersQuery = /* GraphQL */ `
   query SearchUsers($query: String!) {
-    searchUsers(query: $query) { id username email }
+    searchUsers(query: $query) { id username email avatarUrl }
   }
 `;
 

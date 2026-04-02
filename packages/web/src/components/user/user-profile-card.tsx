@@ -35,6 +35,7 @@ import { useUserProfile } from "@/hooks/useProfileQuery";
 import { useSetUserProfile } from "@/hooks/useProfileMutation";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "../ui/card";
+import { capitalizeText } from "@/lib/utils";
 
 export default function UserProfileCard() {
   const [username, setUsername] = useState("");
@@ -79,8 +80,10 @@ export default function UserProfileCard() {
           </Avatar>
 
           <Popover>
-            <PopoverTrigger className="flex flex-1 items-center justify-between min-w-0 cursor-pointer rounded-md px-2 py-1 hover:bg-accent transition-colors">
-              <span className="text-sm font-medium truncate">{username}</span>
+            <PopoverTrigger className="flex flex-1 items-center justify-between min-w-0 cursor-pointer rounded-md px-2 py-3 hover:bg-accent transition-colors">
+              <span className="text-m font-medium truncate">
+                {capitalizeText(username)}
+              </span>
               <ChevronUp
                 size={14}
                 className="shrink-0 text-muted-foreground ml-2"

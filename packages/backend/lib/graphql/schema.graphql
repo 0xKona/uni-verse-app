@@ -9,6 +9,7 @@ type User {
   id: ID!
   username: String!
   email: String
+  avatarUrl: String
 }
 
 # ── Friends ───────────────────────────────────────────────────────────────────

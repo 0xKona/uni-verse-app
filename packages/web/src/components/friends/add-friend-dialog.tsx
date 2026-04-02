@@ -15,7 +15,6 @@ import { UserCard } from "@/components/ui/user-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useSearchUsers } from "@/hooks/useSearchUsers";
 import { useSendFriendRequest } from "@/hooks/useFriendsMutation";
-import type { User } from "@/types/friends";
 
 export function AddFriendDialog() {
   const [open, setOpen] = useState(false);
@@ -73,8 +72,14 @@ export function AddFriendDialog() {
           </Button>
         </form>
 
-        {search.isError && <p className="text-sm text-destructive">Search failed. Please try again.</p>}
-        {sendRequest.isError && <p className="text-sm text-destructive">Failed to send request.</p>}
+        {search.isError && (
+          <p className="text-sm text-destructive">
+            Search failed. Please try again.
+          </p>
+        )}
+        {sendRequest.isError && (
+          <p className="text-sm text-destructive">Failed to send request.</p>
+        )}
 
         {(search.data?.length ?? 0) > 0 && (
           <ul className="flex flex-col gap-1 mt-1">

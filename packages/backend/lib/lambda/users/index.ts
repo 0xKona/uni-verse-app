@@ -11,6 +11,7 @@ interface User {
   id: string;
   username: string;
   email: string | null;
+  avatarUrl: string | null;
 }
 
 /** Maps Cognito user attributes to our User type */
@@ -19,6 +20,7 @@ function mapCognitoUser(username: string, attributes?: { Name?: string; Value?: 
     id: username,
     username: attributes?.find(a => a.Name === 'preferred_username')?.Value ?? username,
     email: attributes?.find(a => a.Name === 'email')?.Value ?? null,
+    avatarUrl: attributes?.find(a => a.Name === 'picture')?.Value ?? null,
   };
 }
 
