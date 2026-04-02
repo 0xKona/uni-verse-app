@@ -25,7 +25,7 @@ export function ConversationList({
     () => chats.map((c) => c.participantId),
     [chats],
   );
-  const { data: users = [] } = useUsers(participantIds);
+  const { data: users = [], isLoading: usersLoading } = useUsers(participantIds);
 
   const userMap = useMemo(() => {
     const map = new Map<string, { username: string }>();
@@ -42,7 +42,7 @@ export function ConversationList({
     [chats],
   );
 
-  if (isLoading) return <EmptyState message="Loading…" />;
+  if (isLoading || usersLoading) return <EmptyState message="Loading…" />;
   if (!sorted.length) return <EmptyState message="No conversations yet." />;
 
   return (
