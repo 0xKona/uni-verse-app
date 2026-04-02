@@ -4,16 +4,18 @@ import { marshall } from '@aws-sdk/util-dynamodb';
 const dynamo = new DynamoDBClient({});
 const TABLE_NAME = process.env.TABLE_NAME!;
 
-export const handler = async (event: {
-  arguments: { senderId: string; accept: boolean };
+interface RespondToFriendReqInterface {
+  arguments: { senderId: string, accept: boolean};
   identity: { username: string };
-}) => {
+}
+
+export const handler = async (event: RespondToFriendReqInterface) => {
   const recipientId = event.identity.username;
   const { senderId, accept } = event.arguments;
 
   if (accept) {
-    // Atomically update the sender's item to ACCEPTED and write a mirrored
-    // item under the recipient's PK so both users appear in each other's friends list.
+    // Update the sender's item to ACCEPTED and write a mirrored item under the recipient's PK 
+    // so both users appear in each other's friends list.
     await dynamo.send(new TransactWriteItemsCommand({
       TransactItems: [
         {

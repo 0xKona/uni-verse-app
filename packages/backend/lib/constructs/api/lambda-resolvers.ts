@@ -27,7 +27,9 @@ export class LambdaResolvers extends Construct {
 
     const lambdaDir = path.join(__dirname, '../../lambda');
 
-    // User queries — single Lambda handles getUser, getUsers, searchUsers
+    // ---------------------------------------------------------------------------------------
+    // SETUP USER QUERIES (getUser, getUsers, searchUsers)
+    // ---------------------------------------------------------------------------------------
     const usersLambda = new lambdaNodejs.NodejsFunction(this, nameStackResource('users-fn'), {
       functionName: nameResource('users-fn'),
       entry: path.join(lambdaDir, 'users/index.ts'),
@@ -51,6 +53,10 @@ export class LambdaResolvers extends Construct {
         responseMappingTemplate: appsync.MappingTemplate.lambdaResult(),
       });
     });
+
+    // ---------------------------------------------------------------------------------------
+    // RESOLVER LAMBDA SETUP
+    // ---------------------------------------------------------------------------------------
 
     // respondToFriendRequest — transactional accept/decline
     createLambdaResolver(this, api, {
