@@ -1,6 +1,6 @@
 'use client';
 
-import { useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchMessages, type MessagePage } from '@/lib/api';
 
 export const MESSAGE_QUERY_KEYS = {
@@ -19,4 +19,16 @@ export function useMessages(chatId: string | null) {
     staleTime: 10 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
   });
+}
+
+export function usePrefetchMessages() {
+  const qc = useQueryClient();
+  return (chatId: string) => {
+    qc.prefetchInfiniteQuery({
+      queryKey: MESSAGE_QUERY_KEYS.messages(chatId),
+      queryFn: () => fetchMessages(chatId),
+      initialPageParam: null,
+      staleTime: 10 * 60 * 1000,
+    });
+  };
 }
