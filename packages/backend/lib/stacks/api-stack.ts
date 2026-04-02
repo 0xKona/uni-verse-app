@@ -5,8 +5,7 @@ import { Table } from 'aws-cdk-lib/aws-dynamodb';
 import { UserPool } from 'aws-cdk-lib/aws-cognito';
 import * as path from 'path';
 import nameResource, { nameStackResource } from '../utils/name-resource';
-import { FriendVtlResolvers, LambdaResolvers } from '../constructs/api';
-import { ChatVtlResolvers } from '../constructs/api/chat-vtl-resolvers';
+import { ChatVtlResolvers, FriendVtlResolvers, LambdaResolvers } from '../constructs/api';
 
 interface ApiStackProps extends cdk.StackProps {
   table: Table;
