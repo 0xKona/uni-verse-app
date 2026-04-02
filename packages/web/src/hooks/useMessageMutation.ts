@@ -1,15 +1,10 @@
 'use client';
 
 import { useMutation, useQueryClient, type InfiniteData } from '@tanstack/react-query';
-import { apiClient, sendMessageMutation } from '@/lib/api';
+import { sendMessage as sendMessageApi, type MessagePage } from '@/lib/api';
 import { MESSAGE_QUERY_KEYS } from './useMessagesQuery';
 import { CHAT_QUERY_KEYS } from './useChatQuery';
 import type { Message, Chat } from '@/types/messaging';
-
-interface MessagePage {
-  messages: Message[];
-  nextToken: string | null;
-}
 
 interface SendMessageVars {
   chatId: string;
@@ -25,11 +20,7 @@ export function useSendMessage(currentUserId: string) {
   return useMutation({
     mutationFn: async (vars: SendMessageVars) => {
       const { _previewUrls, ...serverVars } = vars;
-      const res = await apiClient.graphql({
-        query: sendMessageMutation,
-        variables: serverVars,
-      });
-      return (res as any).data.sendMessage as Message;
+      return sendMessageApi(serverVars);
     },
 
     onMutate: async (vars) => {

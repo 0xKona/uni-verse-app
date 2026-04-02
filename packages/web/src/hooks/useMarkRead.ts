@@ -2,7 +2,7 @@
 
 import { useCallback, useRef } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
-import { apiClient, markChatReadMutation } from '@/lib/api';
+import { markChatRead } from '@/lib/api';
 import { CHAT_QUERY_KEYS } from './useChatQuery';
 import type { Chat } from '@/types/messaging';
 
@@ -28,9 +28,6 @@ export function useMarkRead(chatId: string | null) {
     );
 
     // Fire and forget
-    (apiClient.graphql({
-      query: markChatReadMutation,
-      variables: { chatId },
-    }) as Promise<any>).catch(console.error);
+    markChatRead(chatId).catch(console.error);
   }, [chatId, qc]);
 }

@@ -6,7 +6,7 @@ import { useMessages } from "@/hooks/useMessagesQuery";
 import { useUserProfile } from "@/hooks/useProfileQuery";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { apiClient, translateMessageMutation } from "@/lib/api";
+import { useTranslateMessage } from "@/hooks/useTranslateMessage";
 import type { Message } from "@/types/messaging";
 
 interface MessageListProps {
@@ -19,15 +19,47 @@ export function MessageList({ chatId, currentUserId }: MessageListProps) {
     useMessages(chatId);
   const { data: profile } = useUserProfile();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const prevHeightRef = useRef<number>(0);
+  const initialScrollDone = useRef(false);
 
   const messages = useMemo(() => {
     if (!data?.pages) return [];
     return data.pages.flatMap((p) => p.messages).reverse();
   }, [data]);
 
+  // Reset on chat change
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    initialScrollDone.current = false;
+  }, [chatId]);
+
+  // Scroll to bottom on initial load and new messages
+  useEffect(() => {
+    if (!messages.length) return;
+    if (!initialScrollDone.current) {
+      // Initial load — scroll instantly, no smooth animation
+      bottomRef.current?.scrollIntoView();
+      initialScrollDone.current = true;
+    } else if (prevHeightRef.current === 0) {
+      // New message arrived — smooth scroll
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    prevHeightRef.current = 0;
   }, [messages.length]);
+
+  // Restore scroll position after loading older messages
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || prevHeightRef.current === 0) return;
+    el.scrollTop = el.scrollHeight - prevHeightRef.current;
+    prevHeightRef.current = 0;
+  }, [data?.pages.length]);
+
+  const handleLoadOlder = () => {
+    const el = scrollRef.current;
+    if (el) prevHeightRef.current = el.scrollHeight;
+    fetchNextPage();
+  };
 
   if (isLoading) {
     return (
@@ -38,13 +70,13 @@ export function MessageList({ chatId, currentUserId }: MessageListProps) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
       {hasNextPage && (
         <div className="flex justify-center pb-2">
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => fetchNextPage()}
+            onClick={handleLoadOlder}
             disabled={isFetchingNextPage}
             className="text-xs"
           >
@@ -83,10 +115,10 @@ function MessageBubble({
   chatId: string;
 }) {
   const [showOriginal, setShowOriginal] = useState(false);
-  const [translating, setTranslating] = useState(false);
   const [localTranslations, setLocalTranslations] = useState<
     Record<string, string>
   >({});
+  const translate = useTranslateMessage();
 
   const translations: Record<string, string> = useMemo(() => {
     try {
@@ -109,24 +141,16 @@ function MessageBubble({
     ? translations[userLang]
     : message.content;
 
-  const handleTranslate = async () => {
-    setTranslating(true);
-    try {
-      const res = await apiClient.graphql({
-        query: translateMessageMutation,
-        variables: {
-          chatId,
-          messageId: message.messageId,
-          timestamp: message.createdAt,
+  const handleTranslate = () => {
+    translate.mutate(
+      { chatId, messageId: message.messageId, timestamp: message.createdAt },
+      {
+        onSuccess: (updated) => {
+          const parsed = JSON.parse(updated.translations ?? '{}');
+          setLocalTranslations(parsed);
         },
-      });
-      const updated = (res as any).data.translateMessage;
-      const parsed = JSON.parse(updated.translations);
-      setLocalTranslations(parsed);
-    } catch (err) {
-      console.error("Translation failed:", err);
-    }
-    setTranslating(false);
+      },
+    );
   };
 
   return (
@@ -207,7 +231,7 @@ function MessageBubble({
             ) : (
               <button
                 onClick={handleTranslate}
-                disabled={translating}
+                disabled={translate.isPending}
                 className={cn(
                   "text-[10px] ml-1 hover:underline cursor-pointer inline-flex items-center gap-0.5",
                   isOwn
@@ -216,7 +240,7 @@ function MessageBubble({
                 )}
               >
                 <Languages size={10} />
-                {translating ? "Translating…" : "Translate"}
+                                {translate.isPending ? "Translating…" : "Translate"}
               </button>
             ))}
         </div>

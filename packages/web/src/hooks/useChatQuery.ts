@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { apiClient, getChatsQuery } from '@/lib/api';
+import { fetchChats } from '@/lib/api';
 import type { Chat } from '@/types/messaging';
 
 export const CHAT_QUERY_KEYS = {
@@ -11,10 +11,7 @@ export const CHAT_QUERY_KEYS = {
 export function useChats() {
   return useQuery({
     queryKey: CHAT_QUERY_KEYS.chats,
-    queryFn: async () => {
-      const res = await apiClient.graphql({ query: getChatsQuery });
-      return (res as any).data.getChats as Chat[];
-    },
+    queryFn: fetchChats,
     staleTime: 30 * 1000,
   });
 }

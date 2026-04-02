@@ -13,53 +13,34 @@ import {
 } from "@/components/ui/dialog";
 import { UserCard } from "@/components/ui/user-card";
 import { EmptyState } from "@/components/ui/empty-state";
-import { apiClient, searchUsersQuery } from "@/lib/api";
+import { useSearchUsers } from "@/hooks/useSearchUsers";
 import { useSendFriendRequest } from "@/hooks/useFriendsMutation";
 import type { User } from "@/types/friends";
 
 export function AddFriendDialog() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<User[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [error, setError] = useState("");
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
 
+  const search = useSearchUsers();
   const sendRequest = useSendFriendRequest();
 
-  const handleSearch = async (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-
-    setSearching(true);
-    setError("");
-    try {
-      const res = await apiClient.graphql({
-        query: searchUsersQuery,
-        variables: { query },
-      });
-      setResults((res as any).data.searchUsers);
-    } catch {
-      setError("Search failed. Please try again.");
-    } finally {
-      setSearching(false);
-    }
+    search.mutate(query);
   };
 
-  const handleSend = async (userId: string) => {
-    try {
-      await sendRequest.mutateAsync(userId);
-      setSentIds((prev) => new Set(prev).add(userId));
-    } catch {
-      setError("Failed to send request.");
-    }
+  const handleSend = (userId: string) => {
+    sendRequest.mutate(userId, {
+      onSuccess: () => setSentIds((prev) => new Set(prev).add(userId)),
+    });
   };
 
   const resetState = () => {
     setQuery("");
-    setResults([]);
+    search.reset();
     setSentIds(new Set());
-    setError("");
   };
 
   return (
@@ -87,16 +68,17 @@ export function AddFriendDialog() {
             onChange={(e) => setQuery(e.target.value)}
             autoFocus
           />
-          <Button type="submit" size="icon" disabled={searching}>
+          <Button type="submit" size="icon" disabled={search.isPending}>
             <Search size={16} />
           </Button>
         </form>
 
-        {error && <p className="text-sm text-destructive">{error}</p>}
+        {search.isError && <p className="text-sm text-destructive">Search failed. Please try again.</p>}
+        {sendRequest.isError && <p className="text-sm text-destructive">Failed to send request.</p>}
 
-        {results.length > 0 && (
+        {(search.data?.length ?? 0) > 0 && (
           <ul className="flex flex-col gap-1 mt-1">
-            {results.map((user) => {
+            {search.data!.map((user) => {
               const isSent = sentIds.has(user.id);
               return (
                 <UserCard key={user.id} user={user}>
@@ -118,7 +100,7 @@ export function AddFriendDialog() {
           </ul>
         )}
 
-        {results.length === 0 && query && !searching && (
+        {search.data?.length === 0 && query && !search.isPending && (
           <EmptyState message="No users found." />
         )}
       </DialogContent>
