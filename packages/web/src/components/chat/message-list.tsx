@@ -19,15 +19,47 @@ export function MessageList({ chatId, currentUserId }: MessageListProps) {
     useMessages(chatId);
   const { data: profile } = useUserProfile();
   const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const prevHeightRef = useRef<number>(0);
+  const initialScrollDone = useRef(false);
 
   const messages = useMemo(() => {
     if (!data?.pages) return [];
     return data.pages.flatMap((p) => p.messages).reverse();
   }, [data]);
 
+  // Reset on chat change
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    initialScrollDone.current = false;
+  }, [chatId]);
+
+  // Scroll to bottom on initial load and new messages
+  useEffect(() => {
+    if (!messages.length) return;
+    if (!initialScrollDone.current) {
+      // Initial load — scroll instantly, no smooth animation
+      bottomRef.current?.scrollIntoView();
+      initialScrollDone.current = true;
+    } else if (prevHeightRef.current === 0) {
+      // New message arrived — smooth scroll
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    prevHeightRef.current = 0;
   }, [messages.length]);
+
+  // Restore scroll position after loading older messages
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el || prevHeightRef.current === 0) return;
+    el.scrollTop = el.scrollHeight - prevHeightRef.current;
+    prevHeightRef.current = 0;
+  }, [data?.pages.length]);
+
+  const handleLoadOlder = () => {
+    const el = scrollRef.current;
+    if (el) prevHeightRef.current = el.scrollHeight;
+    fetchNextPage();
+  };
 
   if (isLoading) {
     return (
@@ -38,13 +70,13 @@ export function MessageList({ chatId, currentUserId }: MessageListProps) {
   }
 
   return (
-    <div className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
+    <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-3 space-y-1">
       {hasNextPage && (
         <div className="flex justify-center pb-2">
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => fetchNextPage()}
+            onClick={handleLoadOlder}
             disabled={isFetchingNextPage}
             className="text-xs"
           >
