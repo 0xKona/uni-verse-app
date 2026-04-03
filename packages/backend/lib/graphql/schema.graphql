@@ -98,6 +98,7 @@ type Mutation {
   createChat(participantId: ID!): Chat!
   markChatRead(chatId: ID!): Boolean!
   getUploadUrl(chatId: ID!, fileName: String!): String!
+  getAvatarUploadUrl(fileName: String!): String!
   setUserProfile(language: String!, translationEnabled: Boolean!): UserProfile!
   translateMessage(chatId: ID!, messageId: ID!, timestamp: String!): Message!
   sendTypingIndicator(chatId: ID!): TypingIndicator!

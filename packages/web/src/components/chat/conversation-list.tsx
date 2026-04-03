@@ -45,22 +45,18 @@ export function ConversationList({
   if (!sorted.length) return <EmptyState message="No conversations yet." />;
 
   return (
-    <ul className="flex flex-col gap-0.5">
+    <div className="flex flex-col gap-0.5">
       {sorted.map((chat) => {
-        console.log({ chat });
-        const user = userMap.get(chat.participantId);
-        const name = user?.username ?? chat.participantId;
         const isActive = chat.chatId === activeChatId;
-
         return (
           <ConversationCard
-            key={JSON.stringify(chat)}
+            key={chat.chatId}
             chat={chat}
             onSelectChat={onSelectChat}
             isActive={isActive}
           />
         );
       })}
-    </ul>
+    </div>
   );
 }

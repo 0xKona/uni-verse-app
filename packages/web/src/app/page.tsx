@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { buttonVariants } from "@/components/ui/button";
 
 export default function Home() {
     return (
@@ -9,10 +8,10 @@ export default function Home() {
                     Welcome to Uni-Verse
                 </h1>
                 <div className="flex gap-3">
-                    <Link href="/login" className={buttonVariants()}>
+                    <Link href="/login" className="inline-flex h-8 items-center justify-center rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-all">
                         Sign In
                     </Link>
-                    <Link href="/signup" className={buttonVariants({ variant: "outline" })}>
+                    <Link href="/signup" className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-background px-2.5 text-sm font-medium transition-all hover:bg-muted">
                         Create Account
                     </Link>
                 </div>

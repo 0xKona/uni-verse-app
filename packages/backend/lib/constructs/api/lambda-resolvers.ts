@@ -170,5 +170,20 @@ export class LambdaResolvers extends Construct {
         }));
       },
     });
+
+    // getAvatarUploadUrl — pre-signed S3 PUT URL scoped to avatars/<userId>/
+    createLambdaResolver(this, api, {
+      name: 'get-avatar-upload-url',
+      entry: path.join(lambdaDir, 'getAvatarUploadUrl/index.ts'),
+      typeName: 'Mutation',
+      fieldName: 'getAvatarUploadUrl',
+      environment: { BUCKET_NAME: mediaBucketName },
+      grantFn: (fn) => {
+        fn.addToRolePolicy(new iam.PolicyStatement({
+          actions: ['s3:PutObject'],
+          resources: [`arn:aws:s3:::${mediaBucketName}/avatars/*`],
+        }));
+      },
+    });
   }
 }

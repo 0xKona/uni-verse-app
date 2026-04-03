@@ -18,18 +18,14 @@ export default function ConversationCard({
   isActive,
 }: ConversationCardProps) {
   const { data: user, isLoading } = useUser(chat.participantId);
-  console.log({ user });
-
-  if (!user) return null; // RETURN PROPER ERROR
   const prefetchMessages = usePrefetchMessages();
 
-  const unread = isUnread(chat.lastReadAt!, chat.lastMessageAt!);
-  const name = user?.username ?? "";
+  if (!user || isLoading) return null;
 
-  if (isLoading) return null;
+  const unread = isUnread(chat.lastReadAt!, chat.lastMessageAt!);
 
   return (
-    <li
+    <div
       onClick={() => onSelectChat(chat)}
       onMouseEnter={() => prefetchMessages(chat.chatId)}
       className={cn(
@@ -42,6 +38,6 @@ export default function ConversationCard({
         subtitle={formatTimestamp(chat.lastMessageAt as string)}
       />
       {unread && <span className="h-2 w-2 rounded-full bg-primary shrink-0" />}
-    </li>
+    </div>
   );
 }
