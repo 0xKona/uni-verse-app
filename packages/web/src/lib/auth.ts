@@ -5,6 +5,8 @@ import {
   signOut,
   getCurrentUser,
   fetchAuthSession,
+  updateUserAttributes,
+  updatePassword,
 } from "aws-amplify/auth";
 
 export const register = (email: string, password: string, username: string) =>
@@ -21,3 +23,12 @@ export const logout = () => signOut();
 export const getUser = () => getCurrentUser();
 
 export const getSession = () => fetchAuthSession();
+
+export const updateUsername = (username: string) =>
+  updateUserAttributes({ userAttributes: { preferred_username: username } });
+
+export const updateAvatarUrl = (url: string) =>
+  updateUserAttributes({ userAttributes: { picture: url } });
+
+export const changePassword = (currentPassword: string, newPassword: string) =>
+  updatePassword({ oldPassword: currentPassword, newPassword });

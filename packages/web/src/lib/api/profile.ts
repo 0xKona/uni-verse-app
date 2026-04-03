@@ -15,7 +15,14 @@ export const setUserProfileMutation = /* GraphQL */ `
   }
 `;
 
+export const getAvatarUploadUrlMutation = /* GraphQL */ `
+  mutation GetAvatarUploadUrl($fileName: String!) {
+    getAvatarUploadUrl(fileName: $fileName)
+  }
+`;
+
 // Typed functions
 
 export const fetchUserProfile = () => typedQuery<UserProfile>(getUserProfileQuery, undefined, 'getUserProfile');
 export const setUserProfile = (vars: { language: string; translationEnabled: boolean }) => typedQuery<UserProfile>(setUserProfileMutation, vars, 'setUserProfile');
+export const fetchAvatarUploadUrl = (fileName: string) => typedQuery<string>(getAvatarUploadUrlMutation, { fileName }, 'getAvatarUploadUrl');
