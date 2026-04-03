@@ -87,7 +87,6 @@ export default function SignUpPage() {
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Create Account</CardTitle>
-          <CardDescription>Join your university community today</CardDescription>
         </CardHeader>
         <form onSubmit={handleRegister}>
           <CardContent className="flex flex-col gap-4">
@@ -107,7 +106,7 @@ export default function SignUpPage() {
               <Input
                 id="email"
                 type="email"
-                placeholder="you@university.edu"
+                placeholder="you@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
