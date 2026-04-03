@@ -21,10 +21,7 @@ export class AuthStack extends cdk.Stack {
         emailStyle: aws_cognito.VerificationEmailStyle.CODE,
       },
       standardAttributes: {
-        email: {
-          required: true,
-          mutable: true,
-        },
+        email: { required: true, mutable: true },
       },
     });
 
