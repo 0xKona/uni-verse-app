@@ -258,7 +258,7 @@ export function SettingsDialog({
               <Select
                 value={currentLang}
                 onValueChange={(code) =>
-                  setProfile.mutate({ language: code, translationEnabled: translationOn })
+                  setProfile.mutate({ language: code as string, translationEnabled: translationOn })
                 }
               >
                 <SelectTrigger className="h-8 text-xs">
