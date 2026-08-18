@@ -7,7 +7,7 @@ interface TopNavProps {
   authenticated: boolean;
 }
 
-function BrandMark() {
+export function BrandMark() {
   return (
     <svg
       viewBox="0 0 32 32"

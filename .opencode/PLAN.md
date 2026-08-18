@@ -77,16 +77,8 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Primary CTAs: Sign In, Create Account (Try-demo CTA added in Phase 5)
 - [x] Keep the server-side auth check (logged-in users see "Dashboard" instead)
 
-### 1.4 Feature grid (`components/landing/feature-grid.tsx`)
-- [ ] Cards: real-time messaging, auto translation, file/GIF sharing, typing indicators (brand tokens, hover glow)
-- [ ] Scroll-reveal entrance via shared `components/landing/reveal.tsx` (`motion` whileInView)
-
-### 1.5 Architecture section (`components/landing/architecture.tsx`)
-- [ ] Visual diagram of CDK stacks (Auth/API/Data): AppSync, Lambda, DynamoDB, Cognito (SVG/CSS, no new assets)
-- [ ] Scroll-reveal entrance via `reveal.tsx`
-
 ### 1.6 Footer (`components/landing/footer.tsx`)
-- [ ] Footer with GitHub source link, theme toggle, minimal brand treatment
+- [x] Footer with GitHub source link, theme toggle, minimal brand treatment
 
 ### 1.7 Page assembly (`src/app/page.tsx`)
 - [ ] Assemble nav → hero (Suspense + lazy scene) → features → architecture → footer in correct order

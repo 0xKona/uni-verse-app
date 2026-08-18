@@ -5,6 +5,7 @@ import { TopNav } from "@/components/landing/top-nav";
 import { HeroSceneLoader } from "@/components/landing/hero-scene-loader";
 import { HeroContent } from "@/components/landing/hero-content";
 import { TranslationDemo } from "@/components/landing/translation-demo";
+import { LandingFooter } from "@/components/landing/footer";
 
 export default async function Home() {
 
@@ -23,7 +24,7 @@ export default async function Home() {
   return (
       <div className="flex min-h-screen flex-col bg-cosmic">
         <TopNav authenticated={authenticated} />
-        <section className="relative flex min-h-[560px] flex-1 items-center justify-center overflow-hidden px-4">
+        <section className="relative flex min-h-[calc(100svh-4rem)] items-center justify-center overflow-hidden px-4">
           <HeroSceneLoader />
           <div
             aria-hidden="true"
@@ -34,6 +35,7 @@ export default async function Home() {
             <TranslationDemo />
           </div>
         </section>
+        <LandingFooter />
       </div>
   );
 }
