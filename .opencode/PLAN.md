@@ -31,10 +31,10 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Verify both `.light` and `.dark` variants work with new tokens
 
 ### 0.2 Fonts & root layout (`src/app/layout.tsx`)
-- [ ] Add Space Grotesk (heading) font via `next/font/google` alongside Geist/Geist Mono
-- [ ] Set `html`/`body` className for heading font + brand tokens
-- [ ] Refresh `metadata` (title, description) for the new brand
-- [ ] Add favicon/logo asset to `src/app/` (replace stock Next.js one)
+- [x] Add Space Grotesk (heading) font via `next/font/google` alongside Geist/Geist Mono
+- [x] Set `html`/`body` className for heading font + brand tokens
+- [x] Refresh `metadata` (title, description) for the new brand
+- [x] Add favicon/logo asset to `src/app/` (replace stock Next.js one)
 
 ### 0.3 Theme provider + toggle
 - [ ] Add `ThemeProvider` (client) backed by local-storage persistence with system-detection fallback

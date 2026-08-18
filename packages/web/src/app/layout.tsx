@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import AmplifyProvider from "@/components/AmplifyProvider";
 import { QueryProvider } from "@/components/QueryProvider";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -12,9 +12,18 @@ const geistMono = Geist_Mono({
     subsets: ["latin"],
 });
 
+const spaceGrotesk = Space_Grotesk({
+    variable: "--font-display",
+    subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
-    title: "Uni-Verse",
-    description: "Connect with your university community",
+    title: {
+        default: "Uni-Verse — Messaging without borders",
+        template: "%s · Uni-Verse",
+    },
+    description:
+        "Real-time messaging that speaks every language. Chat, share files and GIFs, and translate conversations across the universe of languages.",
 };
 
 export default function RootLayout({
@@ -23,9 +32,17 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={cn("font-sans", geist.variable)}>
+        <html
+            lang="en"
+            className={cn(
+                "font-sans",
+                geist.variable,
+                geistMono.variable,
+                spaceGrotesk.variable
+            )}
+        >
             <body
-                className={`${geist.variable} ${geistMono.variable} antialiased`}
+                className={`${geist.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
             >
                 <AmplifyProvider>
                     <QueryProvider>{children}</QueryProvider>
