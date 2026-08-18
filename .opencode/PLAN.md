@@ -72,10 +72,10 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] WebGL unavailable (e.g. hardware acceleration off): render CSS cosmic backdrop + dismissible banner prompting the user to enable WebGL — no JS permission prompt API exists for WebGL, so we guide rather than try to auto-request
 
 ### 1.3 Animated hero — content + translation demo (`hero-content.tsx`, `translation-demo.tsx`, client)
-- [ ] `motion` staggered entrance for `text-brand-gradient` headline + one-line value prop
-- [ ] Translation demo (DOM overlay, readable): chat bubble auto-cycles EN → ES → FR → JA (reuse `LANGUAGES`), morph/burst between languages, pauses between cycles, respects reduced motion
-- [ ] Primary CTAs: Sign In, Create Account (Try-demo CTA added in Phase 5)
-- [ ] Keep the server-side auth check (logged-in users see "Dashboard" instead)
+- [x] `motion` staggered entrance for `text-brand-gradient` headline + one-line value prop
+- [x] Translation demo (DOM overlay, readable): chat bubble auto-cycles EN → ES → FR → JA (reuse `LANGUAGES`), morph/burst between languages, pauses between cycles, respects reduced motion
+- [x] Primary CTAs: Sign In, Create Account (Try-demo CTA added in Phase 5)
+- [x] Keep the server-side auth check (logged-in users see "Dashboard" instead)
 
 ### 1.4 Feature grid (`components/landing/feature-grid.tsx`)
 - [ ] Cards: real-time messaging, auto translation, file/GIF sharing, typing indicators (brand tokens, hover glow)

@@ -1,9 +1,10 @@
 import { runWithAmplifyServerContext } from "@/lib/amplify-server";
 import { fetchAuthSession } from "aws-amplify/auth/server";
 import { cookies } from "next/headers";
-import Link from "next/link";
 import { TopNav } from "@/components/landing/top-nav";
 import { HeroSceneLoader } from "@/components/landing/hero-scene-loader";
+import { HeroContent } from "@/components/landing/hero-content";
+import { TranslationDemo } from "@/components/landing/translation-demo";
 
 export default async function Home() {
 
@@ -24,29 +25,10 @@ export default async function Home() {
         <TopNav authenticated={authenticated} />
         <section className="relative flex min-h-[560px] flex-1 items-center justify-center overflow-hidden px-4">
           <HeroSceneLoader />
-<div className="relative z-10 flex flex-col items-center justify-center px-4">
-            <div className="flex flex-col items-center gap-6 text-center">
-                <h1 className="text-4xl font-bold tracking-tight">
-                    Welcome to Uni-Verse
-                </h1>
-            </div>
-          <div className="flex gap-3 mt-5">
-            {authenticated ? (
-              <Link href="/dashboard" className="inline-flex h-8 items-center justify-center rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-all">
-                Dashboard
-              </Link>
-            ) : (
-              <>
-                <Link href="/login" className="inline-flex h-8 items-center justify-center rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-all">
-                    Sign In
-                </Link>
-                <Link href="/signup" className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-background px-2.5 text-sm font-medium transition-all hover:bg-muted">
-                    Create Account
-                </Link>
-              </>
-            )}
+          <div className="relative z-10 flex w-full flex-col items-center justify-center gap-10 px-4">
+            <HeroContent authenticated={authenticated} />
+            <TranslationDemo />
           </div>
-        </div>
         </section>
       </div>
   );

@@ -1,0 +1,30 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - banner [ref=f2e3]:
+      - navigation [ref=f2e4]:
+        - link "Uni-Verse" [ref=f2e5] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f2e12]:
+          - button "Switch to light mode" [ref=f2e13]
+          - button "Sign in" [ref=f2e14] [cursor=pointer]
+          - button "Get started" [ref=f2e15] [cursor=pointer]
+    - generic [ref=f2e22]:
+      - generic [ref=f2e23]:
+        - generic [ref=f2e24]: Real-time translation, built in
+        - heading "Chat in your language. They read it in theirs." [level=1] [ref=f2e28]
+        - paragraph [ref=f2e29]: Uni-Verse translates every message the moment it is sent — automatically, both ways. No copy-paste, no second app.
+        - generic [ref=f2e30]:
+          - button "Sign in" [ref=f2e31] [cursor=pointer]
+          - button "Create account" [ref=f2e32] [cursor=pointer]
+      - generic [ref=f2e34]:
+        - generic [ref=f2e41]:
+          - paragraph [ref=f2e42]: Aria · Barcelona
+          - paragraph [ref=f2e43]: live translation
+        - generic [ref=f2e47]:
+          - generic [ref=f2e48]: Want to grab coffee tomorrow?
+          - generic [ref=f2e50]:
+            - paragraph [ref=f2e51]: Sure! Let's meet at noon.
+            - paragraph [ref=f2e52]: Translated · English
+        - paragraph [ref=f2e53]: Everyone in the chat reads in their own language.
+  - button "Open Next.js Dev Tools" [ref=f2e59] [cursor=pointer]
+  - alert [ref=f2e63]
