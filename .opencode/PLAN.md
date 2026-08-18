@@ -22,13 +22,13 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 ## Phase 0 — Foundation & Cleanup
 
 ### 0.1 Design tokens (`src/app/globals.css`)
-- [ ] Replace monochrome `--primary` with brand violet/indigo accent (`--primary`, `--primary-foreground`, hover states)
-- [ ] Define brand gradients and glow utilities (e.g. `.bg-brand-gradient`, `.glow`/usage matching Tailwind v4 `@theme` syntax)
-- [ ] Update cosmic dark background tokens (`--background`, `--foreground`, `--muted`, etc.) to match dark-first identity
-- [ ] Wire up the currently unused `--sidebar-*` token set for the nav rail/sidebar
-- [ ] Add `--font-heading` display-font usage (new heading utility class)
-- [ ] Add `body` smooth-scroll and selection color polish
-- [ ] Verify both `.light` and `.dark` variants work with new tokens
+- [x] Replace monochrome `--primary` with brand violet/indigo accent (`--primary`, `--primary-foreground`, hover states)
+- [x] Define brand gradients and glow utilities (e.g. `.bg-brand-gradient`, `.glow`/usage matching Tailwind v4 `@theme` syntax)
+- [x] Update cosmic dark background tokens (`--background`, `--foreground`, `--muted`, etc.) to match dark-first identity
+- [x] Wire up the currently unused `--sidebar-*` token set for the nav rail/sidebar
+- [x] Add `--font-heading` display-font usage (new heading utility class)
+- [x] Add `body` smooth-scroll and selection color polish
+- [x] Verify both `.light` and `.dark` variants work with new tokens
 
 ### 0.2 Fonts & root layout (`src/app/layout.tsx`)
 - [ ] Add Space Grotesk (heading) font via `next/font/google` alongside Geist/Geist Mono
