@@ -31,16 +31,28 @@ export function oklchToHex(str: string): string {
   return `#${toHex(r)}${toHex(g)}${toHex(bl)}`;
 }
 
-function readThemeColors() {
-  const cs = getComputedStyle(document.documentElement);
+export interface ThemeColors {
+  primary: string;
+  glow1: string;
+  glow2: string;
+  dark: boolean;
+}
+
+function readThemeColors(): ThemeColors {
+  const root = document.documentElement;
+  const cs = getComputedStyle(root);
+  const dark =
+    root.classList.contains("dark") ||
+    cs.getPropertyValue("color-scheme").trim().toLowerCase() === "dark";
   return {
     primary: oklchToHex(cs.getPropertyValue("--primary")),
     glow1: oklchToHex(cs.getPropertyValue("--cosmic-glow-1")),
     glow2: oklchToHex(cs.getPropertyValue("--cosmic-glow-2")),
+    dark,
   };
 }
 
-export function useThemeColors() {
+export function useThemeColors(): ThemeColors {
   const [colors, setColors] = useState(readThemeColors);
   useEffect(() => {
     const el = document.documentElement;

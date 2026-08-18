@@ -66,7 +66,7 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] r3f `<Canvas>` with drei `Stars`, violet nebula glow sprites driven by `--cosmic-glow-*` tokens
 - [x] Two floating orbs (wireframe + solid, `--primary` color, drei `Float`) drifting slowly
 - [x] Faint particle-stream arc between the orbs (message crossing a language barrier) — stream endpoints use the orbs' live positions, so the string drifts with the orbs
-- [x] Theme-reactive: read CSS vars so scene shifts with dark/light mode
+- [x] Theme-reactive: read CSS vars so scene shifts with dark/light mode; theme-aware blending (additive on dark, normal on light) so the scene stays legible in light mode without new colors
 - [x] Respect `prefers-reduced-motion` (orbs freeze, rotation stops)
 - [x] Load via `next/dynamic(..., { ssr: false })` behind a CSS gradient/starry `Suspense` fallback — no SSR/WebGL issues, no LCP penalty
 - [x] WebGL unavailable (e.g. hardware acceleration off): render CSS cosmic backdrop + dismissible banner prompting the user to enable WebGL — no JS permission prompt API exists for WebGL, so we guide rather than try to auto-request

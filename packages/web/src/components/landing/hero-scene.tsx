@@ -20,11 +20,68 @@ function makeGlowTexture(color: string) {
   return texture;
 }
 
-function Nebula({ color, position, scale, opacity }: { color: string; position: [number, number, number]; scale: number; opacity: number }) {
+function StarDust({ color }: { color: string }) {
+  const texture = useMemo(() => makeGlowTexture(color), [color]);
+  const positions = useMemo(() => {
+    const rand = (i: number) => {
+      const x = Math.sin(i * 12.9898) * 43758.5453;
+      return x - Math.floor(x);
+    };
+    const pts = new Float32Array(240 * 3);
+    for (let i = 0; i < 240; i++) {
+      const r = 3.5 + rand(i) * 3.5;
+      const theta = rand(i + 500) * Math.PI * 2;
+      const phi = Math.acos(2 * rand(i + 900) - 1);
+      const sinPhi = Math.sin(phi);
+      pts[i * 3] = r * sinPhi * Math.cos(theta);
+      pts[i * 3 + 1] = r * Math.cos(phi);
+      pts[i * 3 + 2] = r * sinPhi * Math.sin(theta);
+    }
+    return pts;
+  }, []);
+
+  return (
+    <points>
+      <bufferGeometry>
+        <bufferAttribute attach="attributes-position" args={[positions, 3]} />
+      </bufferGeometry>
+      <pointsMaterial
+        map={texture}
+        color={color}
+        size={0.06}
+        sizeAttenuation
+        transparent
+        opacity={0.75}
+        depthWrite={false}
+        blending={THREE.NormalBlending}
+      />
+    </points>
+  );
+}
+
+function Nebula({
+  color,
+  position,
+  scale,
+  opacity,
+  additive,
+}: {
+  color: string;
+  position: [number, number, number];
+  scale: number;
+  opacity: number;
+  additive: boolean;
+}) {
   const texture = useMemo(() => makeGlowTexture(color), [color]);
   return (
     <sprite position={position} scale={[scale, scale, 1]}>
-      <spriteMaterial map={texture} transparent opacity={opacity} depthWrite={false} blending={THREE.AdditiveBlending} />
+      <spriteMaterial
+        map={texture}
+        transparent
+        opacity={opacity}
+        depthWrite={false}
+        blending={additive ? THREE.AdditiveBlending : THREE.NormalBlending}
+      />
     </sprite>
   );
 }
@@ -33,11 +90,13 @@ function Orb({
   positionRef,
   color,
   reduced,
+  dark,
   wire,
 }: {
   positionRef: RefObject<THREE.Vector3>;
   color: string;
   reduced: boolean;
+  dark: boolean;
   wire: boolean;
 }) {
   const group = useRef<THREE.Group>(null);
@@ -64,7 +123,12 @@ function Orb({
       <group ref={group}>
         <mesh rotation={[0.4, 0.2, 0]}>
           <icosahedronGeometry args={[1.25, 1]} />
-          <meshBasicMaterial color={color} wireframe transparent opacity={0.45} />
+          <meshBasicMaterial
+            color={color}
+            wireframe
+            transparent
+            opacity={dark ? 0.45 : 0.6}
+          />
         </mesh>
       </group>
     );
@@ -74,10 +138,22 @@ function Orb({
     <group ref={group}>
       <mesh>
         <sphereGeometry args={[1.05, 48, 48]} />
-        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.35} roughness={0.25} metalness={0.15} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={dark ? 0.35 : 0.25}
+          roughness={0.25}
+          metalness={0.15}
+        />
       </mesh>
       <sprite scale={[4.6, 4.6, 1]}>
-        <spriteMaterial map={glow} transparent opacity={0.55} depthWrite={false} blending={THREE.AdditiveBlending} />
+        <spriteMaterial
+          map={glow}
+          transparent
+          opacity={dark ? 0.55 : 0.65}
+          depthWrite={false}
+          blending={dark ? THREE.AdditiveBlending : THREE.NormalBlending}
+        />
       </sprite>
     </group>
   );
@@ -90,11 +166,13 @@ function RelayStream({
   toRef,
   color,
   reduced,
+  dark,
 }: {
   fromRef: RefObject<THREE.Vector3>;
   toRef: RefObject<THREE.Vector3>;
   color: string;
   reduced: boolean;
+  dark: boolean;
 }) {
   const geometry = useRef<THREE.BufferGeometry>(null);
   const offset = useRef(0);
@@ -146,16 +224,24 @@ function RelayStream({
         size={0.055}
         sizeAttenuation
         transparent
-        opacity={0.85}
+        opacity={dark ? 0.85 : 0.95}
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={dark ? THREE.AdditiveBlending : THREE.NormalBlending}
         color={color}
       />
     </points>
   );
 }
 
-function RelaySystem({ color, reduced }: { color: string; reduced: boolean }) {
+function RelaySystem({
+  color,
+  reduced,
+  dark,
+}: {
+  color: string;
+  reduced: boolean;
+  dark: boolean;
+}) {
   const orbA = useRef(new THREE.Vector3(-2.9, 0.5, 0));
   const orbB = useRef(new THREE.Vector3(2.9, -0.4, 0.4));
   const time = useRef(0);
@@ -178,9 +264,9 @@ function RelaySystem({ color, reduced }: { color: string; reduced: boolean }) {
 
   return (
     <>
-      <Orb positionRef={orbA} color={color} reduced={reduced} wire={false} />
-      <Orb positionRef={orbB} color={color} reduced={reduced} wire />
-      <RelayStream fromRef={orbA} toRef={orbB} color={color} reduced={reduced} />
+      <Orb positionRef={orbA} color={color} reduced={reduced} dark={dark} wire={false} />
+      <Orb positionRef={orbB} color={color} reduced={reduced} dark={dark} wire />
+      <RelayStream fromRef={orbA} toRef={orbB} color={color} reduced={reduced} dark={dark} />
     </>
   );
 }
@@ -188,6 +274,7 @@ function RelaySystem({ color, reduced }: { color: string; reduced: boolean }) {
 export function HeroScene() {
   const colors = useThemeColors();
   const reduced = usePrefersReducedMotion();
+  const dark = colors.dark;
 
   return (
     <Canvas
@@ -197,14 +284,18 @@ export function HeroScene() {
       frameloop={reduced ? "demand" : "always"}
       className="!absolute inset-0"
     >
-      <ambientLight intensity={0.6} />
+      <ambientLight intensity={dark ? 0.6 : 0.45} />
       <directionalLight position={[4, 6, 4]} intensity={1.4} color={colors.primary} />
-      <Stars radius={65} depth={35} count={1800} factor={3.5} saturation={0} fade speed={reduced ? 0 : 0.4} />
-      <Sparkles count={70} scale={10} size={1.8} speed={reduced ? 0 : 0.35} color={colors.primary} opacity={0.6} />
-      <Nebula color={colors.glow1} position={[-9, 3.5, -7]} scale={18} opacity={0.5} />
-      <Nebula color={colors.glow2} position={[9, -2.5, -8]} scale={15} opacity={0.45} />
-      <Nebula color={colors.glow1} position={[0, -6, -6]} scale={20} opacity={0.3} />
-      <RelaySystem color={colors.primary} reduced={reduced} />
+      {dark ? (
+        <Stars radius={65} depth={35} count={1800} factor={3.5} saturation={0} fade speed={reduced ? 0 : 0.4} />
+      ) : (
+        <StarDust color={colors.primary} />
+      )}
+      <Sparkles count={70} scale={10} size={1.8} speed={reduced ? 0 : 0.35} color={colors.primary} opacity={dark ? 0.6 : 0.85} />
+      <Nebula color={colors.glow1} position={[-9, 3.5, -7]} scale={18} opacity={dark ? 0.5 : 0.7} additive={dark} />
+      <Nebula color={colors.glow2} position={[9, -2.5, -8]} scale={15} opacity={dark ? 0.45 : 0.65} additive={dark} />
+      <Nebula color={colors.glow1} position={[0, -6, -6]} scale={20} opacity={dark ? 0.3 : 0.5} additive={dark} />
+      <RelaySystem color={colors.primary} reduced={reduced} dark={dark} />
     </Canvas>
   );
 }

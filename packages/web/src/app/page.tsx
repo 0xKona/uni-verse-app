@@ -25,7 +25,11 @@ export default async function Home() {
         <TopNav authenticated={authenticated} />
         <section className="relative flex min-h-[560px] flex-1 items-center justify-center overflow-hidden px-4">
           <HeroSceneLoader />
-          <div className="relative z-10 flex w-full flex-col items-center justify-center gap-10 px-4">
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute top-1/2 left-1/2 size-[54rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-background/60 blur-3xl"
+          />
+          <div className="relative z-10 flex w-full flex-col items-center justify-center gap-10 px-4 py-16">
             <HeroContent authenticated={authenticated} />
             <TranslationDemo />
           </div>
