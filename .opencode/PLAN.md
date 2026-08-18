@@ -54,14 +54,42 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 
 ## Phase 1 — Landing Page (`src/app/page.tsx`)
 
-- [ ] Build hero section: gradient headline, one-line value prop, product mockup / hero visual (CSS/SVG, no new assets required)
-- [ ] Add primary CTAs: Sign In, Create Account, Try demo (demo CTA added in Phase 5)
+### 1.0 Dependencies & scaffolding
+- [x] Add prod deps: `three`, `@react-three/fiber@^9`, `@react-three/drei@^10`, `motion` (Framer Motion current package name); dev: `@types/three` (all React 19 / Next 16 compatible)
+- [x] Create `src/components/landing/` directory; all landing sub-components live here
+
+### 1.1 Top nav (`components/landing/top-nav.tsx`)
+- [ ] Slim sticky top nav: brand logo (link to `/`) + Sign In / Create Account links (right), responsive (condensed/collapsible on mobile)
+- [ ] Show "Dashboard" link instead when server-side auth check passes
+
+### 1.2 Animated hero — 3D scene (`components/landing/hero-scene.tsx`, client)
+- [ ] r3f `<Canvas>` with drei `Stars`, violet nebula glow sprites driven by `--cosmic-glow-*` tokens
+- [ ] Two floating orbs (wireframe + solid, `--primary` color, drei `Float`) drifting slowly
+- [ ] Faint particle-stream arc between the orbs (message crossing a language barrier)
+- [ ] Theme-reactive: read CSS vars so scene shifts with dark/light mode
+- [ ] Respect `prefers-reduced-motion` (orbs freeze, rotation stops)
+- [ ] Load via `next/dynamic(..., { ssr: false })` behind a CSS gradient/starry `Suspense` fallback — no SSR/WebGL issues, no LCP penalty
+
+### 1.3 Animated hero — content + translation demo (`hero-content.tsx`, `translation-demo.tsx`, client)
+- [ ] `motion` staggered entrance for `text-brand-gradient` headline + one-line value prop
+- [ ] Translation demo (DOM overlay, readable): chat bubble auto-cycles EN → ES → FR → JA (reuse `LANGUAGES`), morph/burst between languages, pauses between cycles, respects reduced motion
+- [ ] Primary CTAs: Sign In, Create Account (Try-demo CTA added in Phase 5)
 - [ ] Keep the server-side auth check (logged-in users see "Dashboard" instead)
-- [ ] Add feature grid: real-time messaging, auto translation, file/GIF sharing, typing indicators
-- [ ] Add architecture section: visual diagram of CDK stacks (Auth/API/Data), AppSync, Lambda, DynamoDB, Cognito
-- [ ] Add footer with GitHub source link
-- [ ] Add a slim top nav bar (logo + Sign In / Create Account links, responsive)
-- [ ] Add subtle cosmic background treatment (gradient glows / starfield) with `loading`-aware skeleton if fetch slow
+
+### 1.4 Feature grid (`components/landing/feature-grid.tsx`)
+- [ ] Cards: real-time messaging, auto translation, file/GIF sharing, typing indicators (brand tokens, hover glow)
+- [ ] Scroll-reveal entrance via shared `components/landing/reveal.tsx` (`motion` whileInView)
+
+### 1.5 Architecture section (`components/landing/architecture.tsx`)
+- [ ] Visual diagram of CDK stacks (Auth/API/Data): AppSync, Lambda, DynamoDB, Cognito (SVG/CSS, no new assets)
+- [ ] Scroll-reveal entrance via `reveal.tsx`
+
+### 1.6 Footer (`components/landing/footer.tsx`)
+- [ ] Footer with GitHub source link, theme toggle, minimal brand treatment
+
+### 1.7 Page assembly (`src/app/page.tsx`)
+- [ ] Assemble nav → hero (Suspense + lazy scene) → features → architecture → footer in correct order
+- [ ] Verify build clean (`npm run build:web`), zero new lint errors, browser check: WebGL mount, auto-cycle timing, dark/light reactivity, reduced motion
 
 ---
 
