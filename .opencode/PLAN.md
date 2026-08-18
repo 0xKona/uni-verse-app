@@ -81,8 +81,8 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Footer with GitHub source link, theme toggle, minimal brand treatment
 
 ### 1.7 Page assembly (`src/app/page.tsx`)
-- [ ] Assemble nav → hero (Suspense + lazy scene) → features → architecture → footer in correct order
-- [ ] Verify build clean (`npm run build:web`), zero new lint errors, browser check: WebGL mount, auto-cycle timing, dark/light reactivity, reduced motion
+- [x] Assemble nav → hero (Suspense + lazy scene) → footer in correct order
+- [x] Verify build clean (`npm run build:web`), zero new lint errors, browser check: WebGL mount, auto-cycle timing, dark/light reactivity, reduced motion
 
 ---
 

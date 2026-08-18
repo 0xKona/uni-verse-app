@@ -41,7 +41,13 @@ export function LandingFooter() {
       <div className="border-t border-border/40">
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-2 px-4 py-4 sm:flex-row sm:px-6">
           <p className="text-xs text-muted-foreground">
-            © 2026 Uni-Verse
+            © 2026 Uni-Verse ·{" "}
+            <Link
+              href="/privacy"
+              className="underline-offset-2 hover:text-foreground hover:underline"
+            >
+              Privacy Policy
+            </Link>
           </p>
           <p className="text-xs text-muted-foreground">
             Built on AWS, AppSync · Lambda · DynamoDB · Cognito

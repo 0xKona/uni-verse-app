@@ -6,6 +6,7 @@ import { HeroSceneLoader } from "@/components/landing/hero-scene-loader";
 import { HeroContent } from "@/components/landing/hero-content";
 import { TranslationDemo } from "@/components/landing/translation-demo";
 import { LandingFooter } from "@/components/landing/footer";
+import { EducationNotice } from "@/components/landing/education-notice";
 
 export default async function Home() {
 
@@ -36,6 +37,7 @@ export default async function Home() {
           </div>
         </section>
         <LandingFooter />
+        <EducationNotice />
       </div>
   );
 }
