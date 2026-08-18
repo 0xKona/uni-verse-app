@@ -1,0 +1,19 @@
+- generic [ref=f12e1]:
+  - generic [ref=f12e2]:
+    - banner [ref=f12e3]:
+      - navigation [ref=f12e4]:
+        - link "Uni-Verse" [ref=f12e5] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f12e12]:
+          - button "Switch to dark mode" [active] [ref=f12e32]
+          - button "Sign in" [ref=f12e14] [cursor=pointer]
+          - button "Get started" [ref=f12e15] [cursor=pointer]
+    - generic [ref=f12e16]:
+      - heading "Welcome to Uni-Verse" [level=1] [ref=f12e18]
+      - generic [ref=f12e19]:
+        - link "Sign In" [ref=f12e20] [cursor=pointer]:
+          - /url: /login
+        - link "Create Account" [ref=f12e21] [cursor=pointer]:
+          - /url: /signup
+  - button "Open Next.js Dev Tools" [ref=f12e27] [cursor=pointer]
+  - alert [ref=f12e31]

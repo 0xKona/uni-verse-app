@@ -59,8 +59,8 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Create `src/components/landing/` directory; all landing sub-components live here
 
 ### 1.1 Top nav (`components/landing/top-nav.tsx`)
-- [ ] Slim sticky top nav: brand logo (link to `/`) + Sign In / Create Account links (right), responsive (condensed/collapsible on mobile)
-- [ ] Show "Dashboard" link instead when server-side auth check passes
+- [x] Slim sticky top nav: brand logo (link to `/`) + Sign In / Create Account links (right), responsive (condensed/collapsible on mobile)
+- [x] Show "Dashboard" link instead when server-side auth check passes
 
 ### 1.2 Animated hero — 3D scene (`components/landing/hero-scene.tsx`, client)
 - [ ] r3f `<Canvas>` with drei `Stars`, violet nebula glow sprites driven by `--cosmic-glow-*` tokens

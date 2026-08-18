@@ -2,6 +2,7 @@ import { runWithAmplifyServerContext } from "@/lib/amplify-server";
 import { fetchAuthSession } from "aws-amplify/auth/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
+import { TopNav } from "@/components/landing/top-nav";
 
 export default async function Home() {
 
@@ -18,7 +19,9 @@ export default async function Home() {
     });
 
   return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
+      <div className="flex min-h-screen flex-col bg-cosmic">
+        <TopNav authenticated={authenticated} />
+        <div className="flex flex-1 flex-col items-center justify-center px-4">
           <div className="flex flex-col items-center gap-6 text-center">
               <h1 className="text-4xl font-bold tracking-tight">
                   Welcome to Uni-Verse
@@ -40,6 +43,7 @@ export default async function Home() {
             </>
           )}
         </div>
+      </div>
       </div>
   );
 }

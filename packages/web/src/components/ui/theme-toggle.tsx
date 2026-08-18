@@ -15,7 +15,7 @@ function useHydrated() {
     );
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ iconOnly = false }: { iconOnly?: boolean }) {
     const { resolvedTheme, setTheme } = useTheme();
     const mounted = useHydrated();
 
@@ -23,12 +23,12 @@ export function ThemeToggle() {
         return (
             <Button
                 variant="ghost"
-                size="sm"
-                className="w-full justify-start gap-2 text-xs"
+                size={iconOnly ? "icon" : "sm"}
+                className={iconOnly ? undefined : "w-full justify-start gap-2 text-xs"}
                 disabled
             >
                 <Sun size={14} />
-                Theme
+                {iconOnly ? null : "Theme"}
             </Button>
         );
     }
@@ -38,12 +38,13 @@ export function ThemeToggle() {
     return (
         <Button
             variant="ghost"
-            size="sm"
-            className="w-full justify-start gap-2 text-xs"
+            size={iconOnly ? "icon" : "sm"}
+            className={iconOnly ? undefined : "w-full justify-start gap-2 text-xs"}
             onClick={() => setTheme(isDark ? "light" : "dark")}
+            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
         >
             {isDark ? <Sun size={14} /> : <Moon size={14} />}
-            {isDark ? "Light mode" : "Dark mode"}
+            {iconOnly ? null : isDark ? "Light mode" : "Dark mode"}
         </Button>
     );
 }
