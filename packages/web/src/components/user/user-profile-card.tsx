@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { logout } from "@/lib/auth";
 import { useCurrentUserId } from "@/hooks/useCurrentUserId";
 import { useUser } from "@/hooks/useUserQuery";
@@ -80,6 +81,8 @@ export default function UserProfileCard() {
               sideOffset={12}
               className="w-48 p-1"
             >
+              <ThemeToggle />
+              <Separator className="my-1" />
               <Button
                 variant="ghost"
                 size="sm"

@@ -1,0 +1,31 @@
+- generic [active] [ref=f5e1]:
+  - generic [ref=f5e3]:
+    - generic [ref=f5e4]:
+      - generic [ref=f5e5]: Sign In
+      - generic [ref=f5e6]: Enter your credentials to access your account
+    - generic [ref=f5e7]:
+      - generic [ref=f5e8]:
+        - generic [ref=f5e9]:
+          - generic [ref=f5e10]: Email
+          - textbox "Email" [ref=f5e11]:
+            - /placeholder: you@email.com
+        - generic [ref=f5e12]:
+          - generic [ref=f5e13]: Password
+          - textbox "Password" [ref=f5e14]:
+            - /placeholder: ••••••••
+      - generic [ref=f5e15]:
+        - button "Sign In" [ref=f5e16]
+        - paragraph [ref=f5e17]:
+          - text: No account?
+          - link "Sign up" [ref=f5e18] [cursor=pointer]:
+            - /url: /signup
+  - generic [ref=f5e23] [cursor=pointer]:
+    - button "Open Next.js Dev Tools" [ref=f5e24]
+    - generic [ref=f5e28]:
+      - button "Open issues overlay" [ref=f5e29]:
+        - generic [ref=f5e30]:
+          - generic [ref=f5e31]: "0"
+          - generic [ref=f5e32]: "1"
+        - generic [ref=f5e33]: Issue
+      - button "Collapse issues badge" [ref=f5e34]
+  - alert [ref=f5e37]

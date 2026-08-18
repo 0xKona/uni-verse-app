@@ -37,10 +37,10 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Add favicon/logo asset to `src/app/` (replace stock Next.js one)
 
 ### 0.3 Theme provider + toggle
-- [ ] Add `ThemeProvider` (client) backed by local-storage persistence with system-detection fallback
-- [ ] Default to dark; persist user choice
-- [ ] Mount provider in root layout inside `QueryProvider`
-- [ ] Add a theme toggle button in the dashboard profile menu (and landing page nav if added)
+- [x] Add `ThemeProvider` (client) backed by local-storage persistence with system-detection fallback
+- [x] Default to dark; persist user choice
+- [x] Mount provider in root layout inside `QueryProvider`
+- [x] Add a theme toggle button in the dashboard profile menu (and landing page nav if added)
 
 ### 0.4 Image config (`next.config.ts`)
 - [ ] Add `images.remotePatterns` for S3 media bucket and Giphy domains

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import AmplifyProvider from "@/components/AmplifyProvider";
 import { QueryProvider } from "@/components/QueryProvider";
+import { ThemeProvider } from "@/components/ThemeProvider";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,7 @@ export default function RootLayout({
     return (
         <html
             lang="en"
+            suppressHydrationWarning
             className={cn(
                 "font-sans",
                 geist.variable,
@@ -45,7 +47,16 @@ export default function RootLayout({
                 className={`${geist.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
             >
                 <AmplifyProvider>
-                    <QueryProvider>{children}</QueryProvider>
+                    <QueryProvider>
+                        <ThemeProvider
+                            attribute="class"
+                            defaultTheme="dark"
+                            enableSystem
+                            disableTransitionOnChange
+                        >
+                            {children}
+                        </ThemeProvider>
+                    </QueryProvider>
                 </AmplifyProvider>
             </body>
         </html>
