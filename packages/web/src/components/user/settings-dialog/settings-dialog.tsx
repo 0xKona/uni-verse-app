@@ -27,6 +27,7 @@ import {
   useUpdateAvatar,
   useChangePassword,
 } from "@/hooks/useProfileMutation";
+import ChangePassword from "./change-password";
 
 interface SettingsDialogProps {
   open: boolean;
@@ -47,16 +48,11 @@ export function SettingsDialog({
   const setProfile = useSetUserProfile();
   const updateUsername = useUpdateUsername(userId);
   const updateAvatar = useUpdateAvatar(userId);
-  const changePassword = useChangePassword();
 
   // Username
   const [newUsername, setNewUsername] = useState(username);
 
-  // Password
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  
 
   // Avatar preview
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -66,6 +62,8 @@ export function SettingsDialog({
   const initials = username[0]?.toUpperCase() ?? "?";
   const currentLang = profile?.language ?? "en";
   const translationOn = profile?.translationEnabled ?? false;
+
+  console.log({ profile })
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,24 +86,7 @@ export function SettingsDialog({
     updateUsername.mutate(newUsername.trim());
   };
 
-  const handleSavePassword = () => {
-    setPasswordError("");
-    if (newPassword !== confirmPassword) {
-      setPasswordError("Passwords do not match.");
-      return;
-    }
-    changePassword.mutate(
-      { currentPassword, newPassword },
-      {
-        onSuccess: () => {
-          setCurrentPassword("");
-          setNewPassword("");
-          setConfirmPassword("");
-        },
-        onError: () => setPasswordError("Incorrect current password."),
-      }
-    );
-  };
+  
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -185,43 +166,7 @@ export function SettingsDialog({
           <Separator />
 
           {/* Password */}
-          <div className="flex flex-col gap-2">
-            <Label>Password</Label>
-            <Input
-              type="password"
-              placeholder="Current password"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-            />
-            <Input
-              type="password"
-              placeholder="New password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-            />
-            <Input
-              type="password"
-              placeholder="Confirm new password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            {passwordError && (
-              <p className="text-xs text-destructive">{passwordError}</p>
-            )}
-            <Button
-              size="sm"
-              className="self-end"
-              onClick={handleSavePassword}
-              disabled={
-                changePassword.isPending ||
-                !currentPassword ||
-                !newPassword ||
-                !confirmPassword
-              }
-            >
-              {changePassword.isPending ? "Saving…" : "Change password"}
-            </Button>
-          </div>
+          <ChangePassword />
 
           <Separator />
 

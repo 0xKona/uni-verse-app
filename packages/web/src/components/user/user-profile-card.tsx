@@ -24,7 +24,7 @@ import { Separator } from "@/components/ui/separator";
 import { logout } from "@/lib/auth";
 import { useCurrentUserId } from "@/hooks/useCurrentUserId";
 import { useUser } from "@/hooks/useUserQuery";
-import { SettingsDialog } from "./settings-dialog";
+import { SettingsDialog } from "./settings-dialog/settings-dialog";
 import { useRouter } from "next/navigation";
 import { Card, CardContent } from "../ui/card";
 import { capitalizeText } from "@/lib/utils";
