@@ -25,7 +25,6 @@ import {
   useSetUserProfile,
   useUpdateUsername,
   useUpdateAvatar,
-  useChangePassword,
 } from "@/hooks/useProfileMutation";
 import ChangePassword from "./change-password";
 
@@ -62,8 +61,6 @@ export function SettingsDialog({
   const initials = username[0]?.toUpperCase() ?? "?";
   const currentLang = profile?.language ?? "en";
   const translationOn = profile?.translationEnabled ?? false;
-
-  console.log({ profile })
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];

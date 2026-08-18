@@ -21,7 +21,6 @@ export function UserCard({
   className,
   children,
 }: UserCardProps) {
-  console.log({ user });
   const displaySubtitle = subtitle ?? "";
   const initials = user.username[0]?.toUpperCase() ?? "?";
   const username = capitalizeText(user.username);

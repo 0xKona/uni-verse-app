@@ -46,8 +46,9 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Add `images.remotePatterns` for S3 media bucket and Giphy domains
 
 ### 0.5 Debug cleanup
-- [ ] Remove `console.log`s in `components/chat/conversation-list.tsx`, `components/ui/user-card.tsx`, `components/user/settings-dialog/`
-- [ ] Sweep grep for any remaining `console.log`/`console.error` in feature code
+- [x] Remove `console.log`s in `components/chat/conversation-list.tsx`, `components/ui/user-card.tsx`, `components/user/settings-dialog/`
+- [x] Sweep grep for any remaining `console.log`/`console.error` in feature code (all `console.log`/debug removed; single `console.error` per error site retained until Phase 4.2 converts them to toasts)
+- [x] Keep `TEST_EMAILS` protection in `components/user/settings-dialog/change-password.tsx` (user decision — test-account password changes stay disabled; revisit for demo account in Phase 5)
 
 ---
 

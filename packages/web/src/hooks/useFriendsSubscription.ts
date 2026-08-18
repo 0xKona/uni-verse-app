@@ -27,7 +27,6 @@ export function useSubscribeFriendRequestReceived(userId: string | null) {
   useEffect(() => {
     if (!userId) return;
 
-    console.log('[Subscription] Setting up onFriendRequestReceived for user:', userId);
     let unsubscribe: (() => void) | null = null;
 
     try {
@@ -38,11 +37,9 @@ export function useSubscribeFriendRequestReceived(userId: string | null) {
 
       (subscription as any).subscribe({
         next: (data: any) => {
-          console.log('[Subscription] Friend request received:', data);
           // New request received - add to pending requests cache
           const newRequest = data.data?.onFriendRequestReceived;
           if (newRequest) {
-            console.log('[Subscription] Adding new request to cache:', newRequest);
             queryClient.setQueryData(FRIENDS_QUERY_KEYS.pending(), (old: FriendRequest[] | undefined) => {
               const exists = old?.some(r => r.senderId === newRequest.senderId);
               return exists ? old : [...(old || []), newRequest];
@@ -51,12 +48,10 @@ export function useSubscribeFriendRequestReceived(userId: string | null) {
         },
         error: (error: any) => {
           console.error('[Subscription] Friend request subscription error:', error);
-          console.error('[Subscription] Error details:', JSON.stringify(error, null, 2));
         },
       });
 
       unsubscribe = () => {
-        console.log('[Subscription] Unsubscribing from onFriendRequestReceived');
         (subscription as any).unsubscribe?.();
       };
     } catch (error) {
@@ -80,7 +75,6 @@ export function useSubscribeFriendRequestUpdated(userId: string | null) {
   useEffect(() => {
     if (!userId) return;
 
-    console.log('[Subscription] Setting up onFriendRequestUpdated for user:', userId);
     let unsubscribe: (() => void) | null = null;
 
     try {
@@ -90,7 +84,6 @@ export function useSubscribeFriendRequestUpdated(userId: string | null) {
 
       (subscription as any).subscribe({
         next: (data: any) => {
-          console.log('[Subscription] Friend request updated:', data);
           const updatedRequest = data.data?.onFriendRequestUpdated;
           if (!updatedRequest) return;
           // Client-side filter: only process events relevant to this user
@@ -98,7 +91,6 @@ export function useSubscribeFriendRequestUpdated(userId: string | null) {
 
           // If accepted, add to friends list
           if (updatedRequest.status === 'ACCEPTED') {
-            console.log('[Subscription] Adding to friends list');
             queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) => {
               const exists = old?.some(
                 f => (f.senderId === updatedRequest.senderId && f.recipientId === updatedRequest.recipientId) ||
@@ -110,7 +102,6 @@ export function useSubscribeFriendRequestUpdated(userId: string | null) {
 
           // Remove from pending requests if current user is the recipient
           if (updatedRequest.recipientId === userId) {
-            console.log('[Subscription] Removing from pending requests');
             queryClient.setQueryData(FRIENDS_QUERY_KEYS.pending(), (old: FriendRequest[] | undefined) =>
               old?.filter((r) => r.senderId !== updatedRequest.senderId) || [],
             );
@@ -118,7 +109,6 @@ export function useSubscribeFriendRequestUpdated(userId: string | null) {
 
           // Remove from sent requests if current user is the sender
           if (updatedRequest.senderId === userId) {
-            console.log('[Subscription] Removing from sent requests');
             queryClient.setQueryData(FRIENDS_QUERY_KEYS.sent(), (old: FriendRequest[] | undefined) =>
               old?.filter((r) => r.recipientId !== updatedRequest.recipientId) || [],
             );
@@ -126,12 +116,10 @@ export function useSubscribeFriendRequestUpdated(userId: string | null) {
         },
         error: (error: any) => {
           console.error('[Subscription] Friend request update subscription error:', error);
-          console.error('[Subscription] Error details:', JSON.stringify(error, null, 2));
         },
       });
 
       unsubscribe = () => {
-        console.log('[Subscription] Unsubscribing from onFriendRequestUpdated');
         (subscription as any).unsubscribe?.();
       };
     } catch (error) {
@@ -154,7 +142,6 @@ export function useSubscribeFriendListUpdated(userId: string | null) {
   useEffect(() => {
     if (!userId) return;
 
-    console.log('[Subscription] Setting up onFriendListUpdated for user:', userId);
     let unsubscribe: (() => void) | null = null;
 
     try {
@@ -164,14 +151,12 @@ export function useSubscribeFriendListUpdated(userId: string | null) {
 
       (subscription as any).subscribe({
         next: (data: any) => {
-          console.log('[Subscription] Friend list updated:', data);
           const update = data.data?.onFriendListUpdated;
           if (!update) return;
           // Client-side filter: only process events relevant to this user
           if (update.senderId !== userId && update.recipientId !== userId) return;
 
           if (update.status === 'ACCEPTED') {
-            console.log('[Subscription] Adding friend to list');
             queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) => {
               const exists = old?.some(
                 f => (f.senderId === update.senderId && f.recipientId === update.recipientId) ||
@@ -180,7 +165,6 @@ export function useSubscribeFriendListUpdated(userId: string | null) {
               return exists ? old : [...(old || []), update];
             });
           } else {
-            console.log('[Subscription] Removing friend from list');
             queryClient.setQueryData(FRIENDS_QUERY_KEYS.list(), (old: FriendRequest[] | undefined) =>
               old?.filter(
                 f => !((f.senderId === update.senderId && f.recipientId === update.recipientId) ||
@@ -191,12 +175,10 @@ export function useSubscribeFriendListUpdated(userId: string | null) {
         },
         error: (error: any) => {
           console.error('[Subscription] Friend list subscription error:', error);
-          console.error('[Subscription] Error details:', JSON.stringify(error, null, 2));
         },
       });
 
       unsubscribe = () => {
-        console.log('[Subscription] Unsubscribing from onFriendListUpdated');
         (subscription as any).unsubscribe?.();
       };
     } catch (error) {

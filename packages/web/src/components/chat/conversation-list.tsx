@@ -16,7 +16,6 @@ export function ConversationList({
   activeChatId,
   onSelectChat,
 }: ConversationListProps) {
-  console.log({ activeChatId });
   const { data: chats = [], isLoading } = useChats();
 
   const participantIds = useMemo(
