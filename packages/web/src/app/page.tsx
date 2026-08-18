@@ -3,6 +3,7 @@ import { fetchAuthSession } from "aws-amplify/auth/server";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { TopNav } from "@/components/landing/top-nav";
+import { HeroSceneLoader } from "@/components/landing/hero-scene-loader";
 
 export default async function Home() {
 
@@ -21,29 +22,32 @@ export default async function Home() {
   return (
       <div className="flex min-h-screen flex-col bg-cosmic">
         <TopNav authenticated={authenticated} />
-        <div className="flex flex-1 flex-col items-center justify-center px-4">
-          <div className="flex flex-col items-center gap-6 text-center">
-              <h1 className="text-4xl font-bold tracking-tight">
-                  Welcome to Uni-Verse
-              </h1>
+        <section className="relative flex min-h-[560px] flex-1 items-center justify-center overflow-hidden px-4">
+          <HeroSceneLoader />
+<div className="relative z-10 flex flex-col items-center justify-center px-4">
+            <div className="flex flex-col items-center gap-6 text-center">
+                <h1 className="text-4xl font-bold tracking-tight">
+                    Welcome to Uni-Verse
+                </h1>
+            </div>
+          <div className="flex gap-3 mt-5">
+            {authenticated ? (
+              <Link href="/dashboard" className="inline-flex h-8 items-center justify-center rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-all">
+                Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="inline-flex h-8 items-center justify-center rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-all">
+                    Sign In
+                </Link>
+                <Link href="/signup" className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-background px-2.5 text-sm font-medium transition-all hover:bg-muted">
+                    Create Account
+                </Link>
+              </>
+            )}
           </div>
-        <div className="flex gap-3 mt-5">
-          {authenticated ? (
-            <Link href="/dashboard" className="inline-flex h-8 items-center justify-center rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-all">
-              Dashboard
-            </Link>
-          ) : (
-            <>
-              <Link href="/login" className="inline-flex h-8 items-center justify-center rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-all">
-                  Sign In
-              </Link>
-              <Link href="/signup" className="inline-flex h-8 items-center justify-center rounded-lg border border-border bg-background px-2.5 text-sm font-medium transition-all hover:bg-muted">
-                  Create Account
-              </Link>
-            </>
-          )}
         </div>
-      </div>
+        </section>
       </div>
   );
 }

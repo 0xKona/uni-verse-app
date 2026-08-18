@@ -63,12 +63,13 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Show "Dashboard" link instead when server-side auth check passes
 
 ### 1.2 Animated hero — 3D scene (`components/landing/hero-scene.tsx`, client)
-- [ ] r3f `<Canvas>` with drei `Stars`, violet nebula glow sprites driven by `--cosmic-glow-*` tokens
-- [ ] Two floating orbs (wireframe + solid, `--primary` color, drei `Float`) drifting slowly
-- [ ] Faint particle-stream arc between the orbs (message crossing a language barrier)
-- [ ] Theme-reactive: read CSS vars so scene shifts with dark/light mode
-- [ ] Respect `prefers-reduced-motion` (orbs freeze, rotation stops)
-- [ ] Load via `next/dynamic(..., { ssr: false })` behind a CSS gradient/starry `Suspense` fallback — no SSR/WebGL issues, no LCP penalty
+- [x] r3f `<Canvas>` with drei `Stars`, violet nebula glow sprites driven by `--cosmic-glow-*` tokens
+- [x] Two floating orbs (wireframe + solid, `--primary` color, drei `Float`) drifting slowly
+- [x] Faint particle-stream arc between the orbs (message crossing a language barrier) — stream endpoints use the orbs' live positions, so the string drifts with the orbs
+- [x] Theme-reactive: read CSS vars so scene shifts with dark/light mode
+- [x] Respect `prefers-reduced-motion` (orbs freeze, rotation stops)
+- [x] Load via `next/dynamic(..., { ssr: false })` behind a CSS gradient/starry `Suspense` fallback — no SSR/WebGL issues, no LCP penalty
+- [x] WebGL unavailable (e.g. hardware acceleration off): render CSS cosmic backdrop + dismissible banner prompting the user to enable WebGL — no JS permission prompt API exists for WebGL, so we guide rather than try to auto-request
 
 ### 1.3 Animated hero — content + translation demo (`hero-content.tsx`, `translation-demo.tsx`, client)
 - [ ] `motion` staggered entrance for `text-brand-gradient` headline + one-line value prop

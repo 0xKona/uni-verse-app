@@ -2,3 +2,39 @@
 [     159ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
 [   84813ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
 [   84852ms] [LOG] [Fast Refresh] done in 141ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  215615ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  215646ms] [LOG] [Fast Refresh] done in 32ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  234773ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  234805ms] [LOG] [Fast Refresh] done in 40ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  249302ms] [ERROR] ./packages/web/src/app/page.tsx:52:1
+Parsing ecmascript source code failed
+  50 |       </div>
+  51 |   );
+> 52 | }
+     | ^
+  53 |
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`? @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  249342ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  264805ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  265018ms] [ERROR] ./packages/web/src/components/landing/hero-scene.tsx:21:9
+Ecmascript file had an error
+  19 |   const s_ = L - 0.0894841775 * a - 1.291485548 * b;
+  20 |   const l = l_ ** 3;
+> 21 |   const m = m_ ** 3;
+     |         ^
+  22 |   const s = s_ ** 3;
+  23 |
+  24 |   const toSRGB = (x: number) => {
+
+the name `m` is defined multiple times
+
+Import trace:
+  Client Component Browser:
+    ./packages/web/src/components/landing/hero-scene.tsx [Client Component Browser]
+    ./packages/web/src/components/landing/hero-scene-loader.tsx [Client Component Browser]
+    ./packages/web/src/components/landing/hero-scene-loader.tsx [Server Component]
+    ./packages/web/src/app/page.tsx [Server Component] @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:3127
+[  317123ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  317189ms] [LOG] [Fast Refresh] done in 28ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[  317609ms] [WARNING] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead. @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297

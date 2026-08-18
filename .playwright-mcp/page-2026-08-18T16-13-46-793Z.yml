@@ -1,0 +1,25 @@
+- generic [active] [ref=f20e1]:
+  - generic [ref=f20e2]:
+    - banner [ref=f20e3]:
+      - navigation [ref=f20e4]:
+        - link "Uni-Verse" [ref=f20e5] [cursor=pointer]:
+          - /url: /
+        - generic [ref=f20e12]:
+          - button "Switch to light mode" [ref=f20e13]
+          - button "Sign in" [ref=f20e14] [cursor=pointer]
+          - button "Get started" [ref=f20e15] [cursor=pointer]
+    - generic [ref=f20e16]:
+      - generic [ref=f20e23]:
+        - generic [ref=f20e26]:
+          - paragraph [ref=f20e27]: WebGL is disabled
+          - paragraph [ref=f20e28]: "The cosmic scene is a WebGL experience. Enable graphics acceleration in your browser settings (Brave/Chrome: Settings → System → “Use graphics acceleration when available”, then restart the browser) to see it in full."
+        - button "Dismiss WebGL notice" [ref=f20e29]
+      - generic [ref=f20e30]:
+        - heading "Welcome to Uni-Verse" [level=1] [ref=f20e32]
+        - generic [ref=f20e33]:
+          - link "Sign In" [ref=f20e34] [cursor=pointer]:
+            - /url: /login
+          - link "Create Account" [ref=f20e35] [cursor=pointer]:
+            - /url: /signup
+  - button "Open Next.js Dev Tools" [ref=f20e41] [cursor=pointer]
+  - alert [ref=f20e45]
