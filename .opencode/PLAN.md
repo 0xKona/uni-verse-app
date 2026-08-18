@@ -43,11 +43,10 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Add a theme toggle button in the dashboard profile menu (and landing page nav if added)
 
 ### 0.4 Image config (`next.config.ts`)
-- [ ] Add `images.remotePatterns` for S3 media bucket and Giphy domains
+- [x] Add `images.remotePatterns` for S3 media bucket and Giphy domains
 
 ### 0.5 Debug cleanup
 - [ ] Remove `console.log`s in `components/chat/conversation-list.tsx`, `components/ui/user-card.tsx`, `components/user/settings-dialog/`
-- [ ] Remove hardcoded `TEST_EMAILS` behavior in `components/user/settings-dialog/change-password.tsx`
 - [ ] Sweep grep for any remaining `console.log`/`console.error` in feature code
 
 ---
