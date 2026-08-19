@@ -10,6 +10,7 @@ import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { useUnreadChatCount } from "@/hooks/useUnreadChatCount";
 import SideBarButton from "@/components/ui/sidebar-button";
 import UserProfileCard from "@/components/user/user-profile-card";
+import { MobileBottomBar } from "@/components/dashboard/mobile-bottom-bar";
 
 const tabs = [
   { href: "/dashboard/dm", icon: MessageCircle, label: "Direct Messages" },
@@ -52,9 +53,12 @@ export default function DashboardLayout({
         </nav>
       </TooltipProvider>
 
-      <div className="flex flex-1 overflow-hidden">{children}</div>
+      <div className="flex flex-1 overflow-hidden pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
+        {children}
+      </div>
 
       <UserProfileCard />
+      <MobileBottomBar unreadCount={unreadChatCount} />
     </div>
   );
 }

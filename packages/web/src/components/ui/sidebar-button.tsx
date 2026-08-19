@@ -13,6 +13,7 @@ interface SideBarButtonProps {
   avatar?: React.ReactNode;
   label?: string;
   badge?: number;
+  size?: "default" | "sm";
   hideTooltip?: boolean;
   onClick?: () => void;
   children?: React.ReactNode;
@@ -25,12 +26,14 @@ export default function SideBarButton({
   avatar,
   label,
   badge,
+  size = "default",
   hideTooltip,
   onClick,
   children,
 }: SideBarButtonProps) {
   const classes = cn(
-    "relative flex items-center justify-center w-12 h-12 text-sidebar-foreground/70 transition-all duration-200 cursor-pointer",
+    "relative flex items-center justify-center text-sidebar-foreground/70 transition-all duration-200 cursor-pointer",
+    size === "sm" ? "size-10" : "w-12 h-12",
     active
       ? "rounded-2xl bg-sidebar-primary text-sidebar-primary-foreground"
       : "rounded-full hover:rounded-2xl hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
@@ -38,7 +41,7 @@ export default function SideBarButton({
 
   const content = (
     <>
-      {Icon && <Icon size={22} />}
+      {Icon && <Icon size={size === "sm" ? 20 : 22} />}
       {avatar}
       {children}
       {!!badge && (

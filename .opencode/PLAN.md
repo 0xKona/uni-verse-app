@@ -124,10 +124,10 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] `SideBarButton`: add optional `badge?: number` and `hideTooltip?: boolean` props (mobile bottom bar reuses it without tooltips)
 
 ### 3.2 Mobile bottom tab bar (new `src/components/dashboard/mobile-bottom-bar.tsx`)
-- [ ] Fixed bottom bar, `md:hidden`: brand `BrandMark` mini-icon left, nav items (DMs — reuses `SideBarButton` with `hideTooltip`), spacer, add-friend quick action (opens `AddFriendDialog`), right: profile avatar that reuses the existing `UserProfileCard` popover
-- [ ] Safe area: `pb-[env(safe-area-inset-bottom)]` + `h-16` content row; add `md:hidden` bottom padding to root layout so content never hides behind the bar
-- [ ] Active state: highlight DMs when `pathname.startsWith("/dashboard/dm")`
-- [ ] Keep the rail's `pb-14` clearance only on desktop (profile card lives there)
+- [x] Fixed bottom bar, `md:hidden`: brand `BrandMark` mini-icon left, nav items (DMs — reuses `SideBarButton` with `hideTooltip`), spacer, add-friend quick action (opens `AddFriendDialog`), right: profile avatar that reuses the existing `UserProfileCard` popover
+- [x] Safe area: `pb-[env(safe-area-inset-bottom)]` + `h-16` content row; add `md:hidden` bottom padding to root layout so content never hides behind the bar
+- [x] Active state: highlight DMs when `pathname.startsWith("/dashboard/dm")`
+- [x] Keep the rail's `pb-14` clearance only on desktop (profile card lives there)
 
 ### 3.3 Mobile top header (new `src/components/dashboard/mobile-header.tsx`)
 - [ ] `md:hidden` slim header above content: hamburger button (opens the DM drawer), app title/wordmark, `ThemeToggle iconOnly`; no header on desktop (rail + rail profile menu cover it)

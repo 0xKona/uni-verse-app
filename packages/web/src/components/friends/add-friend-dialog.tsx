@@ -15,8 +15,9 @@ import { UserCard } from "@/components/ui/user-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { useSearchUsers } from "@/hooks/useSearchUsers";
 import { useSendFriendRequest } from "@/hooks/useFriendsMutation";
+import { cn } from "@/lib/utils";
 
-export function AddFriendDialog() {
+export function AddFriendDialog({ iconOnly = false }: { iconOnly?: boolean }) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
@@ -50,9 +51,16 @@ export function AddFriendDialog() {
         if (!val) resetState();
       }}
     >
-      <DialogTrigger className="w-full justify-start gap-2 text-muted-foreground hover:text-foreground text-sm px-2 py-1.5 rounded-md flex items-center cursor-pointer hover:bg-muted transition-colors">
-        <UserPlus size={16} />
-        Add Friend
+      <DialogTrigger
+        className={cn(
+          "flex items-center justify-center rounded-lg text-sidebar-foreground/70 hover:text-sidebar-accent-foreground cursor-pointer hover:bg-sidebar-accent transition-colors",
+          iconOnly
+            ? "size-10"
+            : "w-full justify-start gap-2 text-muted-foreground hover:text-foreground text-sm px-2 py-1.5 rounded-md",
+        )}
+      >
+        <UserPlus size={iconOnly ? 20 : 16} />
+        {!iconOnly && "Add Friend"}
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
