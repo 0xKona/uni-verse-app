@@ -1,11 +1,14 @@
 "use client";
 import { useState } from "react";
-import { register, confirm } from "@/lib/auth";
+import { register, confirm, resendCode } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { PasswordInput } from "@/components/ui/password-input";
+import { PasswordStrength } from "@/components/ui/password-strength";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { AuthLayout } from "@/components/landing/auth-layout";
+import { AuthCard } from "@/components/landing/auth-card";
 import Link from "next/link";
 
 export default function SignUpPage() {
@@ -17,13 +20,15 @@ export default function SignUpPage() {
   const [step, setStep] = useState<"register" | "confirm">("register");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendNotice, setResendNotice] = useState("");
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
     try {
-      await register(email, password, username);
+      await register(email.trim(), password, username.trim());
       setStep("confirm");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Sign up failed");
@@ -37,7 +42,7 @@ export default function SignUpPage() {
     setError("");
     setLoading(true);
     try {
-      await confirm(email, code);
+      await confirm(email, code.trim());
       router.push("/login");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Confirmation failed");
@@ -46,98 +51,129 @@ export default function SignUpPage() {
     }
   };
 
+  const handleResend = async () => {
+    setResending(true);
+    setResendNotice("");
+    setError("");
+    try {
+      await resendCode(email);
+      setResendNotice("A new code is on its way.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Couldn't resend the code");
+    } finally {
+      setResending(false);
+    }
+  };
+
   if (step === "confirm") {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-background px-4">
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle className="text-2xl">Verify Email</CardTitle>
-            <CardDescription>
+      <AuthLayout>
+        <AuthCard
+          title="Verify Email"
+          description={
+            <>
               A code was sent to <span className="font-medium text-foreground">{email}</span>
-            </CardDescription>
-          </CardHeader>
-          <form onSubmit={handleConfirm}>
-            <CardContent className="flex flex-col gap-4">
-              <div className="flex flex-col gap-2">
-                <Label htmlFor="code">Verification Code</Label>
-                <Input
-                  id="code"
-                  type="text"
-                  placeholder="123456"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  required
-                />
-              </div>
-              {error && <p className="text-sm text-destructive">{error}</p>}
-            </CardContent>
-            <CardFooter>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Verifying…" : "Verify"}
-              </Button>
-            </CardFooter>
+            </>
+          }
+        >
+          <form onSubmit={handleConfirm} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="code">Verification Code</Label>
+              <Input
+                id="code"
+                type="text"
+                inputMode="numeric"
+                placeholder="123456"
+                autoFocus
+                autoComplete="one-time-code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                required
+              />
+            </div>
+            {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+            {resendNotice && (
+              <p role="status" className="text-sm text-primary">{resendNotice}</p>
+            )}
+            <Button type="submit" className="mt-1 w-full" disabled={loading}>
+              {loading ? "Verifying…" : "Verify"}
+            </Button>
           </form>
-        </Card>
-      </div>
+          <p className="text-center text-sm text-muted-foreground">
+            Didn&rsquo;t get it?{" "}
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending}
+              className="text-foreground underline-offset-4 hover:underline disabled:pointer-events-none disabled:opacity-50"
+            >
+              {resending ? "Resending…" : "Resend code"}
+            </button>
+          </p>
+        </AuthCard>
+      </AuthLayout>
     );
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="text-2xl">Create Account</CardTitle>
-        </CardHeader>
-        <form onSubmit={handleRegister}>
-          <CardContent className="flex flex-col gap-4">
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder="coolstudent42"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
+    <AuthLayout>
+      <AuthCard
+        title="Create Account"
+        description="Join the conversation — it only takes a minute"
+      >
+        <form onSubmit={handleRegister} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              id="username"
+              type="text"
+              placeholder="coolstudent42"
+              autoComplete="nickname"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@email.com"
+              autoComplete="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="password">Password</Label>
+            <PasswordInput
+              id="password"
+              placeholder="••••••••"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          {password.length > 0 && (
+            <div className="rounded-lg border border-border/60 bg-muted/40 p-3">
+              <PasswordStrength password={password} />
             </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="you@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="flex flex-col gap-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            {error && <p className="text-sm text-destructive">{error}</p>}
-          </CardContent>
-          <CardFooter className="flex flex-col gap-3">
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating account…" : "Create Account"}
-            </Button>
-            <p className="text-sm text-muted-foreground text-center">
-              Already have an account?{" "}
-              <Link href="/login" className="text-foreground underline-offset-4 hover:underline">
-                Sign in
-              </Link>
-            </p>
-          </CardFooter>
+          )}
+          {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+          <Button type="submit" className="mt-1 w-full" disabled={loading}>
+            {loading ? "Creating account…" : "Create Account"}
+          </Button>
         </form>
-      </Card>
-    </div>
+        <p className="text-center text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link href="/login" className="text-foreground underline-offset-4 hover:underline">
+            Sign in
+          </Link>
+        </p>
+      </AuthCard>
+    </AuthLayout>
   );
 }

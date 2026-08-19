@@ -89,25 +89,25 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 ## Phase 2 — Auth Screens
 
 ### 2.1 Shared auth layout
-- [ ] Create a shared split-screen auth layout/component: branded panel (gradient, logo, feature bullets) + form card on the right
-- [ ] Make split-screen responsive (branded panel hidden/condensed on mobile, stacked layout)
+- [x] Create a shared split-screen auth layout/component: branded panel (gradient, logo, feature bullets) + form card on the right
+- [x] Make split-screen responsive (branded panel hidden/condensed on mobile, stacked layout)
 
 ### 2.2 Login (`src/app/login/page.tsx`)
-- [ ] Rework form into brand-styled card (labels, inputs, focus rings per new tokens)
-- [ ] Add show/hide password toggle
-- [ ] Add "Forgot password" flow (`lib/auth.ts`: `resetPassword` + `confirmResetPassword`; UI: email → code + new password views)
-- [ ] Wire forgot-password success/error to inline states (or Phase 4 toast)
-- [ ] Add "Try demo" link (Phase 5)
-- [ ] Add "Don't have an account? Sign up" swap link (keep)
+- [x] Rework form into brand-styled card (labels, inputs, focus rings per new tokens)
+- [x] Add show/hide password toggle
+- [x] Add "Forgot password" flow (`lib/auth.ts`: `resetPassword` + `confirmResetPassword`; UI: email → code + new password views)
+- [x] Wire forgot-password success/error to inline states (or Phase 4 toast)
+- [x] Add "Try demo" link (Phase 5)
+- [x] Add "Don't have an account? Sign up" swap link (keep)
 
 ### 2.3 Signup (`src/app/signup/page.tsx`)
-- [ ] Rework register view into brand-styled card
-- [ ] Add show/hide password toggle
-- [ ] Add inline password-strength hint
-- [ ] Rework email-verification (code) step with brand styling
-- [ ] Add **Resend code** button (`resendSignUpCode` in Amplify)
-- [ ] Add auto-focus + enter-to-submit on code input
-- [ ] Verify Cognito pool settings allow `resend`/`reset`; add note to `docs/` if pool config change is needed
+- [x] Rework register view into brand-styled card
+- [x] Add show/hide password toggle
+- [x] Add inline password-strength hint
+- [x] Rework email-verification (code) step with brand styling
+- [x] Add **Resend code** button (`resendSignUpCode` in Amplify)
+- [x] Add auto-focus + enter-to-submit on code input
+- [x] Verify Cognito pool settings allow `resend`/`reset`; add note to `docs/` if pool config change is needed
 
 ---
 
