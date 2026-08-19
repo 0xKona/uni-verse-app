@@ -10,21 +10,28 @@ export default function UserProfileCard() {
   return (
     <Card
       size="sm"
-      className="absolute bottom-4 left-3 w-68 py-0 shadow-lg hidden md:block"
+      className="absolute bottom-4 left-2 w-68 py-0 shadow-[0_8px_32px_-16px_rgba(0,0,0,0.6)] hidden md:block rounded-2xl bg-sidebar/70 backdrop-blur-xl ring-1 ring-sidebar-border"
     >
-      <CardContent className="flex items-center gap-3">
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"
+      />
+      <CardContent className="flex items-center gap-2.5">
         <UserProfilePopover
           side="top"
           sideOffset={12}
-          triggerClassName="flex items-center gap-3 min-w-0 rounded-md px-2 py-3 hover:bg-accent"
+          triggerClassName="flex items-center gap-3 min-w-0 rounded-xl px-2 py-2.5 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-colors"
         >
           {({ username, avatarUrl, initials }) => (
             <>
-              <Avatar size="lg" className="shrink-0">
+              <Avatar
+                size="lg"
+                className="shrink-0 shadow-md ring-1 ring-white/10"
+              >
                 <AvatarImage src={avatarUrl ?? undefined} />
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
-              <span className="flex-1 min-w-0 text-m font-medium truncate">
+              <span className="flex-1 min-w-0 text-sm font-medium truncate">
                 {capitalizeText(username)}
               </span>
               <ChevronUp

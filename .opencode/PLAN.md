@@ -184,9 +184,9 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Polish `conversation-card.tsx` — active row `bg-sidebar-accent text-sidebar-accent-foreground`, hover `bg-sidebar-accent/60`; row owns padding/hover (UserCard inner padding/hover stripped via className); active chat avatar gets `ring-2 ring-primary ring-offset-2` (`UserCard` gained an `avatarClassName` prop)
 
 ### 4.6 Profile & settings polish
-- [ ] Polish `components/user/user-profile-card.tsx` (glass card, avatar, theme toggle in popover)
-- [ ] Polish settings dialog: avatar upload preview, section styling
-- [ ] Verify ChangePassword validation UI against new theme
+- [x] Polish `components/user/user-profile-card.tsx` — cosmic glass card (rounded-2xl `bg-sidebar/70 backdrop-blur-xl ring-1 ring-sidebar-border`, branded gradient hairline on the top edge, soft drop shadow), `size=lg` avatar with `ring-1 ring-white/10`, hover state now uses the sidebar tokens (`hover:bg-sidebar-accent`); theme toggle + Settings + Log out stay in the `UserProfilePopover`
+- [x] Polish settings dialog — sections now get uppercase `SectionHeading`s (Profile photo / Username / Password / Translation); avatar upload preview upgraded: hover camera overlay on the avatar + `ring-2 ring-primary/60` while a photo is staged, object-URL preview revoked on save/cancel/dialog-close, Save + Cancel actions (4.2's success/error toasts retained)
+- [x] Verify ChangePassword validation UI against new theme — three fields now reuse `PasswordInput` (show/hide toggles), `PasswordStrength` checklist appears while typing a new password, mismatch shows inline `text-destructive` + `aria-invalid` on confirm, failed submits mark the current-password field invalid; success now toasts ("Password changed.") instead of silently clearing; `TEST_EMAILS` protection unchanged
 
 ---
 

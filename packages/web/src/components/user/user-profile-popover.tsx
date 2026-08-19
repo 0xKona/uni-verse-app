@@ -52,6 +52,8 @@ export function UserProfilePopover({
   const [cognitoUsername, setCognitoUsername] = useState("");
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  // Bumped on every open so SettingsDialog remounts and re-prepopulates its username field
+  const [settingsOpens, setSettingsOpens] = useState(0);
   const router = useRouter();
 
   const userId = useCurrentUserId();
@@ -89,20 +91,23 @@ export function UserProfilePopover({
           side={side}
           align={align}
           sideOffset={sideOffset}
-          className="w-48 p-1"
+          className="w-48 gap-2 p-2"
         >
           <ThemeToggle />
-          <Separator className="my-1" />
+          <Separator />
           <Button
             variant="ghost"
             size="sm"
             className="w-full justify-start gap-2 text-xs"
-            onClick={() => setShowSettings(true)}
+            onClick={() => {
+              setShowSettings(true);
+              setSettingsOpens((n) => n + 1);
+            }}
           >
             <Settings size={14} />
             Settings
           </Button>
-          <Separator className="my-1" />
+          <Separator />
           <Button
             variant="ghost"
             size="sm"
@@ -116,6 +121,7 @@ export function UserProfilePopover({
       </Popover>
 
       <SettingsDialog
+        key={settingsOpens}
         open={showSettings}
         onOpenChange={setShowSettings}
         userId={userId}

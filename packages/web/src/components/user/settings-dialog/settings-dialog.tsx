@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Camera } from "lucide-react";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -20,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 import { LANGUAGES } from "@/lib/languages";
 import { useUserProfile } from "@/hooks/useProfileQuery";
 import {
@@ -37,6 +39,14 @@ interface SettingsDialogProps {
   avatarUrl?: string | null;
 }
 
+function SectionHeading({ children }: { children: React.ReactNode }) {
+  return (
+    <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+      {children}
+    </h3>
+  );
+}
+
 export function SettingsDialog({
   open,
   onOpenChange,
@@ -49,10 +59,8 @@ export function SettingsDialog({
   const updateUsername = useUpdateUsername(userId);
   const updateAvatar = useUpdateAvatar(userId);
 
-  // Username
+  // Username — prepopulated with the current username
   const [newUsername, setNewUsername] = useState(username);
-
-  
 
   // Avatar preview
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
@@ -67,15 +75,23 @@ export function SettingsDialog({
     const file = e.target.files?.[0];
     if (!file) return;
     setPendingFile(file);
-    setAvatarPreview(URL.createObjectURL(file));
+    setAvatarPreview((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return URL.createObjectURL(file);
+    });
+  };
+
+  const resetAvatarPreview = () => {
+    if (avatarPreview) URL.revokeObjectURL(avatarPreview);
+    setAvatarPreview(null);
+    setPendingFile(null);
   };
 
   const handleSaveAvatar = () => {
     if (!pendingFile) return;
     updateAvatar.mutate(pendingFile, {
       onSuccess: () => {
-        setPendingFile(null);
-        setAvatarPreview(null);
+        resetAvatarPreview();
         toast.success("Profile photo updated.");
       },
       onError: () => toast.error("Upload failed. Try again."),
@@ -89,10 +105,14 @@ export function SettingsDialog({
     });
   };
 
-  
-
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <Dialog
+      open={open}
+      onOpenChange={(val) => {
+        if (!val) resetAvatarPreview();
+        onOpenChange(val);
+      }}
+    >
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Settings</DialogTitle>
@@ -100,14 +120,30 @@ export function SettingsDialog({
 
         <div className="flex flex-col gap-5">
           {/* Avatar */}
-          <div className="flex flex-col gap-3">
-            <Label>Avatar</Label>
-            <div className="flex items-center gap-4">
-              <Avatar size="lg">
-                <AvatarImage src={avatarPreview ?? avatarUrl ?? undefined} />
-                <AvatarFallback>{initials}</AvatarFallback>
-              </Avatar>
-              <div className="flex gap-2">
+          <section className="flex flex-col gap-3">
+            <SectionHeading>Profile photo</SectionHeading>
+            <div className="flex flex-wrap items-center gap-4">
+              <div className="group/avatar relative shrink-0">
+                <Avatar
+                  size="lg"
+                  className={cn(
+                    "transition-shadow duration-200",
+                    pendingFile && "ring-2 ring-primary/60 ring-offset-2",
+                  )}
+                >
+                  <AvatarImage src={avatarPreview ?? avatarUrl ?? undefined} />
+                  <AvatarFallback>{initials}</AvatarFallback>
+                </Avatar>
+                <button
+                  type="button"
+                  aria-label="Change profile photo"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="absolute inset-0 z-10 grid place-items-center rounded-full bg-background/50 text-popover-foreground opacity-0 transition-opacity duration-150 outline-none hover:opacity-100 focus-visible:opacity-100"
+                >
+                  <Camera size={16} />
+                </button>
+              </div>
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="outline"
                   size="sm"
@@ -116,33 +152,49 @@ export function SettingsDialog({
                   Choose image
                 </Button>
                 {pendingFile && (
-                  <Button
-                    size="sm"
-                    onClick={handleSaveAvatar}
-                    disabled={updateAvatar.isPending}
-                  >
-                    {updateAvatar.isPending ? "Uploading…" : "Save"}
-                  </Button>
+                  <>
+                    <Button
+                      size="sm"
+                      onClick={handleSaveAvatar}
+                      disabled={updateAvatar.isPending}
+                    >
+                      {updateAvatar.isPending ? "Uploading…" : "Save"}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={resetAvatarPreview}
+                      disabled={updateAvatar.isPending}
+                    >
+                      Cancel
+                    </Button>
+                  </>
                 )}
               </div>
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleAvatarChange}
-              />
             </div>
-          </div>
+            {pendingFile && (
+              <p className="text-xs text-muted-foreground">
+                Preview of your new photo. Save to apply it.
+              </p>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleAvatarChange}
+            />
+          </section>
 
           <Separator />
 
           {/* Username */}
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="username">Username</Label>
+          <section className="flex flex-col gap-2">
+            <SectionHeading>Username</SectionHeading>
             <div className="flex gap-2">
               <Input
                 id="username"
+                aria-label="Username"
                 value={newUsername}
                 onChange={(e) => setNewUsername(e.target.value)}
               />
@@ -158,20 +210,26 @@ export function SettingsDialog({
                 {updateUsername.isPending ? "Saving…" : "Save"}
               </Button>
             </div>
-          </div>
+          </section>
 
           <Separator />
 
           {/* Password */}
-          <ChangePassword />
+          <section className="flex flex-col gap-2">
+            <SectionHeading>Password</SectionHeading>
+            <ChangePassword />
+          </section>
 
           <Separator />
 
           {/* Translation */}
-          <div className="flex flex-col gap-3">
-            <Label>Translation</Label>
+          <section className="flex flex-col gap-3">
+            <SectionHeading>Translation</SectionHeading>
             <div className="flex items-center justify-between">
-              <Label htmlFor="translation-toggle" className="text-xs font-normal">
+              <Label
+                htmlFor="translation-toggle"
+                className="text-xs font-normal"
+              >
                 Auto-translate messages
               </Label>
               <button
@@ -184,7 +242,7 @@ export function SettingsDialog({
                     translationEnabled: !translationOn,
                   })
                 }
-                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors ${
+                className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors outline-none focus-visible:ring-2 focus-visible:ring-primary/40 focus-visible:ring-offset-2 ${
                   translationOn ? "bg-primary" : "bg-muted"
                 }`}
               >
@@ -200,7 +258,10 @@ export function SettingsDialog({
               <Select
                 value={currentLang}
                 onValueChange={(code) =>
-                  setProfile.mutate({ language: code as string, translationEnabled: translationOn })
+                  setProfile.mutate({
+                    language: code as string,
+                    translationEnabled: translationOn,
+                  })
                 }
               >
                 <SelectTrigger className="h-8 text-xs">
@@ -215,7 +276,7 @@ export function SettingsDialog({
                 </SelectContent>
               </Select>
             </div>
-          </div>
+          </section>
         </div>
       </DialogContent>
     </Dialog>
