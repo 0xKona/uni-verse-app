@@ -130,16 +130,16 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Keep the rail's `pb-14` clearance only on desktop (profile card lives there)
 
 ### 3.3 Mobile top header (new `src/components/dashboard/mobile-header.tsx`)
-- [ ] `md:hidden` slim header above content: hamburger button (opens the DM drawer), app title/wordmark, `ThemeToggle iconOnly`; no header on desktop (rail + rail profile menu cover it)
-- [ ] Header sits inside the flex column; on mobile the chat panel + input render below it
+- [x] `md:hidden` slim header above content: hamburger button (opens the DM drawer), app title/wordmark, `ThemeToggle iconOnly`; no header on desktop (rail + rail profile menu cover it)
+- [x] Header sits inside the flex column; on mobile the chat panel + input render below it
 
 ### 3.4 DM sidebar → mobile drawer (`src/components/ui/drawer.tsx` new; refactor `dm-sidebar.tsx`, `dm/page.tsx`)
-- [ ] New `components/ui/drawer.tsx`: thin Base UI `drawer` wrapper matching repo conventions — `Drawer.Root/Trigger/Portal/Backdrop/Popup/Content/Close` with left-side `slide-in-from-left` animation (`data-open/data-closed` classes, consistent with `dialog.tsx`/`popover.tsx`), styled backdrop `bg-background/60 backdrop-blur-sm`, respect `usePrefersReducedMotion` (disable slide)
-- [ ] `DMSidebar`: add optional `onClose?: () => void` and `className`; keep desktop `w-60` 2-pane unchanged; on mobile the same component renders inside `Drawer.Content` at `w-[85vw] max-w-xs`
-- [ ] `dm/page.tsx`: mobile only — hamburger (in `MobileHeader`) opens the drawer; selecting a chat or friend calls `onSelectChat`/`onSelectFriend` **and closes the drawer** so the chat fills the screen; desktop 2-pane unchanged
-- [ ] Swipe: `Drawer.SwipeArea` (edge swipe) + `Drawer.Trigger`/`Close`; close on backdrop click
-- [ ] Optional polish: auto-open drawer on mobile first load when no chat is active (avoid blank "Select a conversation")
-- [ ] `AddFriendDialog` currently at top of `dm-sidebar` — keep a compact "Add friend" trigger at the drawer's top so it stays reachable on mobile
+- [x] New `components/ui/sheet.tsx`: left slide-in sheet built on Base UI `dialog` (Portal/Backdrop/Popup with `slide-in-from-left-full`/`slide-out-to-left-full`, styled backdrop `bg-background/60 backdrop-blur-sm`, respect `usePrefersReducedMotion`)
+- [x] `DMSidebar`: add optional `className`; desktop `w-60` 2-pane unchanged; on mobile the same component renders inside `SheetContent` at `w-[85vw] max-w-xs`
+- [x] `dm/page.tsx`: mobile only — hamburger (in `MobileHeader`) opens the drawer; selecting a chat or friend calls `onSelectChat`/`onSelectFriend` **and closes the drawer**; desktop 2-pane unchanged
+- [ ] Swipe: `Drawer.SwipeArea` (edge swipe) — not implemented (sheet is Dialog-based; optional touch-gesture open enhancement)
+- [x] Auto-open drawer on mobile first load when no chat is active
+- [x] `AddFriendDialog` stays reachable at the drawer's top (`dm-sidebar.tsx` already renders it)
 
 ### 3.5 Responsive widths/breakpoints audit
 - [ ] `dm-sidebar.tsx` `w-60` → keep for `md+`; drawer width handles mobile (see 3.4)

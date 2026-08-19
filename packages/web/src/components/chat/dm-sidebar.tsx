@@ -7,21 +7,29 @@ import { PendingRequests } from "@/components/friends/pending-requests";
 import { SentRequests } from "@/components/friends/sent-requests";
 import { ConversationList } from "@/components/chat/conversation-list";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
 import type { Chat } from "@/types/messaging";
 
 interface DMSidebarProps {
   activeChatId: string | null;
   onSelectChat: (chat: Chat) => void;
   onSelectFriend: (friendId: string) => void;
+  className?: string;
 }
 
 export function DMSidebar({
   activeChatId,
   onSelectChat,
   onSelectFriend,
+  className,
 }: DMSidebarProps) {
   return (
-    <aside className="w-60 flex flex-col bg-muted/50 border-r border-border">
+    <aside
+      className={cn(
+        "w-60 flex flex-col bg-muted/50 border-r border-border",
+        className,
+      )}
+    >
       <div className="px-3 pt-4 pb-2">
         <AddFriendDialog />
       </div>
