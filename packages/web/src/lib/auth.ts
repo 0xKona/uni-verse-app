@@ -1,12 +1,15 @@
 import {
   signUp,
   confirmSignUp,
+  resendSignUpCode,
   signIn,
   signOut,
   getCurrentUser,
   fetchAuthSession,
   updateUserAttributes,
   updatePassword,
+  resetPassword,
+  confirmResetPassword,
 } from "aws-amplify/auth";
 
 export const register = (email: string, password: string, username: string) =>
@@ -14,6 +17,9 @@ export const register = (email: string, password: string, username: string) =>
 
 export const confirm = (email: string, code: string) =>
   confirmSignUp({ username: email, confirmationCode: code });
+
+export const resendCode = (email: string) =>
+  resendSignUpCode({ username: email });
 
 export const login = (email: string, password: string) =>
   signIn({ username: email, password });
@@ -32,3 +38,9 @@ export const updateAvatarUrl = (url: string) =>
 
 export const changePassword = (currentPassword: string, newPassword: string) =>
   updatePassword({ oldPassword: currentPassword, newPassword });
+
+export const forgotPassword = (email: string) =>
+  resetPassword({ username: email });
+
+export const confirmPasswordReset = (email: string, code: string, newPassword: string) =>
+  confirmResetPassword({ username: email, confirmationCode: code, newPassword });

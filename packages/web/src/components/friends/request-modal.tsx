@@ -127,12 +127,6 @@ export function RequestModal({ request, mode, onClose }: RequestModalProps) {
             </>
           )}
         </div>
-
-        {(respond.isError || cancel.isError) && (
-          <p className="text-sm text-destructive">
-            Failed to process request. Please try again.
-          </p>
-        )}
       </DialogContent>
     </Dialog>
   );

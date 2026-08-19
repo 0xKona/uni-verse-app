@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import {
   sendFriendRequest,
   respondToFriendRequest,
@@ -15,6 +16,10 @@ export function useSendFriendRequest() {
     mutationFn: (recipientId: string) => sendFriendRequest(recipientId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.sent() });
+      toast.success('Friend request sent.');
+    },
+    onError: () => {
+      toast.error("Couldn't send friend request. Please try again.");
     },
   });
 }
@@ -28,7 +33,11 @@ export function useRespondToFriendRequest() {
       queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.pending() });
       if (accept) {
         queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.list() });
+        toast.success('Friend request accepted.');
       }
+    },
+    onError: () => {
+      toast.error("Couldn't process that request. Please try again.");
     },
   });
 }
@@ -40,6 +49,9 @@ export function useCancelFriendRequest() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.sent() });
     },
+    onError: () => {
+      toast.error("Couldn't cancel that request. Please try again.");
+    },
   });
 }
 
@@ -49,6 +61,10 @@ export function useRemoveFriend() {
     mutationFn: (friendId: string) => removeFriend(friendId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: FRIENDS_QUERY_KEYS.list() });
+      toast.success('Friend removed.');
+    },
+    onError: () => {
+      toast.error("Couldn't remove friend. Please try again.");
     },
   });
 }

@@ -23,7 +23,6 @@ export function useMessageSubscription(userId: string | null) {
     if (!userId) return;
 
     try {
-      console.log('[Subscription] Setting up onMessageReceived for user:', userId);
       const subscription = apiClient.graphql({
         query: onMessageReceived,
         variables: { recipientId: userId },
@@ -73,7 +72,6 @@ export function useMessageSubscription(userId: string | null) {
   // Reconnect on window focus and network recovery
   useEffect(() => {
     const handleReconnect = () => {
-      console.log('[Subscription] Reconnecting...');
       subscribe();
       // Also refetch stale data we may have missed
       qc.invalidateQueries({ queryKey: CHAT_QUERY_KEYS.chats });

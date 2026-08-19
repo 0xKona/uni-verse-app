@@ -3,13 +3,14 @@ import { fetchAuthSession } from "aws-amplify/auth/server";
 import { runWithAmplifyServerContext } from "@/lib/amplify-server";
 
 const AUTH_ROUTES = ["/login", "/signup"];
-const PROTECTED_ROUTES = ["/dashboard"];
+const isProtectedPath = (pathname: string) =>
+  pathname === "/dashboard" || pathname.startsWith("/dashboard/");
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const isAuthRoute = AUTH_ROUTES.includes(pathname);
-  const isProtectedRoute = PROTECTED_ROUTES.includes(pathname);
+  const isProtectedRoute = isProtectedPath(pathname);
   // const isRoot = pathname === "/";
 
   if (!isAuthRoute && !isProtectedRoute) return NextResponse.next();

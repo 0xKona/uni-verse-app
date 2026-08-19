@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TriangleAlert, Inbox } from "lucide-react";
 import { UserCard } from "@/components/ui/user-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ListSkeleton } from "@/components/ui/skeleton";
 import { RequestModal } from "./request-modal";
 import { usePendingRequests } from "@/hooks/useFriendsQuery";
 import { useUsers } from "@/hooks/useUserQuery";
@@ -17,9 +19,23 @@ export function PendingRequests() {
   const { data: users = [], isLoading: usersLoading } = useUsers(senderIds);
   const userMap = useMemo(() => new Map(users.map((u) => [u.id, u])), [users]);
 
-  if (isLoading || usersLoading) return <EmptyState message="Loading…" />;
-  if (error) return <EmptyState message="Failed to load requests" />;
-  if (!requests.length) return <EmptyState message="No pending requests." />;
+  if (isLoading || usersLoading) return <ListSkeleton className="gap-1" />;
+  if (error)
+    return (
+      <EmptyState
+        icon={TriangleAlert}
+        title="Something went wrong"
+        description="Failed to load your requests."
+      />
+    );
+  if (!requests.length)
+    return (
+      <EmptyState
+        icon={Inbox}
+        title="No pending requests"
+        description="When someone sends you a friend request, it appears here."
+      />
+    );
 
   return (
     <>

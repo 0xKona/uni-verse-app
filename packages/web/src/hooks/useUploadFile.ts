@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { getUploadUrl } from '@/lib/api';
 
 interface UploadResult {
@@ -22,6 +23,9 @@ export function useUploadFile() {
         isImage: file.type.startsWith('image/'),
         fileName: file.name,
       };
+    },
+    onError: () => {
+      toast.error("Couldn't upload file. Please try again.");
     },
   });
 }
