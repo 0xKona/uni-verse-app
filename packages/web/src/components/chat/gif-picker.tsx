@@ -28,7 +28,7 @@ export function GifPicker({ onSelect }: GifPickerProps) {
   };
 
   return (
-    <div className="flex flex-col w-80 h-80">
+    <div className="flex flex-col w-80 max-w-[calc(100vw-2rem)] h-80">
       <div className="p-2">
         <div className="relative">
           <Search size={14} className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground" />

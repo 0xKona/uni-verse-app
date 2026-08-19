@@ -142,12 +142,12 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] `AddFriendDialog` stays reachable at the drawer's top (`dm-sidebar.tsx` already renders it)
 
 ### 3.5 Responsive widths/breakpoints audit
-- [ ] `dm-sidebar.tsx` `w-60` → keep for `md+`; drawer width handles mobile (see 3.4)
-- [ ] `user-profile-card.tsx` `w-68` + `absolute bottom-4 left-3` → desktop-only placement (`hidden md:block`); on mobile profile entry moves into bottom bar (3.2)
-- [ ] `gif-picker.tsx` `w-80 h-80` → `w-80 max-w-[calc(100vw-2rem)]` (can't overflow 320–390px)
-- [ ] `popover.tsx` `w-72` → add `max-w-[calc(100vw-2rem)]` generic guard (GifPicker/message-input popovers on small screens)
-- [ ] Confirm `AlertDialog` (logout confirm) and settings `sm:max-w-md` open inside viewport at 320px
-- [ ] Verify `message-list` bubbles (`max-w-[70%]`) and input row don't overflow at 320px
+- [x] `dm-sidebar.tsx` `w-60` → keep for `md+`; drawer width handles mobile (see 3.4)
+- [x] `user-profile-card.tsx` `w-68` + `absolute bottom-4 left-3` → desktop-only placement (`hidden md:block`); on mobile profile entry moves into bottom bar (3.2)
+- [x] `gif-picker.tsx` `w-80 h-80` → `w-80 max-w-[calc(100vw-2rem)]` (can't overflow 320–390px)
+- [x] `popover.tsx` `w-72` → add `max-w-[calc(100vw-2rem)]` generic guard (GifPicker/message-input popovers on small screens)
+- [x] Confirm `AlertDialog` (logout confirm) and settings `sm:max-w-md` open inside viewport at 320px — AlertDialog `w-full max-w-xs` fits; settings dialog was taller than the viewport at 320×568 (top -30, close button off-screen) → base `DialogContent` now `max-h-[calc(100dvh-2rem)] overflow-y-auto`; re-verified: dialog fully contained (top 16/bottom 552), scrolls, close button visible
+- [x] Verify `message-list` bubbles (`max-w-[70%]`) and input row don't overflow at 320px — bubbles max right 304px, input bottom 492px, no horizontal scroll
 
 ### 3.6 Verification (Phase 3 gate)
 - [ ] `npx eslint` changed files + `npm run build` clean
