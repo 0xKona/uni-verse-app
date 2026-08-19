@@ -18,6 +18,21 @@ export function isUnread(lastReadAt: string, lastMessageAt: string): boolean {
   return !!isUnread
 }
 
+/**
+ * Counts unread messages for a chat from a loaded message list.
+ * Returns null when the count is unknown (no messages loaded, or the
+ * cache doesn't cover the unread window) so callers can fall back to a
+ * plain unread indicator instead of showing a misleading number.
+ */
+export function countUnreadMessages(
+  lastReadAt: string | null,
+  messages: { createdAt: string }[] | undefined,
+): number | null {
+  if (!lastReadAt || !messages) return null;
+  const count = messages.filter((m) => m.createdAt > lastReadAt).length;
+  return count > 0 ? count : null;
+}
+
 export function formatTimestamp(iso: string): string {
   const date = new Date(iso);
   const now = new Date();

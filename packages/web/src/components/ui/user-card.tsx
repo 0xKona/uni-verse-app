@@ -7,6 +7,7 @@ interface UserCardProps {
   subtitle?: string;
   onClick?: () => void;
   className?: string;
+  avatarClassName?: string;
   children?: React.ReactNode;
 }
 
@@ -19,6 +20,7 @@ export function UserCard({
   subtitle,
   onClick,
   className,
+  avatarClassName,
   children,
 }: UserCardProps) {
   const displaySubtitle = subtitle ?? "";
@@ -35,7 +37,7 @@ export function UserCard({
       )}
     >
       <div className="flex items-center gap-3 min-w-0">
-        <Avatar className="h-8 w-8 shrink-0">
+        <Avatar className={cn("h-8 w-8 shrink-0", avatarClassName)}>
           {user.avatarUrl && (
             <AvatarImage src={user.avatarUrl} alt={user.username} />
           )}

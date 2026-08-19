@@ -179,9 +179,9 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Update all empty-state call sites to pass icons/CTAs — conversations + friends empty states get a real **"Add Friend"** CTA (`AddFriendDialog` gained an `asButton` variant that renders a `Button size="sm" variant="outline"` trigger via Base UI `render`, same idiom as `DialogClose`); pending/sent/search/idle states are informational-only (no action exists there). Error states use `TriangleAlert` + "Something went wrong". DM page idle panel now uses the empty state instead of raw text
 
 ### 4.5 Conversation list (`components/chat/conversation-list.tsx`)
-- [ ] Add client-side search filter by participant name
-- [ ] Add unread badge counts per conversation
-- [ ] Polish `conversation-card.tsx` hover/active states with new tokens; add avatar ring for active chat
+- [x] Add client-side search filter by participant name — `Search` icon + `Input` at the top of the chats tab; filters on username (case-insensitive substring); no-match shows `SearchX` "No matches found"; "Add Friend" CTA still shown for the true-empty case
+- [x] Add unread badge counts per conversation — numeric pill (`bg-primary text-primary-foreground`, caps "99+") computed from the chat's **cached** messages newer than `lastReadAt` via a new cache-only `useCachedMessages()` observer (Observation-mode `useInfiniteQuery`, `enabled: false` — no network); chats with unread messages **not** yet loaded fall back to a plain unread dot. **Note:** a true count for never-opened chats needs a backend `unreadCount` field on membership items (same backend-change constraint as the 4.3 read receipt) — counts are exact for opened chats and update live via the message subscription's cache writes
+- [x] Polish `conversation-card.tsx` — active row `bg-sidebar-accent text-sidebar-accent-foreground`, hover `bg-sidebar-accent/60`; row owns padding/hover (UserCard inner padding/hover stripped via className); active chat avatar gets `ring-2 ring-primary ring-offset-2` (`UserCard` gained an `avatarClassName` prop)
 
 ### 4.6 Profile & settings polish
 - [ ] Polish `components/user/user-profile-card.tsx` (glass card, avatar, theme toggle in popover)
