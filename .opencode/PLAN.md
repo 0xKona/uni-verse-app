@@ -175,8 +175,8 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Style IMAGE/FILE/GIF attachments for the new theme (rounded `rounded-lg ring-1 ring-border/40`, brand `hover:ring-primary/60`, hover zoom `hover:scale-[1.02]`; FILE as card chip with icon tile)
 
 ### 4.4 Empty states (`components/ui/empty-state.tsx`)
-- [ ] Upgrade to icon + heading + description + actionable CTA (e.g. "Add a friend", "Start a chat")
-- [ ] Update all empty-state call sites to pass icons/CTAs
+- [x] Upgrade to icon + heading + description + actionable CTA — `EmptyState` now takes `icon` (default `Inbox`, rendered in a muted `size-12` tile), `title`, `description`, optional `action` node
+- [x] Update all empty-state call sites to pass icons/CTAs — conversations + friends empty states get a real **"Add Friend"** CTA (`AddFriendDialog` gained an `asButton` variant that renders a `Button size="sm" variant="outline"` trigger via Base UI `render`, same idiom as `DialogClose`); pending/sent/search/idle states are informational-only (no action exists there). Error states use `TriangleAlert` + "Something went wrong". DM page idle panel now uses the empty state instead of raw text
 
 ### 4.5 Conversation list (`components/chat/conversation-list.tsx`)
 - [ ] Add client-side search filter by participant name

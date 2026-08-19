@@ -1,10 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TriangleAlert, Users } from "lucide-react";
 import { useCurrentUserId } from "@/hooks/useCurrentUserId";
 import { UserCard } from "@/components/ui/user-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ListSkeleton } from "@/components/ui/skeleton";
+import { AddFriendDialog } from "@/components/friends/add-friend-dialog";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -56,8 +58,23 @@ export function FriendsList({ onSelectFriend }: FriendsListProps = {}) {
 
   if (isLoading || usersLoading)
     return <ListSkeleton className="gap-1" />;
-  if (error) return <EmptyState message="Failed to load friends" />;
-  if (!friends.length) return <EmptyState message="No friends yet." />;
+  if (error)
+    return (
+      <EmptyState
+        icon={TriangleAlert}
+        title="Something went wrong"
+        description="Failed to load your friends."
+      />
+    );
+  if (!friends.length)
+    return (
+      <EmptyState
+        icon={Users}
+        title="No friends yet"
+        description="Add a friend to start chatting."
+        action={<AddFriendDialog asButton />}
+      />
+    );
 
   const handleUnfriend = async () => {
     if (!confirmUnfriend) return;

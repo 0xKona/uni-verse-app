@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search, UserPlus } from "lucide-react";
+import { Search, SearchX, UserPlus } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,7 +18,13 @@ import { useSearchUsers } from "@/hooks/useSearchUsers";
 import { useSendFriendRequest } from "@/hooks/useFriendsMutation";
 import { cn } from "@/lib/utils";
 
-export function AddFriendDialog({ iconOnly = false }: { iconOnly?: boolean }) {
+export function AddFriendDialog({
+  iconOnly = false,
+  asButton = false,
+}: {
+  iconOnly?: boolean;
+  asButton?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [sentIds, setSentIds] = useState<Set<string>>(new Set());
@@ -55,12 +61,17 @@ export function AddFriendDialog({ iconOnly = false }: { iconOnly?: boolean }) {
       }}
     >
       <DialogTrigger
-        className={cn(
-          "flex items-center justify-center rounded-lg text-sidebar-foreground/70 hover:text-sidebar-accent-foreground cursor-pointer hover:bg-sidebar-accent transition-colors",
-          iconOnly
-            ? "size-10"
-            : "w-full justify-start gap-2 text-muted-foreground hover:text-foreground text-sm px-2 py-1.5 rounded-md",
-        )}
+        render={asButton ? <Button size="sm" variant="outline" /> : undefined}
+        className={
+          asButton
+            ? undefined
+            : cn(
+                "flex items-center justify-center rounded-lg text-sidebar-foreground/70 hover:text-sidebar-accent-foreground cursor-pointer hover:bg-sidebar-accent transition-colors",
+                iconOnly
+                  ? "size-10"
+                  : "w-full justify-start gap-2 text-muted-foreground hover:text-foreground text-sm px-2 py-1.5 rounded-md",
+              )
+        }
       >
         <UserPlus size={iconOnly ? 20 : 16} />
         {!iconOnly && "Add Friend"}
@@ -108,7 +119,11 @@ export function AddFriendDialog({ iconOnly = false }: { iconOnly?: boolean }) {
         )}
 
         {search.data?.length === 0 && query && !search.isPending && (
-          <EmptyState message="No users found." />
+          <EmptyState
+            icon={SearchX}
+            title="No users found"
+            description="Try a different username or email."
+          />
         )}
       </DialogContent>
     </Dialog>

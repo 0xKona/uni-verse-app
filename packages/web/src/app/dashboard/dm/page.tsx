@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { X } from 'lucide-react';
+import { MessageSquare, X } from 'lucide-react';
 import { useCurrentUserId } from '@/hooks/useCurrentUserId';
 import { useCreateChat } from '@/hooks/useChatMutation';
 import { useMessageSubscription } from '@/hooks/useMessageSubscription';
 import { DMSidebar } from '@/components/chat/dm-sidebar';
 import { ChatPanel } from '@/components/chat/chat-panel';
 import { MobileHeader } from '@/components/dashboard/mobile-header';
+import { EmptyState } from '@/components/ui/empty-state';
 import {
   Sheet,
   SheetClose,
@@ -72,8 +73,13 @@ export default function DMPage() {
         {activeChat ? (
           <ChatPanel chat={activeChat} currentUserId={currentUserId} />
         ) : (
-          <main className="flex flex-1 items-center justify-center text-muted-foreground text-sm">
-            Select a conversation to start messaging
+          <main className="flex flex-1 items-center justify-center">
+            <EmptyState
+              icon={MessageSquare}
+              title="Select a conversation"
+              description="Pick a chat from the list to start messaging."
+              className="py-8"
+            />
           </main>
         )}
       </div>

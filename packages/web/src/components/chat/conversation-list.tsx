@@ -1,10 +1,12 @@
 "use client";
 
 import { useMemo } from "react";
+import { MessageSquare } from "lucide-react";
 import { useChats } from "@/hooks/useChatQuery";
 import { useUsers } from "@/hooks/useUserQuery";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ListSkeleton } from "@/components/ui/skeleton";
+import { AddFriendDialog } from "@/components/friends/add-friend-dialog";
 import type { Chat } from "@/types/messaging";
 import ConversationCard from "./conversation-card";
 
@@ -23,14 +25,7 @@ export function ConversationList({
     () => chats.map((c) => c.participantId),
     [chats],
   );
-  const { data: users = [], isLoading: usersLoading } =
-    useUsers(participantIds);
-
-  const userMap = useMemo(() => {
-    const map = new Map<string, { username: string }>();
-    users.forEach((u) => map.set(u.id, u));
-    return map;
-  }, [users]);
+  const { isLoading: usersLoading } = useUsers(participantIds);
 
   // Sort by most recent message
   const sorted = useMemo(
@@ -42,7 +37,15 @@ export function ConversationList({
   );
 
   if (isLoading || usersLoading) return <ListSkeleton />;
-  if (!sorted.length) return <EmptyState message="No conversations yet." />;
+  if (!sorted.length)
+    return (
+      <EmptyState
+        icon={MessageSquare}
+        title="No conversations yet"
+        description="Start a chat with a friend to say hello."
+        action={<AddFriendDialog asButton />}
+      />
+    );
 
   return (
     <div className="flex flex-col gap-0.5">

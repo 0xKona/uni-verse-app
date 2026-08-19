@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { TriangleAlert, Send } from "lucide-react";
 import { UserCard } from "@/components/ui/user-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ListSkeleton } from "@/components/ui/skeleton";
@@ -22,8 +23,22 @@ export function SentRequests() {
   const userMap = useMemo(() => new Map(users.map((u) => [u.id, u])), [users]);
 
   if (isLoading || usersLoading) return <ListSkeleton className="gap-1" />;
-  if (error) return <EmptyState message="Failed to load requests" />;
-  if (!requests.length) return <EmptyState message="No sent requests." />;
+  if (error)
+    return (
+      <EmptyState
+        icon={TriangleAlert}
+        title="Something went wrong"
+        description="Failed to load your requests."
+      />
+    );
+  if (!requests.length)
+    return (
+      <EmptyState
+        icon={Send}
+        title="No sent requests"
+        description="Friend requests you send will show up here."
+      />
+    );
 
   return (
     <>
