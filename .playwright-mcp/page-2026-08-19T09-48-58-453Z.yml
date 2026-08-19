@@ -1,0 +1,28 @@
+- generic [active] [ref=f79e1]:
+  - generic [ref=f79e2]:
+    - navigation [ref=f79e3]:
+      - button [ref=f79e5]:
+        - link [ref=f79e6] [cursor=pointer]:
+          - /url: /dashboard/dm
+    - generic [ref=f79e11]:
+      - complementary [ref=f79e13]:
+        - button "Add Friend" [ref=f79e15] [cursor=pointer]
+        - separator [ref=f79e19]
+        - generic [ref=f79e20]:
+          - tablist [ref=f79e21]:
+            - tab "Chats" [selected] [ref=f79e22]
+            - tab "Friends" [ref=f79e23]
+            - tab "Pending" [ref=f79e24]
+            - tab "Sent" [ref=f79e25]
+          - tabpanel "Chats" [ref=f79e27]:
+            - list [ref=f79e28]:
+              - listitem [ref=f79e29]
+              - listitem [ref=f79e34]
+              - listitem [ref=f79e39]
+              - listitem [ref=f79e44]
+              - listitem [ref=f79e49]
+      - main [ref=f79e54]: Select a conversation to start messaging
+    - button "?" [ref=f79e57] [cursor=pointer]
+  - region "Notifications alt+T"
+  - button "Open Next.js Dev Tools" [ref=f79e67] [cursor=pointer]
+  - alert [ref=f79e71]

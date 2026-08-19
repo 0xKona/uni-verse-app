@@ -160,11 +160,11 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Fix `empty-state.tsx` semantic bug (currently used for both loading AND empty) — loading now uses skeletons; `EmptyState` is only for empty/error states (doc updated)
 
 ### 4.2 Toasts (sonner)
-- [ ] Add `sonner` provider into root layout
-- [ ] Replace scattered inline `text-destructive` error handling with toasts where appropriate (send message, upload, friend request actions, settings)
-- [ ] Add success/feedback toasts: friend request sent, accepted, message sent, theme change, demo sign-in
-- [ ] Surface silent `console.error`s (upload, subscription failures) to toasts
-- [ ] Remove now-unused inline error paragraphs
+- [x] Add `sonner` provider into root layout — `sonner@2.0.8`, `ui/toaster.tsx` (theme-synced via `useTheme`, shadcn-style brand classNames, `richColors`), styles via `@import "sonner/dist/styles.css"`, mounted `position="bottom-right"`
+- [x] Replace scattered inline `text-destructive` error handling with toasts where appropriate (send message, upload, friend request actions, settings) — per user constraint **errors + rare events only**
+- [x] Add success/feedback toasts: **friend request sent, accepted; friend removed; avatar updated** — NO toasts on message send/receive or theme change (spam). Inline error paragraphs removed from `add-friend-dialog`, `request-modal`, `friends-list`, `settings-dialog`
+- [x] Surface silent `console.error`s: upload + send-message failures now toast (in `useUploadFile`/`useSendMessage`). Subscription/typing/mark-read failures intentionally stay on console.error — they auto-reconnect and firing on every drop would be toast spam
+- [x] Remove now-unused inline error paragraphs
 
 ### 4.3 Message list polish (`components/chat/message-list.tsx`)
 - [ ] Add day dividers between messages on different dates

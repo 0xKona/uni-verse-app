@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { toast } from "sonner";
 import {
   Dialog,
   DialogContent,
@@ -74,13 +75,18 @@ export function SettingsDialog({
     updateAvatar.mutate(pendingFile, {
       onSuccess: () => {
         setPendingFile(null);
+        setAvatarPreview(null);
+        toast.success("Profile photo updated.");
       },
+      onError: () => toast.error("Upload failed. Try again."),
     });
   };
 
   const handleSaveUsername = () => {
     if (!newUsername.trim() || newUsername === username) return;
-    updateUsername.mutate(newUsername.trim());
+    updateUsername.mutate(newUsername.trim(), {
+      onError: () => toast.error("Failed to update username."),
+    });
   };
 
   
@@ -127,9 +133,6 @@ export function SettingsDialog({
                 onChange={handleAvatarChange}
               />
             </div>
-            {updateAvatar.isError && (
-              <p className="text-xs text-destructive">Upload failed. Try again.</p>
-            )}
           </div>
 
           <Separator />
@@ -155,9 +158,6 @@ export function SettingsDialog({
                 {updateUsername.isPending ? "Saving…" : "Save"}
               </Button>
             </div>
-            {updateUsername.isError && (
-              <p className="text-xs text-destructive">Failed to update username.</p>
-            )}
           </div>
 
           <Separator />

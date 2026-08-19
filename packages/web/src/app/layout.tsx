@@ -3,6 +3,7 @@ import AmplifyProvider from "@/components/AmplifyProvider";
 import { QueryProvider } from "@/components/QueryProvider";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
+import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 
@@ -55,6 +56,7 @@ export default function RootLayout({
                             disableTransitionOnChange
                         >
                             {children}
+                            <Toaster position="bottom-right" richColors />
                         </ThemeProvider>
                     </QueryProvider>
                 </AmplifyProvider>

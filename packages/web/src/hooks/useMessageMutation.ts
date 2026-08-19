@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient, type InfiniteData } from '@tanstack/react-query';
+import { toast } from 'sonner';
 import { sendMessage as sendMessageApi, type MessagePage } from '@/lib/api';
 import { MESSAGE_QUERY_KEYS } from './useMessagesQuery';
 import { CHAT_QUERY_KEYS } from './useChatQuery';
@@ -65,6 +66,7 @@ export function useSendMessage(currentUserId: string) {
     },
 
     onError: (_err, vars, context) => {
+      toast.error("Couldn't send message. Please try again.");
       if (context?.previous) {
         qc.setQueryData(MESSAGE_QUERY_KEYS.messages(vars.chatId), context.previous);
       }

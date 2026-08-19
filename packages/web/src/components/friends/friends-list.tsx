@@ -61,12 +61,8 @@ export function FriendsList({ onSelectFriend }: FriendsListProps = {}) {
 
   const handleUnfriend = async () => {
     if (!confirmUnfriend) return;
-    try {
-      await removeFriend.mutateAsync(confirmUnfriend.id);
-      setConfirmUnfriend(null);
-    } catch (err) {
-      console.error("Failed to unfriend:", err);
-    }
+    await removeFriend.mutateAsync(confirmUnfriend.id);
+    setConfirmUnfriend(null);
   };
 
   return (
@@ -125,12 +121,6 @@ export function FriendsList({ onSelectFriend }: FriendsListProps = {}) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {removeFriend.isError && (
-        <p className="text-sm text-destructive">
-          Failed to remove friend. Please try again.
-        </p>
-      )}
     </>
   );
 }

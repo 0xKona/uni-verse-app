@@ -762,3 +762,146 @@ Import trace:
 [60804368ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
 [60804380ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
 [60868208ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61781726ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61781755ms] [LOG] [Fast Refresh] done in 63ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61785332ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61785363ms] [LOG] [Fast Refresh] done in 82ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61787764ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61787861ms] [LOG] [Fast Refresh] done in 176ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61788261ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61788412ms] [LOG] [Fast Refresh] done in 251ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61790118ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61790569ms] [LOG] [Fast Refresh] done in 395ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61790705ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61790752ms] [LOG] [Fast Refresh] done in 147ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61790868ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61790909ms] [LOG] [Fast Refresh] done in 143ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61791017ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61791030ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61795262ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61795290ms] [LOG] [Fast Refresh] done in 32ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61799939ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61799967ms] [LOG] [Fast Refresh] done in 33ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61808236ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61808266ms] [LOG] [Fast Refresh] done in 50ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61812086ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61812113ms] [LOG] [Fast Refresh] done in 29ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61814853ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61814880ms] [LOG] [Fast Refresh] done in 48ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61820637ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61820665ms] [LOG] [Fast Refresh] done in 31ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61825560ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61825586ms] [LOG] [Fast Refresh] done in 31ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61828012ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61828042ms] [LOG] [Fast Refresh] done in 30ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61835347ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61835376ms] [LOG] [Fast Refresh] done in 29ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61845525ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61845554ms] [LOG] [Fast Refresh] done in 27ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61848658ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61848685ms] [LOG] [Fast Refresh] done in 28ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61850788ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61850813ms] [LOG] [Fast Refresh] done in 62ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61854882ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61855798ms] [LOG] [Fast Refresh] done in 995ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61857625ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61857647ms] [LOG] [Fast Refresh] done in 39ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61861290ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61861314ms] [LOG] [Fast Refresh] done in 33ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61877360ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61877384ms] [LOG] [Fast Refresh] done in 33ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61923517ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61923526ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61951940ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=Em8_KduhCYdvYLsiYSMF1' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[61952943ms] [ERROR] WebSocket connection to 'ws://localhost:3000/_next/webpack-hmr?id=Em8_KduhCYdvYLsiYSMF1' failed: Error in connection establishment: net::ERR_CONNECTION_REFUSED @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_client_17643121._.js:10878
+[61954114ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61954802ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61954811ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61954940ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61954991ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61954991ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61954991ms] [LOG] [Fast Refresh] done in 123ms @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61955007ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61955167ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61955246ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61955297ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61955607ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61955704ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61955736ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61956612ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61956708ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61956739ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61956816ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61956922ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61956979ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61957284ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61957342ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61957463ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965021ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61965029ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61965102ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965102ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965105ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965309ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965384ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965393ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965805ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965811ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61965884ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61966810ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61966813ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61966890ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61967055ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61967083ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61967164ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61967504ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61967554ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61967623ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61987503ms] [LOG] [Fast Refresh] rebuilding @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61987593ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61987603ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61987666ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61987667ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61987670ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61987729ms] [WARNING] Detected `scroll-behavior: smooth` on the `<html>` element. To disable smooth scrolling during route transitions, add `data-scroll-behavior="smooth"` to your <html> element. Learn more: https://nextjs.org/docs/messages/missing-data-scroll-behavior @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[61987882ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61987953ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61987956ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61988306ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61988409ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61988446ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61989310ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61989413ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61989449ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61989593ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61989664ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61989730ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61990025ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61990071ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[61990211ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62060921ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[62060933ms] [LOG] [HMR] connected @ http://localhost:3000/_next/static/chunks/node_modules_next_dist_f3530cac._.js:2297
+[62060993ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62061003ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62061007ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62061199ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62061218ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62061271ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62061684ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62061692ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62061738ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62062690ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62062695ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62062742ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62062956ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62062975ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62062984ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62063406ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62063407ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62063408ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62064283ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62064500ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62064987ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62065991ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62066202ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0
+[62066628ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://xbpbtvhcujbfncfz2kl3idjgla.appsync-api.eu-west-2.amazonaws.com/graphql:0

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Search, UserPlus } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -28,7 +29,9 @@ export function AddFriendDialog({ iconOnly = false }: { iconOnly?: boolean }) {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!query.trim()) return;
-    search.mutate(query);
+    search.mutate(query, {
+      onError: () => toast.error("Search failed. Please try again."),
+    });
   };
 
   const handleSend = (userId: string) => {
@@ -79,15 +82,6 @@ export function AddFriendDialog({ iconOnly = false }: { iconOnly?: boolean }) {
             <Search size={16} />
           </Button>
         </form>
-
-        {search.isError && (
-          <p className="text-sm text-destructive">
-            Search failed. Please try again.
-          </p>
-        )}
-        {sendRequest.isError && (
-          <p className="text-sm text-destructive">Failed to send request.</p>
-        )}
 
         {(search.data?.length ?? 0) > 0 && (
           <ul className="flex flex-col gap-1 mt-1">
