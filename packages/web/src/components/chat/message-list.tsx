@@ -254,7 +254,7 @@ function MessageBubble({
   return (
     <div
       className={cn(
-        "flex max-w-full items-end gap-1.5",
+        "flex w-full max-w-full items-end gap-1.5",
         isOwn ? "justify-end" : "justify-start",
         isGroupStart ? "mt-1.5" : "mt-0.5",
       )}
@@ -276,7 +276,7 @@ function MessageBubble({
 
       <div
         className={cn(
-          "max-w-[70%] rounded-2xl px-3 py-2 text-sm",
+          "max-w-[90%] rounded-2xl px-3 py-2 text-sm sm:max-w-[85%] md:max-w-[80%] lg:max-w-[75%] xl:max-w-[78%]",
           isOwn ? "bg-primary text-primary-foreground" : "bg-muted",
           isGroupLast ? (isOwn ? "rounded-br-md" : "rounded-bl-md") : null,
         )}
