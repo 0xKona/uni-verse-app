@@ -167,12 +167,12 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Remove now-unused inline error paragraphs
 
 ### 4.3 Message list polish (`components/chat/message-list.tsx`)
-- [ ] Add day dividers between messages on different dates
-- [ ] Group consecutive messages from the same sender (reduced spacing, avatar only on last of a group)
-- [ ] Add simplified timestamps (grouped; HH:MM on hover or in bubble footer)
-- [ ] Add delivered/read indicators (checkmarks) for own messages (requires `lastReadAt` data already present)
-- [ ] Polish translation toggle (Translate/View original/View translated) per new tokens
-- [ ] Style IMAGE/FILE/GIF attachments for the new theme (rounded, ring, hover zoom)
+- [x] Add day dividers between messages on different dates (`DayDivider`: Today / Yesterday / localized date; splits runs on calendar-day boundaries)
+- [x] Group consecutive messages from the same sender (reduced spacing `mt-0.5` within a run vs `mt-1.5` at run start; avatar column only on the last of a group — other-user avatar from `useUsers`, own side has none)
+- [x] Add simplified timestamps (grouped; HH:MM in bubble footer — here per bubble, compact muted)
+- [x] Add delivered/read indicators for own messages: `Clock` while optimistic → `Check` ("Delivered") once confirmed. **Note:** a true *read* receipt (`CheckCheck`) isn't possible — the API only exposes the caller's own `lastReadAt` (`markChatRead` updates `USER#me`'s membership item), so only delivered is shown. Real read receipts need a backend change (expose recipient `lastReadAt` per chat) — out of scope for this pass
+- [x] Polish translation toggle (Translate/View original/View translated) per new tokens — pill `rounded-md hover:bg-muted-foreground/10 hover:text-foreground` + `Languages` icon, `ml-auto`
+- [x] Style IMAGE/FILE/GIF attachments for the new theme (rounded `rounded-lg ring-1 ring-border/40`, brand `hover:ring-primary/60`, hover zoom `hover:scale-[1.02]`; FILE as card chip with icon tile)
 
 ### 4.4 Empty states (`components/ui/empty-state.tsx`)
 - [ ] Upgrade to icon + heading + description + actionable CTA (e.g. "Add a friend", "Start a chat")

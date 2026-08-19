@@ -38,7 +38,11 @@ export function ChatPanel({ chat, currentUserId }: ChatPanelProps) {
         )}
       </div>
 
-      <MessageList chatId={chat.chatId} currentUserId={currentUserId} />
+      <MessageList
+        chatId={chat.chatId}
+        currentUserId={currentUserId}
+        participantId={chat.participantId}
+      />
       {typingUserId && (
         <div className="px-4 py-1 text-xs text-muted-foreground animate-pulse">
           {participantName} is typing…
