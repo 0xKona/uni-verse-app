@@ -12,6 +12,8 @@ interface SideBarButtonProps {
   icon?: React.ComponentType<{ size: number }>;
   avatar?: React.ReactNode;
   label?: string;
+  badge?: number;
+  hideTooltip?: boolean;
   onClick?: () => void;
   children?: React.ReactNode;
 }
@@ -22,14 +24,16 @@ export default function SideBarButton({
   icon: Icon,
   avatar,
   label,
+  badge,
+  hideTooltip,
   onClick,
   children,
 }: SideBarButtonProps) {
   const classes = cn(
-    "flex items-center justify-center w-12 h-12 bg-background text-muted-foreground transition-all duration-200 cursor-pointer",
+    "relative flex items-center justify-center w-12 h-12 text-sidebar-foreground/70 transition-all duration-200 cursor-pointer",
     active
-      ? "rounded-2xl bg-primary text-primary-foreground"
-      : "rounded-full hover:rounded-2xl hover:bg-primary hover:text-primary-foreground",
+      ? "rounded-2xl bg-sidebar-primary text-sidebar-primary-foreground"
+      : "rounded-full hover:rounded-2xl hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
   );
 
   const content = (
@@ -37,6 +41,11 @@ export default function SideBarButton({
       {Icon && <Icon size={22} />}
       {avatar}
       {children}
+      {!!badge && (
+        <span className="absolute -top-0.5 -right-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-medium text-primary-foreground">
+          {badge > 99 ? "99+" : badge}
+        </span>
+      )}
     </>
   );
 
@@ -53,7 +62,9 @@ export default function SideBarButton({
   return (
     <Tooltip>
       <TooltipTrigger>{inner}</TooltipTrigger>
-      {label && <TooltipContent side="right">{label}</TooltipContent>}
+      {label && !hideTooltip && (
+        <TooltipContent side="right">{label}</TooltipContent>
+      )}
     </Tooltip>
   );
 }

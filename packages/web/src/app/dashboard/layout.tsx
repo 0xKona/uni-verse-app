@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useSubscribeFriendsRealtime } from "@/hooks/useFriendsSubscription";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
+import { useUnreadChatCount } from "@/hooks/useUnreadChatCount";
 import SideBarButton from "@/components/ui/sidebar-button";
 import UserProfileCard from "@/components/user/user-profile-card";
 
@@ -21,6 +22,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const authorized = useRequireAuth();
+  const unreadChatCount = useUnreadChatCount();
 
   // Enable real-time updates for friends data
   useSubscribeFriendsRealtime();
@@ -28,9 +30,10 @@ export default function DashboardLayout({
   if (!authorized) return null;
 
   return (
-    <div className="relative flex h-screen bg-background">
+    <div className="relative flex h-dvh bg-background">
       <TooltipProvider delay={200}>
-        <nav className="flex flex-col items-center w-16 py-3 pb-14 bg-muted border-r border-border">
+        <nav className="relative hidden md:flex flex-col items-center w-16 py-3 pb-14 bg-sidebar border-r border-sidebar-border">
+          <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-16 w-px bg-gradient-to-b from-primary/40 via-sidebar-border to-transparent" />
           <div className="flex flex-col items-center gap-2">
             {tabs.map(({ href, icon, label }) => {
               const active = pathname.startsWith(href);
@@ -41,6 +44,7 @@ export default function DashboardLayout({
                   icon={icon}
                   label={label}
                   active={active}
+                  badge={href === "/dashboard/dm" ? unreadChatCount : undefined}
                 />
               );
             })}

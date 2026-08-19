@@ -113,23 +113,49 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 
 ## Phase 3 — Dashboard Shell & Mobile Responsiveness
 
-### 3.1 Nav rail (`src/app/dashboard/layout.tsx`)
-- [ ] Migrate rail to `--sidebar-*` tokens + brand styling
-- [ ] Make rail responsive: `w-16` on desktop, hidden on mobile
-- [ ] Add mobile bottom tab bar (DMs icon + any nav items) with active state
-- [ ] Add unread badge counts on nav items (requires chat unread aggregation)
-- [ ] Keep `TooltipProvider` + `SideBarButton` behavior; add active squircle/pill to new tokens
+### 3.0 Prereq (DONE)
+- Middleware prefix-match protects `/dashboard/*`; `useRequireAuth` in `dashboard/layout.tsx` redirects logged-out users and renders `null` until the session resolves. Phase 3 layout changes must keep this guard mounted first.
 
-### 3.2 Mobile layout
-- [ ] Build a mobile top header (hamburger / app title / theme toggle) above content
-- [ ] Convert DM sidebar (`components/chat/dm-sidebar.tsx`) into a slide-in drawer on mobile (new overlay + drawer component, or sheet)
-- [ ] Add mobile connection between bottom-bar, header, and drawer state
-- [ ] Desktop remains current 2-pane split (sidebar + chat panel)
+### 3.1 Nav rail (`src/app/dashboard/layout.tsx`, `src/components/ui/sidebar-button.tsx`)
+- [x] Brand styling: switch rail from raw `bg-muted border-r border-border` to `--sidebar-*` tokens (`bg-sidebar text-sidebar-foreground`, `border-sidebar-border`), plus cosmic glass treatment (subtle `bg-sidebar/70 backdrop-blur`, gradient hairline on the right edge)
+- [x] Active state: keep squircle→pill morph in `SideBarButton` but restyle with brand tokens — inactive `text-sidebar-foreground/70`, active `rounded-2xl bg-sidebar-primary text-sidebar-primary-foreground`, hover `bg-sidebar-accent`; keep `TooltipProvider` + `Tooltip side="right"`
+- [x] Responsive: rail is `w-16` at `md+`, `hidden` below `md` (`hidden md:flex`); root container `h-screen` → `h-dvh` (iOS URL-bar overlap)
+- [x] Unread badge (nav level): new `useUnreadChatCount()` hook — `useChats()` + `isUnread` memoized count of unread conversations (reuses shared `CHAT_QUERY_KEYS.chats` cache, no extra fetches; per-message total out of scope); tiny badge (`min-w-4 h-4 rounded-full bg-primary text-[10px] text-primary-foreground`) on the DMs `SideBarButton`; updates live via existing subscription invalidation
+- [x] `SideBarButton`: add optional `badge?: number` and `hideTooltip?: boolean` props (mobile bottom bar reuses it without tooltips)
 
-### 3.3 Responsive widths/breakpoints
-- [ ] Audit `components/chat/*` and `components/user/*` for fixed widths (`w-60`, `w-68`, etc.) and make them breakpoint-aware
-- [ ] Add `sm:`, `md:`, `lg:` responsive classes to chat panel, message list, and dialogs where needed
-- [ ] Verify all dialogs/popovers open on small screens (existing `sm:max-w-*` primitives)
+### 3.2 Mobile bottom tab bar (new `src/components/dashboard/mobile-bottom-bar.tsx`)
+- [ ] Fixed bottom bar, `md:hidden`: brand `BrandMark` mini-icon left, nav items (DMs — reuses `SideBarButton` with `hideTooltip`), spacer, add-friend quick action (opens `AddFriendDialog`), right: profile avatar that reuses the existing `UserProfileCard` popover
+- [ ] Safe area: `pb-[env(safe-area-inset-bottom)]` + `h-16` content row; add `md:hidden` bottom padding to root layout so content never hides behind the bar
+- [ ] Active state: highlight DMs when `pathname.startsWith("/dashboard/dm")`
+- [ ] Keep the rail's `pb-14` clearance only on desktop (profile card lives there)
+
+### 3.3 Mobile top header (new `src/components/dashboard/mobile-header.tsx`)
+- [ ] `md:hidden` slim header above content: hamburger button (opens the DM drawer), app title/wordmark, `ThemeToggle iconOnly`; no header on desktop (rail + rail profile menu cover it)
+- [ ] Header sits inside the flex column; on mobile the chat panel + input render below it
+
+### 3.4 DM sidebar → mobile drawer (`src/components/ui/drawer.tsx` new; refactor `dm-sidebar.tsx`, `dm/page.tsx`)
+- [ ] New `components/ui/drawer.tsx`: thin Base UI `drawer` wrapper matching repo conventions — `Drawer.Root/Trigger/Portal/Backdrop/Popup/Content/Close` with left-side `slide-in-from-left` animation (`data-open/data-closed` classes, consistent with `dialog.tsx`/`popover.tsx`), styled backdrop `bg-background/60 backdrop-blur-sm`, respect `usePrefersReducedMotion` (disable slide)
+- [ ] `DMSidebar`: add optional `onClose?: () => void` and `className`; keep desktop `w-60` 2-pane unchanged; on mobile the same component renders inside `Drawer.Content` at `w-[85vw] max-w-xs`
+- [ ] `dm/page.tsx`: mobile only — hamburger (in `MobileHeader`) opens the drawer; selecting a chat or friend calls `onSelectChat`/`onSelectFriend` **and closes the drawer** so the chat fills the screen; desktop 2-pane unchanged
+- [ ] Swipe: `Drawer.SwipeArea` (edge swipe) + `Drawer.Trigger`/`Close`; close on backdrop click
+- [ ] Optional polish: auto-open drawer on mobile first load when no chat is active (avoid blank "Select a conversation")
+- [ ] `AddFriendDialog` currently at top of `dm-sidebar` — keep a compact "Add friend" trigger at the drawer's top so it stays reachable on mobile
+
+### 3.5 Responsive widths/breakpoints audit
+- [ ] `dm-sidebar.tsx` `w-60` → keep for `md+`; drawer width handles mobile (see 3.4)
+- [ ] `user-profile-card.tsx` `w-68` + `absolute bottom-4 left-3` → desktop-only placement (`hidden md:block`); on mobile profile entry moves into bottom bar (3.2)
+- [ ] `gif-picker.tsx` `w-80 h-80` → `w-80 max-w-[calc(100vw-2rem)]` (can't overflow 320–390px)
+- [ ] `popover.tsx` `w-72` → add `max-w-[calc(100vw-2rem)]` generic guard (GifPicker/message-input popovers on small screens)
+- [ ] Confirm `AlertDialog` (logout confirm) and settings `sm:max-w-md` open inside viewport at 320px
+- [ ] Verify `message-list` bubbles (`max-w-[70%]`) and input row don't overflow at 320px
+
+### 3.6 Verification (Phase 3 gate)
+- [ ] `npx eslint` changed files + `npm run build` clean
+- [ ] Playwright 390×844: rail hidden, bottom bar visible with safe-area padding; hamburger opens drawer; edge-swipe closes; selecting a chat closes drawer + renders full-width; add-friend opens; theme toggle works; no horizontal scroll with chat active; input usable
+- [ ] Playwright 768×1024: rail appears, bottom bar/header hidden, no overlap
+- [ ] Playwright 1440×900: unchanged 2-pane; rail badge on DMs icon; profile card bottom-left; `useRequireAuth` still redirects logged-out users (regression)
+- [ ] Unread badge updates live when a message arrives
+- [ ] Rail/header/drawer render correctly in dark and light
 
 ---
 
