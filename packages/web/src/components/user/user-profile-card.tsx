@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { logout } from "@/lib/auth";
+import { queryClient } from "@/lib/query-client";
 import { useCurrentUserId } from "@/hooks/useCurrentUserId";
 import { useUser } from "@/hooks/useUserQuery";
 import { SettingsDialog } from "./settings-dialog/settings-dialog";
@@ -52,6 +53,7 @@ export default function UserProfileCard() {
 
   const handleLogout = async () => {
     await logout();
+    queryClient.clear();
     router.replace("/login");
   };
 

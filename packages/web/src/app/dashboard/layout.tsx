@@ -6,6 +6,7 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { useSubscribeFriendsRealtime } from "@/hooks/useFriendsSubscription";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import SideBarButton from "@/components/ui/sidebar-button";
 import UserProfileCard from "@/components/user/user-profile-card";
 
@@ -19,9 +20,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const authorized = useRequireAuth();
 
   // Enable real-time updates for friends data
   useSubscribeFriendsRealtime();
+
+  if (!authorized) return null;
 
   return (
     <div className="relative flex h-screen bg-background">
