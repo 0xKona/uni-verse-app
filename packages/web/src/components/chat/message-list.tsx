@@ -6,6 +6,7 @@ import { useMessages } from "@/hooks/useMessagesQuery";
 import { useUserProfile } from "@/hooks/useProfileQuery";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { MessageListSkeleton } from "@/components/ui/skeleton";
 import { useTranslateMessage } from "@/hooks/useTranslateMessage";
 import type { Message } from "@/types/messaging";
 
@@ -62,11 +63,7 @@ export function MessageList({ chatId, currentUserId }: MessageListProps) {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
-        Loading messages…
-      </div>
-    );
+    return <MessageListSkeleton />;
   }
 
   return (

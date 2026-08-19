@@ -45,6 +45,7 @@
   --brand-glow: oklch(0.541 0.281 293.009 / 0.28);
   --cosmic-glow-1: oklch(0.541 0.281 293.009 / 0.12);
   --cosmic-glow-2: oklch(0.62 0.22 326 / 0.1);
+  --shimmer-sheen: oklch(0.541 0.281 293.009 / 0.08);
 }
 
 .dark {
@@ -85,6 +86,7 @@
   --brand-glow: oklch(0.718 0.202 291.437 / 0.35);
   --cosmic-glow-1: oklch(0.718 0.202 291.437 / 0.18);
   --cosmic-glow-2: oklch(0.66 0.2 326 / 0.12);
+  --shimmer-sheen: oklch(0.718 0.202 291.437 / 0.1);
 }
 
 @theme inline {
@@ -168,6 +170,35 @@
       var(--cosmic-glow-2),
       transparent 60%
     );
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transform: translateX(-100%);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--shimmer-sheen),
+    transparent
+  );
+  animation: shimmer-sweep 1.8s ease-in-out infinite;
+}
+
+@keyframes shimmer-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
 }
 
 @layer base {

@@ -2,7 +2,7 @@ interface EmptyStateProps {
   message: string;
 }
 
-/** Simple muted message for empty or loading list states. */
+/** Simple muted message for empty (or errored) list states. Loading states use skeletons instead. */
 export function EmptyState({ message }: EmptyStateProps) {
   return <p className="text-sm text-muted-foreground px-2">{message}</p>;
 }

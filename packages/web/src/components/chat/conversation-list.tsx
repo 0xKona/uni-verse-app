@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import { useChats } from "@/hooks/useChatQuery";
 import { useUsers } from "@/hooks/useUserQuery";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ListSkeleton } from "@/components/ui/skeleton";
 import type { Chat } from "@/types/messaging";
 import ConversationCard from "./conversation-card";
 
@@ -40,7 +41,7 @@ export function ConversationList({
     [chats],
   );
 
-  if (isLoading || usersLoading) return <EmptyState message="Loading…" />;
+  if (isLoading || usersLoading) return <ListSkeleton />;
   if (!sorted.length) return <EmptyState message="No conversations yet." />;
 
   return (

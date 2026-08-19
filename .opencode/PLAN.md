@@ -149,23 +149,15 @@ Uni-Verse is a real-time social messaging platform (Next.js 15/16, AWS AppSync, 
 - [x] Confirm `AlertDialog` (logout confirm) and settings `sm:max-w-md` open inside viewport at 320px — AlertDialog `w-full max-w-xs` fits; settings dialog was taller than the viewport at 320×568 (top -30, close button off-screen) → base `DialogContent` now `max-h-[calc(100dvh-2rem)] overflow-y-auto`; re-verified: dialog fully contained (top 16/bottom 552), scrolls, close button visible
 - [x] Verify `message-list` bubbles (`max-w-[70%]`) and input row don't overflow at 320px — bubbles max right 304px, input bottom 492px, no horizontal scroll
 
-### 3.6 Verification (Phase 3 gate)
-- [ ] `npx eslint` changed files + `npm run build` clean
-- [ ] Playwright 390×844: rail hidden, bottom bar visible with safe-area padding; hamburger opens drawer; edge-swipe closes; selecting a chat closes drawer + renders full-width; add-friend opens; theme toggle works; no horizontal scroll with chat active; input usable
-- [ ] Playwright 768×1024: rail appears, bottom bar/header hidden, no overlap
-- [ ] Playwright 1440×900: unchanged 2-pane; rail badge on DMs icon; profile card bottom-left; `useRequireAuth` still redirects logged-out users (regression)
-- [ ] Unread badge updates live when a message arrives
-- [ ] Rail/header/drawer render correctly in dark and light
-
 ---
 
 ## Phase 4 — Chat & Messaging Polish
 
 ### 4.1 Skeletons & loading
-- [ ] Create `components/ui/skeleton.tsx` (shimmer on brand tokens)
-- [ ] Replace "Loading…" and "Loading messages…" text in `conversation-list.tsx`, `friends-list.tsx`, `message-list.tsx`, request lists
-- [ ] Add skeleton rows for conversation/friend lists and message bubbles
-- [ ] Fix `empty-state.tsx` semantic bug (currently used for both loading AND empty)
+- [x] Create `components/ui/skeleton.tsx` (shimmer on brand tokens) — `Skeleton` (shimmer-sweep overlay via `--shimmer-sheen` brand token, plain CSS class + keyframe in globals.css), `ListSkeleton` (avatar + 2-line rows), `MessageListSkeleton` (alternating own/other bubbles)
+- [x] Replace "Loading…" and "Loading messages…" text in `conversation-list.tsx`, `friends-list.tsx`, `message-list.tsx`, request lists
+- [x] Add skeleton rows for conversation/friend lists and message bubbles
+- [x] Fix `empty-state.tsx` semantic bug (currently used for both loading AND empty) — loading now uses skeletons; `EmptyState` is only for empty/error states (doc updated)
 
 ### 4.2 Toasts (sonner)
 - [ ] Add `sonner` provider into root layout

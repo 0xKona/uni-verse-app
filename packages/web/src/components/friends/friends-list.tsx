@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { useCurrentUserId } from "@/hooks/useCurrentUserId";
 import { UserCard } from "@/components/ui/user-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { ListSkeleton } from "@/components/ui/skeleton";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -53,7 +54,8 @@ export function FriendsList({ onSelectFriend }: FriendsListProps = {}) {
     return map;
   }, [users]);
 
-  if (isLoading || usersLoading) return <EmptyState message="Loading…" />;
+  if (isLoading || usersLoading)
+    return <ListSkeleton className="gap-1" />;
   if (error) return <EmptyState message="Failed to load friends" />;
   if (!friends.length) return <EmptyState message="No friends yet." />;
 
